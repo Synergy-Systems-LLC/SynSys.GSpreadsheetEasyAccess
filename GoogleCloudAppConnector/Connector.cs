@@ -66,6 +66,8 @@ namespace GetGoogleSheetDataAPI
         public Exception Exception { get; private set; }
         SheetsService sheetsService;
 
+        private Connector() { }
+
         /// <summary>
         /// Создаёт новый экземпляр класса Connector, который тут же пытается подключится к приложению GCP и предлогает это сделать пользователю через браузер.
         /// <example>
@@ -81,34 +83,41 @@ namespace GetGoogleSheetDataAPI
         /// Если подключене состоялось, то присваивается статус ConnectorStatus.Connected.
         /// </remarks>
         /// <param name="credentials">Экземпляр класса Stream полученный из файла credentials.json</param>
-        public Connector(Stream credentials)
+        public static bool TryToCreateConnect(Stream credentials, out Connector connector)
         {
+            connector = new Connector();
+
             try
             {
-                sheetsService = GetService(credentials);
-                Status = ConnectStatus.Connected;
+                connector.GetService(credentials);
+                connector.Status = ConnectStatus.Connected;
             }
             catch (AggregateException ax)
             {
+                connector.Status = ConnectStatus.NotConnected;
+
                 if (ax.InnerExceptions == null)
                 {
-                    return;
+                    return false;
                 }
 
                 foreach (var e in ax.InnerExceptions)
                 {
                     if (e is TaskCanceledException)
                     {
-                        Status = ConnectStatus.AuthorizationTimedOut;
+                        connector.Status = ConnectStatus.AuthorizationTimedOut;
+                        return false;
                     }
                 }
             }
+
+            return true;
         }
 
         #region SheetService
-        private SheetsService GetService(Stream credentials)
+        private void GetService(Stream credentials)
         {
-            return new SheetsService(
+            sheetsService = new SheetsService(
                 new BaseClientService.Initializer()
                 {
                     HttpClientInitializer = GetUserCredential(credentials),
@@ -201,6 +210,11 @@ namespace GetGoogleSheetDataAPI
         private Spreadsheet GetSpreadsheet(string spreadsheetId)
         {
             return sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
+        }
+
+        public static bool TryToCreateConnect(Stream stream)
+        {
+            throw new NotImplementedException();
         }
     }
 }

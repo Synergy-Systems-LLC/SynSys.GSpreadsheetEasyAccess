@@ -13,32 +13,37 @@ namespace TestConsoleApp
     {
         static void Main(string[] args)
         {
-            var connector = new Connector(CredentialStream());
+            Connector connector;
+            bool isConnectionSuccessful = Connector.TryToCreateConnect(CredentialStream(), out connector);
 
-            if (connector.Status == ConnectStatus.Connected)
+            if (!isConnectionSuccessful)
             {
-                Console.WriteLine("Подключились к Cloud App");
-                string url = "https://docs.google.com/spreadsheets/d/1dxPz9MEeJxfZkbAvZLE33YLIN5GaNS0Bvqzlp6rAiNk/edit#gid=0";
-
-                if (HttpManager.CheckURL(url))
+                if (connector.Status == ConnectStatus.NotConnected)
                 {
-                    var sheet = connector.TryToCreateSheet(url);
-
-                    //Console.WriteLine(data.Values.Count.ToString());
+                    Console.WriteLine("Подключение отсутствует");
                 }
-                else
+                else if (connector.Status == ConnectStatus.AuthorizationTimedOut)
                 {
-                    Console.WriteLine(HttpManager.Status);
+                    Console.WriteLine("Время на подключение закончилось");
                 }
+                
+                return;
             }
-            else if (connector.Status == ConnectStatus.NotConnected)
-            {
-                Console.WriteLine("Подключение отсутствует");
-            }
-            else if (connector.Status == ConnectStatus.AuthorizationTimedOut)
-            {
-                Console.WriteLine("Время на подключение закончилось");
-            }
+
+            Console.WriteLine("Подключились к Cloud App");
+
+            //string url = "https://docs.google.com/spreadsheets/d/1dxPz9MEeJxfZkbAvZLE33YLIN5GaNS0Bvqzlp6rAiNk/edit#gid=0";
+
+            //if (HttpManager.CheckURL(url))
+            //{
+            //    var sheet = connector.TryToCreateSheet(url);
+
+            //    //Console.WriteLine(data.Values.Count.ToString());
+            //}
+            //else
+            //{
+            //    Console.WriteLine(HttpManager.Status);
+            //}
 
             Console.ReadLine();
         }
