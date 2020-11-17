@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GetGoogleSheetDataAPI;
-using Google.Apis.Sheets.v4.Data;
 
 namespace TestConsoleApp
 {
@@ -13,8 +8,8 @@ namespace TestConsoleApp
     {
         static void Main(string[] args)
         {
-            Connector connector;
-            bool isConnectionSuccessful = Connector.TryToCreateConnect(CredentialStream(), out connector);
+            var connector = new Connector();
+            bool isConnectionSuccessful = connector.TryToCreateConnect(CredentialStream());
 
             if (!isConnectionSuccessful)
             {
