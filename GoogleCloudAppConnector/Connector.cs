@@ -57,7 +57,7 @@ namespace GetGoogleSheetDataAPI
         /// <summary>
         /// Инициализирует экземпляр коннектора.
         /// Данный коннектор не имеет подключения к приложению на Google Cloud Platform.
-        /// Чтобы создать подключение необходимо вызвать метод TryToCreateConnect.
+        /// Чтобы создать подключение необходимо вызвать метод TryToCreateCo
         /// </summary>
         public Connector() { }
 
@@ -145,65 +145,5 @@ namespace GetGoogleSheetDataAPI
             return Path.Combine(outPutDirectory, "token.json");
         }
         #endregion
-
-        /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа Sheet
-        /// </summary>
-        /// <param name="url">Полный url адрес листа</param>
-        /// <returns></returns>
-        public Sheet TryToCreateSheet(string url)
-        {
-            return TryToCreateSheet(url, 0, 0);
-        }
-
-        public Sheet TryToCreateSheet(string url, int horisontalSeparator, int verticalSeparator)
-        {
-            var sheet = new Sheet()
-            {
-                HorizontalSeparator = horisontalSeparator,
-                VerticalSeparator = verticalSeparator
-            };
-
-            try
-            {
-                sheet.Data = GetData(
-                    HttpManager.GetSpreadsheetIdFromUrl(url),
-                    HttpManager.GetGidFromUrl(url)
-                );
-            }
-            catch (Exception)
-            {
-                sheet.Data = new ValueRange();
-            }
-
-            return sheet;
-        }
-
-        public ValueRange GetData(string spreadsheetId, string gid)
-        {
-            return sheetsService
-                .Spreadsheets
-                .Values
-                .Get(spreadsheetId, GetSheetName(spreadsheetId, gid))
-                .Execute();
-        }
-
-        public string GetSheetName(string spreadsheetId, string gid)
-        {
-            foreach (Google.Apis.Sheets.v4.Data.Sheet sheet in GetSpreadsheet(spreadsheetId).Sheets)
-            {
-                if (sheet.Properties.SheetId.ToString() == gid)
-                {
-                    return sheet.Properties.Title;
-                }
-            }
-
-            return null;
-        }
-
-        private Spreadsheet GetSpreadsheet(string spreadsheetId)
-        {
-            return sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
-        }
     }
 }
