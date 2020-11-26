@@ -8,6 +8,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace GetGoogleSheetDataAPI
 {
@@ -147,45 +148,48 @@ namespace GetGoogleSheetDataAPI
         #endregion
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа Sheet
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet
         /// </summary>
         /// <param name="url">Полный url адрес листа</param>
-        /// <returns></returns>
-        public Sheet TryToCreateSheet(string url)
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet, но если url не относится к какому-то конкретному листу
+        /// гугл таблицы то данный объект будет пуст и иметь статус того, почему он пуст.
+        /// </returns>
+        public bool TryToGetSheet(string url, out Sheet sheet)
         {
-            return TryToCreateSheet(url, 0, 0);
-        }
+            sheet = new Sheet();
 
-        public Sheet TryToCreateSheet(string url, int horisontalSeparator, int verticalSeparator)
-        {
-            var sheet = new Sheet()
+            if (!HttpManager.IsCorrectUrl(url))
             {
-                HorizontalSeparator = horisontalSeparator,
-                VerticalSeparator = verticalSeparator
-            };
+                sheet.Status = HttpManager.Status;
+                return false;
+            }
+
+            sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
+            sheet.Gid = HttpManager.GetGidFromUrl(url);
 
             try
             {
-                sheet.Data = GetData(
-                    HttpManager.GetSpreadsheetIdFromUrl(url),
-                    HttpManager.GetGidFromUrl(url)
-                );
+                sheet.Title = GetSheetName(sheet.SpreadsheetId, sheet.Gid);
+                sheet.Fill(GetData(sheet.SpreadsheetId, sheet.Gid));
             }
-            catch (Exception)
+            catch (Exception exeption)
             {
-                sheet.Data = new ValueRange();
+                sheet.Status = exeption.Message;
+                return false;
             }
 
-            return sheet;
+            return true;
         }
 
-        public ValueRange GetData(string spreadsheetId, string gid)
+        public IList<IList<object>> GetData(string spreadsheetId, string gid)
         {
             return sheetsService
                 .Spreadsheets
                 .Values
                 .Get(spreadsheetId, GetSheetName(spreadsheetId, gid))
-                .Execute();
+                .Execute()
+                .Values;
         }
 
         public string GetSheetName(string spreadsheetId, string gid)
