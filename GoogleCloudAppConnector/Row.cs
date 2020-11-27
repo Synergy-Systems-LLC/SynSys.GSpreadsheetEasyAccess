@@ -41,7 +41,7 @@ namespace GetGoogleSheetDataAPI
                     value = rowData[cellIndex];
                 }
 
-                Cells.Add(new Cell(value));
+                Cells.Add(new Cell(value, this));
             }
         }
     }
