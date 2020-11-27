@@ -87,5 +87,10 @@ namespace GetGoogleSheetDataAPI
 
             Rows.Add(row);
         }
+
+        public void DeleteRow(Row row)
+        {
+            row.Status = RowStatus.ToDelete;
+        }
     }
 }

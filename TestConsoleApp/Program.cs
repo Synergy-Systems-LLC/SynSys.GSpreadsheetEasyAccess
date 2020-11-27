@@ -41,6 +41,7 @@ namespace TestConsoleApp
                         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
                     }
                 );
+                sheet.DeleteRow(sheet.Rows[0]);
                 PrintSheet(sheet);
             }
             else
