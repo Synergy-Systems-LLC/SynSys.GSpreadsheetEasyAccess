@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using GetGoogleSheetDataAPI;
 
@@ -32,6 +33,15 @@ namespace TestConsoleApp
             if (connector.TryToGetSheet(url, out Sheet sheet))
             {
                 PrintSheet(sheet);
+                sheet.AddRow();
+                sheet.AddRow(new List<string>() { "123", "asd" });
+                sheet.AddRow(
+                    new List<string>()
+                    { 
+                        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
+                    }
+                );
+                PrintSheet(sheet);
             }
             else
             {
@@ -44,14 +54,20 @@ namespace TestConsoleApp
         private static void PrintSheet(Sheet sheet)
         {
             Console.WriteLine($"В листе {sheet.Rows.Count} строк");
+            
             foreach (var row in sheet.Rows)
             {
+                Console.Write($"|{row.Index, 3}|");
+
                 foreach (var cell in row.Cells)
                 {
-                    Console.Write($"{cell.Value,3}|");
+                    Console.Write($"|{cell.Value,3}");
                 }
+
+                Console.Write($"| {row.Status}");
                 Console.WriteLine();
             }
+            
             Console.WriteLine();
         }
 

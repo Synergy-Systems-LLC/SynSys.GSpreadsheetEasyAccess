@@ -12,42 +12,80 @@ namespace GetGoogleSheetDataAPI
     /// </summary>
     public class Sheet
     {
-        public string Title { get; set; }
-        public string SpreadsheetId { get; set; }
-        public string Gid { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string SpreadsheetId { get; set; } = string.Empty;
+        public string Gid { get; set; } = string.Empty;
         public List<Row> Rows { get; internal set; } = new List<Row>();
-        public string Status { get; internal set; }
+        public string Status { get; internal set; } = string.Empty;
 
+        /// <summary>
+        /// Инициализирует пустой объект таблицы готовый для заполнения.
+        /// </summary>
         internal Sheet() { }
 
+        /// <summary>
+        /// Заполнение таблицы с созданием строк и ячеек.
+        /// </summary>
+        /// <param name="data">Данные для формирования таблицы</param>
         public void Fill(IList<IList<object>> data)
         {
             var rows = Enumerable.Range(0, data.Count);
-            var columns = Enumerable.Range(0, data.First().Count);
+            var maxColumns = data.First().Count;
 
             foreach (int rowIndex in rows)
             {
-                var rowData = data[rowIndex];
-                var rowModel = new Row()
-                {
-                    Index = rowIndex,
-                    Status = RowStatus.Original
-                };
-
-                foreach (int cellIndex in columns)
-                {
-                    var value = string.Empty;
-
-                    if (cellIndex < rowData.Count())
-                    {
-                        value = data[rowIndex][cellIndex] as string;
-                    }
-
-                    rowModel.Cells.Add(new Cell(value));
-                }
-
-                Rows.Add(rowModel);
+                var rowData = data[rowIndex].Cast<string>().ToList();
+                AddRow(rowIndex, maxColumns, rowData, RowStatus.Original);
             }
+        }
+
+        /// <summary>
+        /// Добавляет пустую строку в конец таблицы.
+        /// Размер строки будет равен максимальному для данной таблицы.
+        /// </summary>
+        public void AddRow()
+        {
+            AddRow(new List<string>());
+        }
+
+        /// <summary>
+        /// Добавляет пустую строку в конец таблицы.
+        /// Размер строки будет равен максимальному для данной таблицы
+        /// и если данных будет больше чем этот размер, то часть данных не попадёт в таблицу.
+        /// если данных будет меньше, то строка дозаполнится пустыми значениями.
+        /// </summary>
+        /// <param name="rowData">Данные для составленния строки</param>
+        public void AddRow(List<string> rowData)
+        {
+            AddRow(
+                Rows.Count,
+                Rows.First().Cells.Count,
+                rowData
+            );
+        }
+
+        /// <summary>
+        /// Основной метод для добавления строки в конец таблицы.
+        /// </summary>
+        /// <param name="index">Индекс данной строки</param>
+        /// <param name="maxLength">Максимальная длинаа строки</param>
+        /// <param name="rowData">Данные для формированния строки</param>
+        /// <param name="status">
+        /// Статус строки. По умолчанию это ToAppend, но есть возможность его изменнить
+        /// </param>
+        private void AddRow(
+            int index,
+            int maxLength,
+            List<string> rowData,
+            RowStatus status=RowStatus.ToAppend)
+        {
+            var row = new Row(rowData, maxLength)
+            {
+                Status = status,
+                Index = index
+            };
+
+            Rows.Add(row);
         }
     }
 }
