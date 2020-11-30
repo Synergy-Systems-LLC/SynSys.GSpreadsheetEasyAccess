@@ -1,0 +1,96 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace GetGoogleSheetDataAPI
+{
+    /// <summary>
+    /// Виды таблиц:
+    /// 1. Без шапки и без ключа
+    /// 2. Шапка (1 строка)
+    /// 3. Шапка (1 строка) + Ключ (1 столцеб)
+    /// 4. Шапка (>1 строки) + Составной ключ (>1 столбца)
+    /// </summary>
+    public class Sheet
+    {
+        public string Title { get; set; } = string.Empty;
+        public string SpreadsheetId { get; set; } = string.Empty;
+        public string Gid { get; set; } = string.Empty;
+        public List<Row> Rows { get; internal set; } = new List<Row>();
+        public string Status { get; internal set; } = string.Empty;
+
+        /// <summary>
+        /// Инициализирует пустой объект таблицы готовый для заполнения.
+        /// </summary>
+        internal Sheet() { }
+
+        /// <summary>
+        /// Заполнение таблицы с созданием строк и ячеек.
+        /// </summary>
+        /// <param name="data">Данные для формирования таблицы</param>
+        public void Fill(IList<IList<object>> data)
+        {
+            var rows = Enumerable.Range(0, data.Count);
+            var maxColumns = data.First().Count;
+
+            foreach (int rowIndex in rows)
+            {
+                var rowData = data[rowIndex].Cast<string>().ToList();
+                AddRow(rowIndex, maxColumns, rowData, RowStatus.Original);
+            }
+        }
+
+        /// <summary>
+        /// Добавляет пустую строку в конец таблицы.
+        /// Размер строки будет равен максимальному для данной таблицы.
+        /// </summary>
+        public void AddRow()
+        {
+            AddRow(new List<string>());
+        }
+
+        /// <summary>
+        /// Добавляет пустую строку в конец таблицы.
+        /// Размер строки будет равен максимальному для данной таблицы
+        /// и если данных будет больше чем этот размер, то часть данных не попадёт в таблицу.
+        /// если данных будет меньше, то строка дозаполнится пустыми значениями.
+        /// </summary>
+        /// <param name="rowData">Данные для составленния строки</param>
+        public void AddRow(List<string> rowData)
+        {
+            AddRow(
+                Rows.Count,
+                Rows.First().Cells.Count,
+                rowData
+            );
+        }
+
+        /// <summary>
+        /// Основной метод для добавления строки в конец таблицы.
+        /// </summary>
+        /// <param name="index">Индекс данной строки</param>
+        /// <param name="maxLength">Максимальная длинаа строки</param>
+        /// <param name="rowData">Данные для формированния строки</param>
+        /// <param name="status">
+        /// Статус строки. По умолчанию это ToAppend, но есть возможность его изменнить
+        /// </param>
+        private void AddRow(
+            int index,
+            int maxLength,
+            List<string> rowData,
+            RowStatus status=RowStatus.ToAppend)
+        {
+            var row = new Row(rowData, maxLength)
+            {
+                Status = status,
+                Index = index
+            };
+
+            Rows.Add(row);
+        }
+
+        public void DeleteRow(Row row)
+        {
+            row.Status = RowStatus.ToDelete;
+        }
+    }
+}

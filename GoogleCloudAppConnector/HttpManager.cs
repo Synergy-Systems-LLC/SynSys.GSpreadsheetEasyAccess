@@ -8,7 +8,7 @@ namespace GetGoogleSheetDataAPI
     {
         public static string Status { get; internal set; }
 
-        public static bool CheckURL(string url)
+        public static bool IsCorrectUrl(string url)
         {
             if (String.IsNullOrEmpty(url))
             {

@@ -8,6 +8,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace GetGoogleSheetDataAPI
 {
@@ -145,5 +146,68 @@ namespace GetGoogleSheetDataAPI
             return Path.Combine(outPutDirectory, "token.json");
         }
         #endregion
+
+        /// <summary>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet
+        /// </summary>
+        /// <param name="url">Полный url адрес листа</param>
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet, но если url не относится к какому-то конкретному листу
+        /// гугл таблицы то данный объект будет пуст и иметь статус того, почему он пуст.
+        /// </returns>
+        public bool TryToGetSheet(string url, out Sheet sheet)
+        {
+            sheet = new Sheet();
+
+            if (!HttpManager.IsCorrectUrl(url))
+            {
+                sheet.Status = HttpManager.Status;
+                return false;
+            }
+
+            sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
+            sheet.Gid = HttpManager.GetGidFromUrl(url);
+
+            try
+            {
+                sheet.Title = GetSheetName(sheet.SpreadsheetId, sheet.Gid);
+                sheet.Fill(GetData(sheet.SpreadsheetId, sheet.Gid));
+            }
+            catch (Exception exeption)
+            {
+                sheet.Status = exeption.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        public IList<IList<object>> GetData(string spreadsheetId, string gid)
+        {
+            return sheetsService
+                .Spreadsheets
+                .Values
+                .Get(spreadsheetId, GetSheetName(spreadsheetId, gid))
+                .Execute()
+                .Values;
+        }
+
+        public string GetSheetName(string spreadsheetId, string gid)
+        {
+            foreach (Google.Apis.Sheets.v4.Data.Sheet sheet in GetSpreadsheet(spreadsheetId).Sheets)
+            {
+                if (sheet.Properties.SheetId.ToString() == gid)
+                {
+                    return sheet.Properties.Title;
+                }
+            }
+
+            return null;
+        }
+
+        private Spreadsheet GetSpreadsheet(string spreadsheetId)
+        {
+            return sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
+        }
     }
 }
