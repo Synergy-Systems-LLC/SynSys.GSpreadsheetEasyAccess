@@ -42,6 +42,7 @@ namespace TestConsoleApp
                     }
                 );
                 sheet.DeleteRow(sheet.Rows[0]);
+                sheet.DeleteRow(sheet.Rows[5]);
                 sheet.Rows[3].Cells[5].Value = "350";
                 sheet.Rows[7].Cells[2].Value = "720";
                 PrintSheet(sheet);
