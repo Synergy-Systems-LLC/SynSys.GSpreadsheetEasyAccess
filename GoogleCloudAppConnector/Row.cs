@@ -44,5 +44,17 @@ namespace GetGoogleSheetDataAPI
                 Cells.Add(new Cell(value, this));
             }
         }
+
+        internal IList<object> GetData()
+        {
+            var data = new List<object>();
+
+            foreach (var cell in Cells)
+            {
+                data.Add(cell.Value as object);
+            }
+
+            return data;
+        }
     }
 }

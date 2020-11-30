@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Google.Apis.Sheets.v4.Data;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GetGoogleSheetDataAPI
@@ -91,6 +92,29 @@ namespace GetGoogleSheetDataAPI
         public void DeleteRow(Row row)
         {
             row.Status = RowStatus.ToDelete;
+        }
+
+        internal ValueRange GetAppendValueRange()
+        {
+            var appendRange = new ValueRange();
+            appendRange.Values = GetAppendRows();
+
+            return appendRange;
+        }
+
+        private IList<IList<object>> GetAppendRows()
+        {
+            var data = new List<IList<object>>();
+
+            foreach (var row in Rows)
+            {
+                if (row.Status == RowStatus.ToAppend)
+                {
+                    data.Add(row.GetData());
+                }
+            }
+
+            return data;
         }
     }
 }

@@ -46,6 +46,8 @@ namespace TestConsoleApp
                 sheet.Rows[3].Cells[5].Value = "350";
                 sheet.Rows[7].Cells[2].Value = "720";
                 PrintSheet(sheet);
+
+                connector.UpdateSheet(sheet);
             }
             else
             {

@@ -209,5 +209,29 @@ namespace GetGoogleSheetDataAPI
         {
             return sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
         }
+
+        public void UpdateSheet(Sheet sheet)
+        {
+            //var request = new BatchUpdateSpreadsheetRequest();
+            //var requestContainer = new List<Request>();
+
+            //var req = new SpreadsheetsResource.BatchUpdateRequest(sheetsService, request, sheet.SpreadsheetId);
+            //var response = req.Execute();
+
+            var appendRequest = CreateAppendRequest(sheet);
+            appendRequest.Execute();
+        }
+
+        private SpreadsheetsResource.ValuesResource GetValueResource()
+        {
+            return sheetsService.Spreadsheets.Values;
+        }
+
+        private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(Sheet sheet)
+        {
+            var request = GetValueResource().Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
+            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+            return request;
+        }
     }
 }
