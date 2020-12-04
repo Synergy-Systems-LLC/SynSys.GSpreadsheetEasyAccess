@@ -212,25 +212,38 @@ namespace GetGoogleSheetDataAPI
 
         public void UpdateSheet(Sheet sheet)
         {
-            //var request = new BatchUpdateSpreadsheetRequest();
-            //var requestContainer = new List<Request>();
-
-            //var req = new SpreadsheetsResource.BatchUpdateRequest(sheetsService, request, sheet.SpreadsheetId);
-            //var response = req.Execute();
+            var updateRequest = CreateUpdateRequest(sheet);
+            var updateResponse = updateRequest.Execute();
 
             var appendRequest = CreateAppendRequest(sheet);
-            appendRequest.Execute();
+            var appendResponse = appendRequest.Execute();
         }
 
-        private SpreadsheetsResource.ValuesResource GetValueResource()
+        private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(Sheet sheet)
         {
-            return sheetsService.Spreadsheets.Values;
+            var requestBody = new BatchUpdateValuesRequest();
+            requestBody.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW.ToString();
+            requestBody.Data = sheet.GetChangeValueRange();
+
+            return sheetsService
+                .Spreadsheets
+                .Values
+                .BatchUpdate(requestBody, sheet.SpreadsheetId);
         }
 
         private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(Sheet sheet)
         {
-            var request = GetValueResource().Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
-            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+            var request = sheetsService
+                .Spreadsheets
+                .Values
+                .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
+
+            request.ValueInputOption = SpreadsheetsResource
+                .ValuesResource
+                .AppendRequest
+                .ValueInputOptionEnum
+                .USERENTERED;
+
             return request;
         }
     }

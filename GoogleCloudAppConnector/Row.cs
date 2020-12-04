@@ -21,7 +21,7 @@ namespace GetGoogleSheetDataAPI
 
     public class Row
     {
-        public int Index { get; internal set; }
+        public int Number { get; internal set; }
         public RowStatus Status { get; internal set; } = RowStatus.ToAppend;
         public List<Cell> Cells { get; internal set; } = new List<Cell>();
 

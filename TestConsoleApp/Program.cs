@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using GetGoogleSheetDataAPI;
 
 namespace TestConsoleApp
@@ -33,18 +34,11 @@ namespace TestConsoleApp
             if (connector.TryToGetSheet(url, out Sheet sheet))
             {
                 PrintSheet(sheet);
-                sheet.AddRow();
-                sheet.AddRow(new List<string>() { "123", "asd" });
-                sheet.AddRow(
-                    new List<string>()
-                    { 
-                        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
-                    }
-                );
-                sheet.DeleteRow(sheet.Rows[0]);
-                sheet.DeleteRow(sheet.Rows[5]);
-                sheet.Rows[3].Cells[5].Value = "350";
-                sheet.Rows[7].Cells[2].Value = "720";
+
+                AddRows(sheet);
+                DeleteRows(sheet);
+                ChangeRows(sheet);
+
                 PrintSheet(sheet);
 
                 connector.UpdateSheet(sheet);
@@ -57,13 +51,40 @@ namespace TestConsoleApp
             Console.ReadLine();
         }
 
+        private static void ChangeRows(Sheet sheet)
+        {
+            sheet.Rows[3].Cells[5].Value = "360";
+            sheet.Rows[4].Cells[5].Value = "460";
+            sheet.Rows[7].Cells[2].Value = "730";
+            sheet.Rows[6].Cells[2].Value = "630";
+            sheet.Rows[9].Cells[1].Value = "920";
+        }
+
+        private static void DeleteRows(Sheet sheet)
+        {
+            sheet.DeleteRow(sheet.Rows[0]);
+            sheet.DeleteRow(sheet.Rows[5]);
+        }
+
+        private static void AddRows(Sheet sheet)
+        {
+            sheet.AddRow();
+            sheet.AddRow(new List<string>() { "123", "asd" });
+            sheet.AddRow(
+                new List<string>()
+                {
+                    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
+                }
+            );
+        }
+
         private static void PrintSheet(Sheet sheet)
         {
             Console.WriteLine($"В листе {sheet.Rows.Count} строк");
             
             foreach (var row in sheet.Rows)
             {
-                Console.Write($"|{row.Index, 3}|");
+                Console.Write($"|{row.Number, 3}|");
 
                 foreach (var cell in row.Cells)
                 {

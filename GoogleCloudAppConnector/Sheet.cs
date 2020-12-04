@@ -83,23 +83,18 @@ namespace GetGoogleSheetDataAPI
             var row = new Row(rowData, maxLength)
             {
                 Status = status,
-                Index = index
+                Number = index + 1
             };
 
             Rows.Add(row);
         }
 
-        public void DeleteRow(Row row)
-        {
-            row.Status = RowStatus.ToDelete;
-        }
-
         internal ValueRange GetAppendValueRange()
         {
-            var appendRange = new ValueRange();
-            appendRange.Values = GetAppendRows();
-
-            return appendRange;
+            return new ValueRange
+            {
+                Values = GetAppendRows()
+            };
         }
 
         private IList<IList<object>> GetAppendRows()
@@ -115,6 +110,46 @@ namespace GetGoogleSheetDataAPI
             }
 
             return data;
+        }
+
+        public void DeleteRow(Row row)
+        {
+            row.Status = RowStatus.ToDelete;
+        }
+
+        internal IList<ValueRange> GetChangeValueRange()
+        {
+            var valueRanges = new List<ValueRange>
+            {
+                new ValueRange()
+                {
+                    Values = new List<IList<object>>()
+                }
+            };
+
+            var rowsToChange = Rows.FindAll(row => row.Status == RowStatus.ToChange);
+            var previousRow = rowsToChange.First();
+            rowsToChange.Remove(previousRow);
+
+            valueRanges.Last().Values.Add(previousRow.GetData());
+            valueRanges.Last().Range = $"{Title}!A{previousRow.Number}";
+
+            foreach (var currentRow in rowsToChange)
+            {
+                if (currentRow.Number - previousRow.Number > 1)
+                {
+                    valueRanges.Add(new ValueRange()
+                    {
+                        Values = new List<IList<object>>(),
+                        Range = $"{Title}!A{currentRow.Number}"
+                    });
+                }
+
+                valueRanges.Last().Values.Add(currentRow.GetData());
+                previousRow = currentRow;
+            }
+
+            return valueRanges;
         }
     }
 }
