@@ -9,6 +9,7 @@ using Google.Apis.Util.Store;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GetGoogleSheetDataAPI
 {
@@ -215,20 +216,72 @@ namespace GetGoogleSheetDataAPI
             var updateRequest = CreateUpdateRequest(sheet);
             var updateResponse = updateRequest.Execute();
 
+            var deleteRequest = CreateDeleteRequest(sheet);
+            var delereResponse = deleteRequest.Execute();
+
             var appendRequest = CreateAppendRequest(sheet);
             var appendResponse = appendRequest.Execute();
         }
 
         private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(Sheet sheet)
         {
-            var requestBody = new BatchUpdateValuesRequest();
-            requestBody.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW.ToString();
-            requestBody.Data = sheet.GetChangeValueRange();
+            var requestBody = new BatchUpdateValuesRequest
+            {
+                Data = sheet.GetChangeValueRange(),
+                ValueInputOption = SpreadsheetsResource
+                    .ValuesResource
+                    .AppendRequest
+                    .ValueInputOptionEnum
+                    .RAW
+                    .ToString()
+            };
 
             return sheetsService
                 .Spreadsheets
                 .Values
                 .BatchUpdate(requestBody, sheet.SpreadsheetId);
+        }
+
+        private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(Sheet sheet)
+        {
+            var requestBody = new BatchUpdateSpreadsheetRequest
+            {
+                Requests = new List<Request>()
+            };
+
+            foreach (List<Row> groupRows in sheet.GetDeleteRows())
+            {
+                requestBody.Requests.Add(
+                    CreateDeleteDimensionRequest(
+                        Convert.ToInt32(sheet.Gid),
+                        groupRows.Last().Number - 1,
+                        groupRows.First().Number
+                    )
+                );
+            }
+
+            return new SpreadsheetsResource.BatchUpdateRequest(
+                sheetsService,
+                requestBody,
+                sheet.SpreadsheetId
+            );
+        }
+
+        private Request CreateDeleteDimensionRequest(int gid, int startRow, int endRow)
+        {
+            return new Request()
+            {
+                DeleteDimension = new DeleteDimensionRequest()
+                {
+                    Range = new DimensionRange()
+                    {
+                        SheetId = gid,
+                        Dimension = "ROWS",
+                        StartIndex = startRow,
+                        EndIndex = endRow,
+                    }
+                }
+            };
         }
 
         private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(Sheet sheet)

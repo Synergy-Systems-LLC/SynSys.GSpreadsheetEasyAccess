@@ -36,8 +36,8 @@ namespace TestConsoleApp
                 PrintSheet(sheet);
 
                 AddRows(sheet);
-                DeleteRows(sheet);
                 ChangeRows(sheet);
+                DeleteRows(sheet);
 
                 PrintSheet(sheet);
 
@@ -62,8 +62,9 @@ namespace TestConsoleApp
 
         private static void DeleteRows(Sheet sheet)
         {
-            sheet.DeleteRow(sheet.Rows[0]);
-            sheet.DeleteRow(sheet.Rows[5]);
+            sheet.DeleteRow(sheet.Rows[3]);
+            sheet.DeleteRow(sheet.Rows[2]);
+            sheet.DeleteRow(sheet.Rows[8]);
         }
 
         private static void AddRows(Sheet sheet)

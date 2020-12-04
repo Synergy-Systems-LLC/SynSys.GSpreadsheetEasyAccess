@@ -151,5 +151,38 @@ namespace GetGoogleSheetDataAPI
 
             return valueRanges;
         }
+
+        internal List<List<Row>> GetDeleteRows()
+        {
+            var deleteGroups = new List<List<Row>>()
+            {
+                new List<Row>()
+            };
+
+            var rowsToDelete = Rows.FindAll(row => row.Status == RowStatus.ToDelete);
+            // Данный список нужно зеркалить потому что удаление строк должно происходить с конца таблицы.
+            // В противном случае собьются индексы для последующих удалений.
+            rowsToDelete.Reverse();
+            var previousRow = rowsToDelete.First();
+            rowsToDelete.Remove(previousRow);
+
+            deleteGroups.Last().Add(previousRow);
+
+            foreach (var currentRow in rowsToDelete)
+            {
+                if (previousRow.Number - currentRow.Number == 1) // Потому что нумерация от большего к меньшему
+                {
+                    deleteGroups.Last().Add(currentRow);
+                }
+                else
+                {
+                    deleteGroups.Add(new List<Row>() { currentRow });
+                }
+
+                previousRow = currentRow;
+            }
+
+            return deleteGroups;
+        }
     }
 }
