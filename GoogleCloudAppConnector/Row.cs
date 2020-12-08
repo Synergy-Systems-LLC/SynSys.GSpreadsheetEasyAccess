@@ -21,7 +21,7 @@ namespace GetGoogleSheetDataAPI
 
     public class Row
     {
-        public int Index { get; internal set; }
+        public int Number { get; internal set; }
         public RowStatus Status { get; internal set; } = RowStatus.ToAppend;
         public List<Cell> Cells { get; internal set; } = new List<Cell>();
 
@@ -30,7 +30,7 @@ namespace GetGoogleSheetDataAPI
         /// </summary>
         /// <param name="rowData">Данные для заполнения</param>
         /// <param name="maxLength">Назначает максимальную длину строки</param>
-        public Row(List<string> rowData, int maxLength)
+        internal Row(List<string> rowData, int maxLength)
         {
             for (int cellIndex = 0; cellIndex < maxLength; cellIndex++)
             {
@@ -43,6 +43,23 @@ namespace GetGoogleSheetDataAPI
 
                 Cells.Add(new Cell(value, this));
             }
+        }
+
+        /// <summary>
+        /// Метод для преобразования строки из List<Cell> в List<object>.
+        /// Это нужно для подготовки данных к отправке в google таблицу.
+        /// </summary>
+        /// <returns></returns>
+        internal IList<object> GetData()
+        {
+            var data = new List<object>();
+
+            foreach (var cell in Cells)
+            {
+                data.Add(cell.Value as object);
+            }
+
+            return data;
         }
     }
 }

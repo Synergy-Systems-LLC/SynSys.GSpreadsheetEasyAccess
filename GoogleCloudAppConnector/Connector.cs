@@ -9,6 +9,7 @@ using Google.Apis.Util.Store;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GetGoogleSheetDataAPI
 {
@@ -18,15 +19,16 @@ namespace GetGoogleSheetDataAPI
     public enum ConnectStatus
     {
         /// <summary>
-        /// 
+        /// Кoннектор подключён к приложению на Google Cloud Platform.
         /// </summary>
         Connected,
         /// <summary>
-        /// 
+        /// Коннектор не подключён к приложению на Google Cloud Platform.
         /// </summary>
         NotConnected,
         /// <summary>
-        /// 
+        /// Коннектор не подключён к приложению на Google Cloud Platform
+        /// из-за того что вышло время на подлючение.
         /// </summary>
         AuthorizationTimedOut
     }
@@ -147,6 +149,7 @@ namespace GetGoogleSheetDataAPI
         }
         #endregion
 
+        #region GetData
         /// <summary>
         /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet
         /// </summary>
@@ -182,7 +185,17 @@ namespace GetGoogleSheetDataAPI
             return true;
         }
 
-        public IList<IList<object>> GetData(string spreadsheetId, string gid)
+        /// <summary>
+        /// Получение данных из листа гугл таблицы.
+        /// </summary>
+        /// <remarks>
+        /// Метод можен выбросить ошибку если sheetsService is null.
+        /// Так же ошибка может возникнуть в методе Get если не будет найдено имя листа.
+        /// </remarks>
+        /// <param name="spreadsheetId">Число из url листа. /Id/</param>
+        /// <param name="gid">Число из url листа. git=Id</param>
+        /// <returns></returns>
+        private IList<IList<object>> GetData(string spreadsheetId, string gid)
         {
             return sheetsService
                 .Spreadsheets
@@ -192,7 +205,13 @@ namespace GetGoogleSheetDataAPI
                 .Values;
         }
 
-        public string GetSheetName(string spreadsheetId, string gid)
+        /// <summary>
+        /// Получение имени листа по его spreadsheetId и gid.
+        /// </summary>
+        /// <param name="spreadsheetId">Число из url листа. /Id/</param>
+        /// <param name="gid">Число из url листа. git=Id</param>
+        /// <returns></returns>
+        private string GetSheetName(string spreadsheetId, string gid)
         {
             foreach (Google.Apis.Sheets.v4.Data.Sheet sheet in GetSpreadsheet(spreadsheetId).Sheets)
             {
@@ -205,9 +224,145 @@ namespace GetGoogleSheetDataAPI
             return null;
         }
 
+        /// <summary>
+        /// Получение google таблицы по её id.
+        /// Получение происходит по запросу из метода Get.
+        /// </summary>
+        /// <remarks>
+        /// Метод может выбросить ошибку если spreadsheetId не существует среди таблиц.
+        /// </remarks>
+        /// <param name="spreadsheetId">Число из url листа. /Id/</param>
+        /// <returns></returns>
         private Spreadsheet GetSpreadsheet(string spreadsheetId)
         {
             return sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
         }
+
+        /// <summary>
+        /// Обновленние листа google таблицы на основе изменённого экземпляра
+        /// типа Sheet, полученного из метода TryToGetSheet.
+        /// <remarks>
+        /// Метод изменяет данные в ячейках,
+        /// добавляет строки в конец листа и удаляет выбраные строки.
+        /// Всё это просходит на основе запросов в google.
+        /// </remarks>
+        /// </summary>
+        /// <param name="sheet"></param>
+        public void UpdateSheet(Sheet sheet)
+        {
+            var updateRequest = CreateUpdateRequest(sheet);
+            var updateResponse = updateRequest.Execute();
+
+            var deleteRequest = CreateDeleteRequest(sheet);
+            var delereResponse = deleteRequest.Execute();
+
+            var appendRequest = CreateAppendRequest(sheet);
+            var appendResponse = appendRequest.Execute();
+        }
+        #endregion
+
+        #region Requests
+        /// <summary>
+        /// Создание запроса на обновление листа в google таблице.
+        /// В запросе содержатся изменения значений в ячейках листа.
+        /// </summary>
+        /// <param name="sheet">Экземпляр изменённого листа</param>
+        /// <returns></returns>
+        private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(Sheet sheet)
+        {
+            var requestBody = new BatchUpdateValuesRequest
+            {
+                Data = sheet.GetChangeValueRange(),
+                ValueInputOption = SpreadsheetsResource
+                    .ValuesResource
+                    .AppendRequest
+                    .ValueInputOptionEnum
+                    .RAW
+                    .ToString()
+            };
+
+            return sheetsService
+                .Spreadsheets
+                .Values
+                .BatchUpdate(requestBody, sheet.SpreadsheetId);
+        }
+
+        /// <summary>
+        /// Создание запроса на обновление листа в google таблице.
+        /// В запросе содержатся группы строк для удаления.
+        /// </summary>
+        /// <param name="sheet">Экземпляр изменённого листа</param>
+        /// <returns></returns>
+        private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(Sheet sheet)
+        {
+            var requestBody = new BatchUpdateSpreadsheetRequest
+            {
+                Requests = new List<Request>()
+            };
+
+            foreach (List<Row> groupRows in sheet.GetDeleteRows())
+            {
+                requestBody.Requests.Add(
+                    CreateDeleteDimensionRequest(
+                        Convert.ToInt32(sheet.Gid),
+                        groupRows.Last().Number - 1,
+                        groupRows.First().Number
+                    )
+                );
+            }
+
+            return new SpreadsheetsResource.BatchUpdateRequest(
+                sheetsService,
+                requestBody,
+                sheet.SpreadsheetId
+            );
+        }
+
+        /// <summary>
+        /// Создание запроса на удаление группы строк.
+        /// </summary>
+        /// <param name="gid">Id листа</param>
+        /// <param name="startRow">Начальная строка из группы строк для удаления</param>
+        /// <param name="endRow">Конечная строка из группы строк для удаления</param>
+        /// <returns></returns>
+        private Request CreateDeleteDimensionRequest(int gid, int startRow, int endRow)
+        {
+            return new Request()
+            {
+                DeleteDimension = new DeleteDimensionRequest()
+                {
+                    Range = new DimensionRange()
+                    {
+                        SheetId = gid,
+                        Dimension = "ROWS",
+                        StartIndex = startRow,
+                        EndIndex = endRow,
+                    }
+                }
+            };
+        }
+
+        /// <summary>
+        /// Создание запроса на обновление листа в google таблице.
+        /// В запросе содержатся строки для добавления в конец листа.
+        /// </summary>
+        /// <param name="sheet">Экземпляр изменённого листа</param>
+        /// <returns></returns>
+        private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(Sheet sheet)
+        {
+            var request = sheetsService
+                .Spreadsheets
+                .Values
+                .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
+
+            request.ValueInputOption = SpreadsheetsResource
+                .ValuesResource
+                .AppendRequest
+                .ValueInputOptionEnum
+                .USERENTERED;
+
+            return request;
+        }
+        #endregion
     }
 }

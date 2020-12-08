@@ -3,6 +3,7 @@
     public class Cell
     {
         private string _value;
+
         /// <summary>
         /// При изменении значения изменяет статус строки в которой находится.
         /// </summary>
@@ -15,6 +16,7 @@
                 Host.Status = RowStatus.ToChange;
             }
         }
+
         /// <summary>
         /// Ссылка на строку в которой эта ячейка располагается.
         /// </summary>
@@ -26,7 +28,7 @@
         /// </summary>
         /// <param name="value"></param>
         /// <param name="row"></param>
-        public Cell(string value, Row row)
+        internal Cell(string value, Row row)
         {
             _value = value;
             Host = row;
