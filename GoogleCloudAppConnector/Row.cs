@@ -45,6 +45,11 @@ namespace GetGoogleSheetDataAPI
             }
         }
 
+        /// <summary>
+        /// Метод для преобразования строки из List<Cell> в List<object>.
+        /// Это нужно для подготовки данных к отправке в google таблицу.
+        /// </summary>
+        /// <returns></returns>
         internal IList<object> GetData()
         {
             var data = new List<object>();

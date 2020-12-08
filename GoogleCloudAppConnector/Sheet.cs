@@ -20,7 +20,8 @@ namespace GetGoogleSheetDataAPI
         public string Status { get; internal set; } = string.Empty;
 
         /// <summary>
-        /// Инициализирует пустой объект таблицы готовый для заполнения.
+        /// Инициализирует пустой экземпеляр таблицы готовый для заполнения.
+        /// Экземпляр таблицы нельзя создавать вне библиотеки.
         /// </summary>
         internal Sheet() { }
 
@@ -89,6 +90,10 @@ namespace GetGoogleSheetDataAPI
             Rows.Add(row);
         }
 
+        /// <summary>
+        /// Метод для получение ValueRange для добавления строк в google таблицу.
+        /// </summary>
+        /// <returns></returns>
         internal ValueRange GetAppendValueRange()
         {
             return new ValueRange
@@ -97,6 +102,10 @@ namespace GetGoogleSheetDataAPI
             };
         }
 
+        /// <summary>
+        /// Метод преобразования List<Row> в List<List<object>>
+        /// </summary>
+        /// <returns></returns>
         private IList<IList<object>> GetAppendRows()
         {
             var data = new List<IList<object>>();
@@ -112,11 +121,20 @@ namespace GetGoogleSheetDataAPI
             return data;
         }
 
+        /// <summary>
+        /// Метод не удаляет строку, но назначает ей статус на удаление.
+        /// Данный статус будет учитываться при удалении строк из google таблицы.
+        /// </summary>
+        /// <param name="row"></param>
         public void DeleteRow(Row row)
         {
             row.Status = RowStatus.ToDelete;
         }
 
+        /// <summary>
+        /// Метод получения ValueRange из строк со статусом ToChange.
+        /// </summary>
+        /// <returns></returns>
         internal IList<ValueRange> GetChangeValueRange()
         {
             var valueRanges = new List<ValueRange>
@@ -152,6 +170,10 @@ namespace GetGoogleSheetDataAPI
             return valueRanges;
         }
 
+        /// <summary>
+        /// Метод для получения групп строк для удаления.
+        /// </summary>
+        /// <returns></returns>
         internal List<List<Row>> GetDeleteRows()
         {
             var deleteGroups = new List<List<Row>>()
