@@ -30,7 +30,7 @@ namespace GetGoogleSheetDataAPI
         /// </summary>
         /// <param name="rowData">Данные для заполнения</param>
         /// <param name="maxLength">Назначает максимальную длину строки</param>
-        public Row(List<string> rowData, int maxLength)
+        internal Row(List<string> rowData, int maxLength)
         {
             for (int cellIndex = 0; cellIndex < maxLength; cellIndex++)
             {

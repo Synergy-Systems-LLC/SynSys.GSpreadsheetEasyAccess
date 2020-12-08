@@ -195,7 +195,7 @@ namespace GetGoogleSheetDataAPI
         /// <param name="spreadsheetId">Число из url листа. /Id/</param>
         /// <param name="gid">Число из url листа. git=Id</param>
         /// <returns></returns>
-        public IList<IList<object>> GetData(string spreadsheetId, string gid)
+        private IList<IList<object>> GetData(string spreadsheetId, string gid)
         {
             return sheetsService
                 .Spreadsheets
@@ -211,7 +211,7 @@ namespace GetGoogleSheetDataAPI
         /// <param name="spreadsheetId">Число из url листа. /Id/</param>
         /// <param name="gid">Число из url листа. git=Id</param>
         /// <returns></returns>
-        public string GetSheetName(string spreadsheetId, string gid)
+        private string GetSheetName(string spreadsheetId, string gid)
         {
             foreach (Google.Apis.Sheets.v4.Data.Sheet sheet in GetSpreadsheet(spreadsheetId).Sheets)
             {

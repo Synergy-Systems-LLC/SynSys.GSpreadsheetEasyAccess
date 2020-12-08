@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Net;
 using System.Text.RegularExpressions;
 
 namespace GetGoogleSheetDataAPI
 {
-    public static class HttpManager
+    // Сделать данный класс не статичным!
+    internal static class HttpManager
     {
-        public static string Status { get; internal set; }
+        internal static string Status { get; set; }
 
-        public static bool IsCorrectUrl(string url)
+        internal static bool IsCorrectUrl(string url)
         {
             if (String.IsNullOrEmpty(url))
             {
@@ -59,19 +59,19 @@ namespace GetGoogleSheetDataAPI
             return !match.Success;
         }
 
-        public static string GetSpreadsheetIdFromUrl(string url)
+        internal static string GetSpreadsheetIdFromUrl(string url)
         {
             var match = Regex.Match(url, @"(?s)(?<=d/).+?(?=/edit)");
             return match.ToString();
         }
 
-        public static string GetGidFromUrl(string url)
+        internal static string GetGidFromUrl(string url)
         {
             var match = Regex.Match(url, @"(?s)(?<=gid=)\d+");
             return match.ToString();
         }
 
-        public static string GetHttpStatusCode(string errorMessage)
+        internal static string GetHttpStatusCode(string errorMessage)
         {
             string pattern = @"\[(\d+)\]";
             var rx = new Regex(pattern); //один из вариантов
@@ -86,7 +86,7 @@ namespace GetGoogleSheetDataAPI
             }
         }
 
-        public static string GetMessageByCode(string httpCode)
+        internal static string GetMessageByCode(string httpCode)
         {
             switch (httpCode)
             {

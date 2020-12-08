@@ -16,8 +16,8 @@ namespace GetGoogleSheetDataAPI
         public string Title { get; set; } = string.Empty;
         public string SpreadsheetId { get; set; } = string.Empty;
         public string Gid { get; set; } = string.Empty;
-        public List<Row> Rows { get; internal set; } = new List<Row>();
-        public string Status { get; internal set; } = string.Empty;
+        public List<Row> Rows { get; set; } = new List<Row>();
+        public string Status { get; set; } = string.Empty;
 
         /// <summary>
         /// Инициализирует пустой экземпеляр таблицы готовый для заполнения.
@@ -29,7 +29,7 @@ namespace GetGoogleSheetDataAPI
         /// Заполнение таблицы с созданием строк и ячеек.
         /// </summary>
         /// <param name="data">Данные для формирования таблицы</param>
-        public void Fill(IList<IList<object>> data)
+        internal void Fill(IList<IList<object>> data)
         {
             var rows = Enumerable.Range(0, data.Count);
             var maxColumns = data.First().Count;
