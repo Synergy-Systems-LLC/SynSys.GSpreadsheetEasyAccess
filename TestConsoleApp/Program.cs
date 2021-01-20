@@ -104,6 +104,7 @@ namespace TestConsoleApp
         /// <param name="sheet"></param>
         private static void PrintSheet(Sheet sheet)
         {
+            Console.WriteLine($"Имя листа: {sheet.Title}. Имя таблицы: {sheet.SpreadsheetTitle}");
             Console.WriteLine($"В листе {sheet.Rows.Count} строк");
             
             foreach (var row in sheet.Rows)

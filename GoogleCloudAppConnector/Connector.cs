@@ -173,7 +173,8 @@ namespace GetGoogleSheetDataAPI
 
             try
             {
-                sheet.Title = GetSheetName(sheet.SpreadsheetId, sheet.Gid);
+                sheet.Title = GetSheetTitle(sheet.SpreadsheetId, sheet.Gid);
+                sheet.SpreadsheetTitle = GetSpreadsheetTitle(sheet.SpreadsheetId);
                 sheet.Fill(GetData(sheet.SpreadsheetId, sheet.Gid));
             }
             catch (Exception exeption)
@@ -183,6 +184,11 @@ namespace GetGoogleSheetDataAPI
             }
 
             return true;
+        }
+
+        private string GetSpreadsheetTitle(string spreadsheetId)
+        {
+            return GetSpreadsheet(spreadsheetId).Properties.Title;
         }
 
         /// <summary>
@@ -200,7 +206,7 @@ namespace GetGoogleSheetDataAPI
             return sheetsService
                 .Spreadsheets
                 .Values
-                .Get(spreadsheetId, GetSheetName(spreadsheetId, gid))
+                .Get(spreadsheetId, GetSheetTitle(spreadsheetId, gid))
                 .Execute()
                 .Values;
         }
@@ -211,7 +217,7 @@ namespace GetGoogleSheetDataAPI
         /// <param name="spreadsheetId">Число из url листа. /Id/</param>
         /// <param name="gid">Число из url листа. git=Id</param>
         /// <returns></returns>
-        private string GetSheetName(string spreadsheetId, string gid)
+        private string GetSheetTitle(string spreadsheetId, string gid)
         {
             foreach (Google.Apis.Sheets.v4.Data.Sheet sheet in GetSpreadsheet(spreadsheetId).Sheets)
             {

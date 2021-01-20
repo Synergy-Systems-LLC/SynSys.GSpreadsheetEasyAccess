@@ -13,11 +13,12 @@ namespace GetGoogleSheetDataAPI
     /// </summary>
     public class Sheet
     {
-        public string Title { get; set; } = string.Empty;
-        public string SpreadsheetId { get; set; } = string.Empty;
-        public string Gid { get; set; } = string.Empty;
-        public List<Row> Rows { get; set; } = new List<Row>();
-        public string Status { get; set; } = string.Empty;
+        public string Title { get; internal set; } = string.Empty;
+        public string SpreadsheetId { get; internal set; } = string.Empty;
+        public string Gid { get; internal set; } = string.Empty;
+        public string SpreadsheetTitle { get; internal set; }
+        public string Status { get; internal set; } = string.Empty;
+        public List<Row> Rows { get; internal set; } = new List<Row>();
 
         /// <summary>
         /// Инициализирует пустой экземпеляр таблицы готовый для заполнения.
