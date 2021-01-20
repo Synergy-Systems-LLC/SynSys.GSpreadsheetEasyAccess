@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetGoogleSheetDataAPI", "GoogleCloudAppConnector\GetGoogleSheetDataAPI.csproj", "{8EE7435F-F9B5-4434-981A-077C73B31351}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsoleApp", "TestConsoleApp\TestConsoleApp.csproj", "{91241667-F1E9-4433-BF11-D56AABB7CE76}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsoleApp", "TestConsoleApp\TestConsoleApp.csproj", "{B40AE848-36AA-4226-B97A-D344FA120EFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{8EE7435F-F9B5-4434-981A-077C73B31351}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EE7435F-F9B5-4434-981A-077C73B31351}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EE7435F-F9B5-4434-981A-077C73B31351}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91241667-F1E9-4433-BF11-D56AABB7CE76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91241667-F1E9-4433-BF11-D56AABB7CE76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91241667-F1E9-4433-BF11-D56AABB7CE76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91241667-F1E9-4433-BF11-D56AABB7CE76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B40AE848-36AA-4226-B97A-D344FA120EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B40AE848-36AA-4226-B97A-D344FA120EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B40AE848-36AA-4226-B97A-D344FA120EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B40AE848-36AA-4226-B97A-D344FA120EFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

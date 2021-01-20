@@ -88,3 +88,6 @@ __pycache__/
 # Project files
 Test Projects/
 TestConsoleApp/Resources/credentials.json
+CommonFunctions/Resources/credentials.json
+SimpleSheet/Resources/credentials.json
+SheetWithHead/Resources/credentials.json

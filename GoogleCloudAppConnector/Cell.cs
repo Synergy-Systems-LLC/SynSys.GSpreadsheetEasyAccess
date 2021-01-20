@@ -2,20 +2,25 @@
 {
     public class Cell
     {
-        private string _value;
+        private string value;
 
         /// <summary>
-        /// При изменении значения изменяет статус строки в которой находится.
+        /// При изменении значения изменяется статус строки в которой находится ячейка.
         /// </summary>
         public string Value 
         { 
-            get => _value;
+            get => value;
             set
             {
-                _value = value;
+                this.value = value;
                 Host.Status = RowStatus.ToChange;
             }
         }
+
+        /// <summary>
+        /// Название столбца в которой находится ячейка.
+        /// </summary>
+        public string Title { get; }
 
         /// <summary>
         /// Ссылка на строку в которой эта ячейка располагается.
@@ -28,9 +33,10 @@
         /// </summary>
         /// <param name="value"></param>
         /// <param name="row"></param>
-        internal Cell(string value, Row row)
+        internal Cell(string value, string title, Row row)
         {
-            _value = value;
+            this.value = value;
+            Title = title;
             Host = row;
         }
     }

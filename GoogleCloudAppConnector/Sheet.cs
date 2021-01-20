@@ -5,12 +5,25 @@ using System.Linq;
 namespace GetGoogleSheetDataAPI
 {
     /// <summary>
-    /// Виды таблиц:
-    /// 1. Без шапки и без ключа
-    /// 2. Шапка (1 строка)
-    /// 3. Шапка (1 строка) + Ключ (1 столцеб)
-    /// 4. Шапка (>1 строки) + Составной ключ (>1 столбца)
+    /// Перечисление для определённого заполнения таблицы.
+    /// Выбор режима влияет на состояние ячеек и строк таблицы.
     /// </summary>
+    public enum SheetMode
+    {
+        /// <summary>
+        /// Таблица без шапки и ключа
+        /// </summary>
+        Simple,
+        /// <summary>
+        /// Таблица с шапкой в одну строку
+        /// </summary>
+        Head,
+        /// <summary>
+        /// Таблица с шапкой в одну строку и столбцом-ключём
+        /// </summary>
+        HeadAndKey
+    }
+
     public class Sheet
     {
         public string Title { get; internal set; } = string.Empty;
@@ -19,6 +32,8 @@ namespace GetGoogleSheetDataAPI
         public string SpreadsheetTitle { get; internal set; }
         public string Status { get; internal set; } = string.Empty;
         public List<Row> Rows { get; internal set; } = new List<Row>();
+        public SheetMode Mode { get; internal set; }
+        public List<string> Head { get; private set; }
 
         /// <summary>
         /// Инициализирует пустой экземпеляр таблицы готовый для заполнения.
@@ -37,9 +52,34 @@ namespace GetGoogleSheetDataAPI
 
             foreach (int rowIndex in rows)
             {
+                if (rowIndex == 0)
+                {
+                    if (Mode != SheetMode.Simple)
+                    {
+                        Head = data[rowIndex].Cast<string>().ToList();
+                        continue;
+                    }
+                    else
+                    {
+                        Head = CreateEmptyHead(maxColumns);
+                    }
+                }
+
                 var rowData = data[rowIndex].Cast<string>().ToList();
                 AddRow(rowIndex, maxColumns, rowData, RowStatus.Original);
             }
+        }
+
+        private List<string> CreateEmptyHead(int maxLength)
+        {
+            var head = new List<string>();
+
+            for (int cellIndex = 0; cellIndex < maxLength; cellIndex++)
+            {
+                head.Add(string.Empty);
+            }
+
+            return head;
         }
 
         /// <summary>
@@ -52,7 +92,7 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Добавляет пустую строку в конец таблицы.
+        /// Добавляет строку в конец таблицы.
         /// Размер строки будет равен максимальному для данной таблицы
         /// и если данных будет больше чем этот размер, то часть данных не попадёт в таблицу.
         /// если данных будет меньше, то строка дозаполнится пустыми значениями.
@@ -71,7 +111,7 @@ namespace GetGoogleSheetDataAPI
         /// Основной метод для добавления строки в конец таблицы.
         /// </summary>
         /// <param name="index">Индекс данной строки</param>
-        /// <param name="maxLength">Максимальная длинаа строки</param>
+        /// <param name="maxLength">Максимальная длина строки</param>
         /// <param name="rowData">Данные для формированния строки</param>
         /// <param name="status">
         /// Статус строки. По умолчанию это ToAppend, но есть возможность его изменнить
@@ -82,7 +122,7 @@ namespace GetGoogleSheetDataAPI
             List<string> rowData,
             RowStatus status=RowStatus.ToAppend)
         {
-            var row = new Row(rowData, maxLength)
+            var row = new Row(rowData, maxLength, Head)
             {
                 Status = status,
                 Number = index + 1

@@ -30,18 +30,19 @@ namespace GetGoogleSheetDataAPI
         /// </summary>
         /// <param name="rowData">Данные для заполнения</param>
         /// <param name="maxLength">Назначает максимальную длину строки</param>
-        internal Row(List<string> rowData, int maxLength)
+        internal Row(List<string> rowData, int maxLength, List<string> headOfSheet)
         {
             for (int cellIndex = 0; cellIndex < maxLength; cellIndex++)
             {
                 var value = string.Empty;
+                var title = headOfSheet[cellIndex];
 
                 if (cellIndex < rowData.Count)
                 {
                     value = rowData[cellIndex];
                 }
 
-                Cells.Add(new Cell(value, this));
+                Cells.Add(new Cell(value, title, this));
             }
         }
 

@@ -158,9 +158,12 @@ namespace GetGoogleSheetDataAPI
         /// Всегда вернёт объект типа Sheet, но если url не относится к какому-то конкретному листу
         /// гугл таблицы то данный объект будет пуст и иметь статус того, почему он пуст.
         /// </returns>
-        public bool TryToGetSheet(string url, out Sheet sheet)
+        public bool TryToGetSheet(string url, SheetMode mode, out Sheet sheet)
         {
-            sheet = new Sheet();
+            sheet = new Sheet()
+            {
+                Mode = mode,
+            };
 
             if (!HttpManager.IsCorrectUrl(url))
             {
