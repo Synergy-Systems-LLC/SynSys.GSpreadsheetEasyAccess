@@ -260,13 +260,13 @@ namespace GetGoogleSheetDataAPI
         public void UpdateSheet(Sheet sheet)
         {
             var updateRequest = CreateUpdateRequest(sheet);
-            var updateResponse = updateRequest.Execute();
+            var updateResponse = updateRequest?.Execute();
 
             var deleteRequest = CreateDeleteRequest(sheet);
-            var delereResponse = deleteRequest.Execute();
+            var delereResponse = deleteRequest?.Execute();
 
             var appendRequest = CreateAppendRequest(sheet);
-            var appendResponse = appendRequest.Execute();
+            var appendResponse = appendRequest?.Execute();
         }
         #endregion
 
@@ -279,21 +279,26 @@ namespace GetGoogleSheetDataAPI
         /// <returns></returns>
         private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(Sheet sheet)
         {
-            var requestBody = new BatchUpdateValuesRequest
+            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToChange).Count > 0)
             {
-                Data = sheet.GetChangeValueRange(),
-                ValueInputOption = SpreadsheetsResource
-                    .ValuesResource
-                    .AppendRequest
-                    .ValueInputOptionEnum
-                    .RAW
-                    .ToString()
-            };
+                var requestBody = new BatchUpdateValuesRequest
+                {
+                    Data = sheet.GetChangeValueRange(),
+                    ValueInputOption = SpreadsheetsResource
+                        .ValuesResource
+                        .AppendRequest
+                        .ValueInputOptionEnum
+                        .RAW
+                        .ToString()
+                };
 
-            return sheetsService
-                .Spreadsheets
-                .Values
-                .BatchUpdate(requestBody, sheet.SpreadsheetId);
+                return sheetsService
+                    .Spreadsheets
+                    .Values
+                    .BatchUpdate(requestBody, sheet.SpreadsheetId);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -304,27 +309,32 @@ namespace GetGoogleSheetDataAPI
         /// <returns></returns>
         private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(Sheet sheet)
         {
-            var requestBody = new BatchUpdateSpreadsheetRequest
+            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToDelete).Count > 0)
             {
-                Requests = new List<Request>()
-            };
+                var requestBody = new BatchUpdateSpreadsheetRequest
+                {
+                    Requests = new List<Request>()
+                };
 
-            foreach (List<Row> groupRows in sheet.GetDeleteRows())
-            {
-                requestBody.Requests.Add(
-                    CreateDeleteDimensionRequest(
-                        Convert.ToInt32(sheet.Gid),
-                        groupRows.Last().Number - 1,
-                        groupRows.First().Number
-                    )
+                foreach (List<Row> groupRows in sheet.GetDeleteRows())
+                {
+                    requestBody.Requests.Add(
+                        CreateDeleteDimensionRequest(
+                            Convert.ToInt32(sheet.Gid),
+                            groupRows.Last().Number - 1,
+                            groupRows.First().Number
+                        )
+                    );
+                }
+
+                return new SpreadsheetsResource.BatchUpdateRequest(
+                    sheetsService,
+                    requestBody,
+                    sheet.SpreadsheetId
                 );
             }
 
-            return new SpreadsheetsResource.BatchUpdateRequest(
-                sheetsService,
-                requestBody,
-                sheet.SpreadsheetId
-            );
+            return null;
         }
 
         /// <summary>
@@ -359,18 +369,23 @@ namespace GetGoogleSheetDataAPI
         /// <returns></returns>
         private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(Sheet sheet)
         {
-            var request = sheetsService
-                .Spreadsheets
-                .Values
-                .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
+            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToAppend).Count > 0)
+            {
+                var request = sheetsService
+                    .Spreadsheets
+                    .Values
+                    .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
 
-            request.ValueInputOption = SpreadsheetsResource
-                .ValuesResource
-                .AppendRequest
-                .ValueInputOptionEnum
-                .USERENTERED;
+                request.ValueInputOption = SpreadsheetsResource
+                    .ValuesResource
+                    .AppendRequest
+                    .ValueInputOptionEnum
+                    .USERENTERED;
 
-            return request;
+                return request;
+            }
+
+            return null;
         }
         #endregion
     }

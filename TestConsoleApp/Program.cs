@@ -109,11 +109,11 @@ namespace TestConsoleApp
         private static void ChangeRowsWithCellTitle(Sheet sheet)
         {
             // Можно было это делать в цикле например, но так проще.
-            sheet.Rows[3].Cells.Find(cell => cell.Title == "F").Value = "360";
-            sheet.Rows[4].Cells.Find(cell => cell.Title == "F").Value = "460";
-            sheet.Rows[7].Cells.Find(cell => cell.Title == "C").Value = "730";
-            sheet.Rows[6].Cells.Find(cell => cell.Title == "C").Value = "630";
-            sheet.Rows[9].Cells.Find(cell => cell.Title == "B").Value = "920";
+            sheet.Rows[2].Cells.Find(cell => cell.Title == "F").Value = "360";
+            sheet.Rows[3].Cells.Find(cell => cell.Title == "F").Value = "460";
+            sheet.Rows[6].Cells.Find(cell => cell.Title == "C").Value = "730";
+            sheet.Rows[5].Cells.Find(cell => cell.Title == "C").Value = "630";
+            sheet.Rows[8].Cells.Find(cell => cell.Title == "B").Value = "920";
         }
 
         public static void DeleteRows(Sheet sheet)
