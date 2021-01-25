@@ -70,6 +70,11 @@ namespace GetGoogleSheetDataAPI
             }
         }
 
+        /// <summary>
+        /// Создание пустой шапки таблицы, когда она не нужна для данной таблицы.
+        /// </summary>
+        /// <param name="maxLength">Максимальная длина строки</param>
+        /// <returns></returns>
         private List<string> CreateEmptyHead(int maxLength)
         {
             var head = new List<string>();
@@ -101,8 +106,8 @@ namespace GetGoogleSheetDataAPI
         public void AddRow(List<string> rowData)
         {
             AddRow(
-                Rows.Count,
-                Rows.First().Cells.Count,
+                Rows.Last().Number, // возможно падение потому что строк может вообще не быть
+                Rows.First().Cells.Count, // аналогично
                 rowData
             );
         }
@@ -114,7 +119,7 @@ namespace GetGoogleSheetDataAPI
         /// <param name="maxLength">Максимальная длина строки</param>
         /// <param name="rowData">Данные для формированния строки</param>
         /// <param name="status">
-        /// Статус строки. По умолчанию это ToAppend, но есть возможность его изменнить
+        /// Статус строки по умолчанию ToAppend.
         /// </param>
         private void AddRow(
             int index,
@@ -246,6 +251,58 @@ namespace GetGoogleSheetDataAPI
             }
 
             return deleteGroups;
+        }
+
+        /// <summary>
+        /// Метод удаляет строки со статусом RowStatus.ToDelete
+        /// чтобы после обновления данных в гугл таблице можно было пользоваться
+        /// тем же инстансем типа Sheet
+        /// </summary>
+        internal void ClearDeletedRows()
+        {
+            var rowsToDelete = Rows.FindAll(row => row.Status == RowStatus.ToDelete);
+
+            foreach (var row in rowsToDelete)
+            {
+                Rows.Remove(row);
+            }
+        }
+        
+        internal void RenumberRows()
+        {
+            int number = 1;
+
+            switch (Mode)
+            {
+                case SheetMode.Simple:
+                    number = 1;
+                    break;
+                case SheetMode.Head:
+                    number = 2;
+                    break;
+                case SheetMode.HeadAndKey:
+                    number = 2;
+                    break;
+            }
+
+            foreach (var row in Rows)
+            {
+                row.Number = number;
+                number++;
+            }
+        }
+
+        /// <summary>
+        /// Метод сбрасывает статусы всех строк на RowStatus.Original
+        /// чтобы после обновления данных в гугл таблице можно было пользоваться
+        /// тем же инстансем типа Sheet
+        /// </summary>
+        internal void ResetRowStatuses()
+        {
+            foreach (var row in Rows.FindAll(row => row.Status != RowStatus.Original))
+            {
+                row.Status = RowStatus.Original;
+            }
         }
     }
 }

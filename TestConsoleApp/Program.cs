@@ -35,7 +35,8 @@ namespace TestConsoleApp
             // и другим доступом к этой структуре.
             var sheetMode = SheetMode.Head;
 
-            string url = "https://docs.google.com/spreadsheets/d/1dxPz9MEeJxfZkbAvZLE33YLIN5GaNS0Bvqzlp6rAiNk/edit#gid=0";
+            // замените url адрес на свой для тестов.
+            string url = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0";
 
             // Попытка получения листа по url.
             // Метод вернёт флаг получения листа и экземпляр типа Sheet.
@@ -46,32 +47,12 @@ namespace TestConsoleApp
             // и эти данные можно будет менять и через конннектор обновлять в листе google таблицы.
             if (connector.TryToGetSheet(url, sheetMode, out Sheet sheet))
             {
-                PrintSheet(sheet);
-
-                // Изменнения данных в экземпляре типа Sheet.
-                // Не важен порядок изменения экземпляра листа,
-                // его обновленние будет происходить в определённом порядке.
-                AddRows(sheet);
-
-                switch (sheetMode)
-                {
-                    case SheetMode.Simple:
-                        ChangeRows(sheet);
-                        break;
-                    case SheetMode.Head:
-                        ChangeRowsWithCellTitle(sheet);
-                        break;
-                    case SheetMode.HeadAndKey:
-                        break;
-                }
-
-                DeleteRows(sheet);
-
-                PrintSheet(sheet);
-
-                // Метод для обновления данных в листе google таблицы на основе измененний
-                // экземпляра типа Sheet.
-                connector.UpdateSheet(sheet);
+                PrintSheet(sheet, "Первое получение данных");
+                ChangeSheet(connector, sheetMode, sheet);
+                // Данный метод вызывается второй раз чтобы показать,
+                // что с текущим экземпляром листа можно работать и после обновления.
+                // Его структура будет соответствовать google таблице.
+                ChangeSheet(connector, sheetMode, sheet);
             }
             else
             {
@@ -81,12 +62,44 @@ namespace TestConsoleApp
             Console.ReadLine();
         }
 
+        private static void ChangeSheet(Connector connector, SheetMode sheetMode, Sheet sheet)
+        {
+            // Изменнения данных в экземпляре типа Sheet.
+            // Не важен порядок изменения экземпляра листа,
+            // его обновленние будет происходить в определённом порядке.
+            AddRows(sheet);
+
+            switch (sheetMode)
+            {
+                case SheetMode.Simple:
+                    ChangeRows(sheet);
+                    break;
+                case SheetMode.Head:
+                    ChangeRowsWithCellTitle(sheet);
+                    break;
+                case SheetMode.HeadAndKey:
+                    break;
+            }
+
+            DeleteRows(sheet);
+
+            PrintSheet(sheet, "Данные до обновления в google");
+
+            // Метод для обновления данных в листе google таблицы на основе измененний
+            // экземпляра типа Sheet.
+            connector.UpdateSheet(sheet);
+
+            PrintSheet(sheet, "Данные после обновления в google");
+        }
+
         public static void AddRows(Sheet sheet)
         {
             // Пример добавления путой строки.
             sheet.AddRow();
+
             // Пример добавления строки часть которой будет заполнена пустыми строками.
             sheet.AddRow(new List<string>() { "123", "asd" });
+
             // Пример добавления строки где часть данных не попадёт в строку.
             sheet.AddRow(
                 new List<string>()
@@ -98,7 +111,7 @@ namespace TestConsoleApp
 
         private static void ChangeRows(Sheet sheet)
         {
-            // Можно было это делать в цикле например, но так проще.
+            // Можно было это делать в цикле, но так проще.
             sheet.Rows[3].Cells[5].Value = "360";
             sheet.Rows[4].Cells[5].Value = "460";
             sheet.Rows[7].Cells[2].Value = "730";
@@ -108,7 +121,7 @@ namespace TestConsoleApp
 
         private static void ChangeRowsWithCellTitle(Sheet sheet)
         {
-            // Можно было это делать в цикле например, но так проще.
+            // Можно было это делать в цикле, но так проще.
             sheet.Rows[2].Cells.Find(cell => cell.Title == "F").Value = "360";
             sheet.Rows[3].Cells.Find(cell => cell.Title == "F").Value = "460";
             sheet.Rows[6].Cells.Find(cell => cell.Title == "C").Value = "730";
@@ -118,7 +131,7 @@ namespace TestConsoleApp
 
         public static void DeleteRows(Sheet sheet)
         {
-            // Можно было это делать в цикле например, но так проще.
+            // Можно было это делать в цикле, но так проще.
             sheet.DeleteRow(sheet.Rows[3]);
             sheet.DeleteRow(sheet.Rows[2]);
             sheet.DeleteRow(sheet.Rows[8]);
@@ -128,11 +141,16 @@ namespace TestConsoleApp
         /// Просто метод для отображения данных таблицы в консоли
         /// </summary>
         /// <param name="sheet"></param>
-        public static void PrintSheet(Sheet sheet)
+        public static void PrintSheet(Sheet sheet, string status)
         {
-            Console.WriteLine($"Имя листа: {sheet.Title}. Имя таблицы: {sheet.SpreadsheetTitle}");
-            Console.WriteLine($"В листе {sheet.Rows.Count} строк");
-            
+            Console.WriteLine(
+                "\n" +
+                $"Статус листа:     {status}\n" +
+                $"Имя таблицы:      {sheet.SpreadsheetTitle}\n" +
+                $"Имя листа:        {sheet.Title}\n" +
+                $"Количество строк: {sheet.Rows.Count}"
+            );
+
             foreach (var row in sheet.Rows)
             {
                 Console.Write($"|{row.Number, 3}|");
@@ -145,8 +163,6 @@ namespace TestConsoleApp
                 Console.Write($"| {row.Status}");
                 Console.WriteLine();
             }
-            
-            Console.WriteLine();
         }
 
         /// <summary>

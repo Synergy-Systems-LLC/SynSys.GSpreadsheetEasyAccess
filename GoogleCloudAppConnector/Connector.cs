@@ -259,14 +259,18 @@ namespace GetGoogleSheetDataAPI
         /// <param name="sheet"></param>
         public void UpdateSheet(Sheet sheet)
         {
+            var appendRequest = CreateAppendRequest(sheet);
+            var appendResponse = appendRequest?.Execute();
+
             var updateRequest = CreateUpdateRequest(sheet);
             var updateResponse = updateRequest?.Execute();
 
             var deleteRequest = CreateDeleteRequest(sheet);
             var delereResponse = deleteRequest?.Execute();
 
-            var appendRequest = CreateAppendRequest(sheet);
-            var appendResponse = appendRequest?.Execute();
+            sheet.ClearDeletedRows();
+            sheet.RenumberRows();
+            sheet.ResetRowStatuses();
         }
         #endregion
 
