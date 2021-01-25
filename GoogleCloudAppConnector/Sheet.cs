@@ -105,9 +105,16 @@ namespace GetGoogleSheetDataAPI
         /// <param name="rowData">Данные для составленния строки</param>
         public void AddRow(List<string> rowData)
         {
+            int number = 1;
+
+            if (Rows.Count > 0)
+            {
+                number = Rows.Last().Number;
+            }
+
             AddRow(
-                Rows.Last().Number, // возможно падение потому что строк может вообще не быть
-                Rows.First().Cells.Count, // аналогично
+                number,
+                Head.Count,
                 rowData
             );
         }

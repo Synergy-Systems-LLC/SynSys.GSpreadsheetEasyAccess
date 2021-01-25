@@ -178,7 +178,14 @@ namespace GetGoogleSheetDataAPI
             {
                 sheet.Title = GetSheetTitle(sheet.SpreadsheetId, sheet.Gid);
                 sheet.SpreadsheetTitle = GetSpreadsheetTitle(sheet.SpreadsheetId);
-                sheet.Fill(GetData(sheet.SpreadsheetId, sheet.Gid));
+                var data = GetData(sheet.SpreadsheetId, sheet.Gid);
+
+                if (data == null)
+                {
+                    throw new Exception($"Лист по адресу {url} не содержит данных");
+                }
+
+                sheet.Fill(data);
             }
             catch (Exception exeption)
             {
