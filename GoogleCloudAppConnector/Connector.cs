@@ -158,11 +158,55 @@ namespace GetGoogleSheetDataAPI
         /// Всегда вернёт объект типа Sheet, но если url не относится к какому-то конкретному листу
         /// гугл таблицы то данный объект будет пуст и иметь статус того, почему он пуст.
         /// </returns>
-        public bool TryToGetSheet(string url, SheetMode mode, out Sheet sheet)
+        public bool TryToGetSimpleSheet(string url, out Sheet sheet)
         {
             sheet = new Sheet()
             {
-                Mode = mode,
+                Mode = SheetMode.Simple,
+            };
+
+            if (!HttpManager.IsCorrectUrl(url))
+            {
+                sheet.Status = HttpManager.Status;
+                return false;
+            }
+
+            sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
+            sheet.Gid = HttpManager.GetGidFromUrl(url);
+
+            try
+            {
+                sheet.Title = GetSheetTitle(sheet.SpreadsheetId, sheet.Gid);
+                sheet.SpreadsheetTitle = GetSpreadsheetTitle(sheet.SpreadsheetId);
+                var data = GetData(sheet.SpreadsheetId, sheet.Gid);
+
+                if (data != null)
+                {
+                    sheet.Fill(data);
+                }
+            }
+            catch (Exception exeption)
+            {
+                sheet.Status = exeption.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet
+        /// </summary>
+        /// <param name="url">Полный url адрес листа</param>
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet, но если url не относится к какому-то конкретному листу
+        /// гугл таблицы то данный объект будет пуст и иметь статус того, почему он пуст.
+        /// </returns>
+        public bool TryToGetSheetWithHead(string url, out Sheet sheet)
+        {
+            sheet = new Sheet()
+            {
+                Mode = SheetMode.Head,
             };
 
             if (!HttpManager.IsCorrectUrl(url))
@@ -195,6 +239,92 @@ namespace GetGoogleSheetDataAPI
 
             return true;
         }
+
+        /// <summary>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet
+        /// </summary>
+        /// <param name="url">Полный url адрес листа</param>
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet, но если url не относится к какому-то конкретному листу
+        /// гугл таблицы то данный объект будет пуст и иметь статус того, почему он пуст.
+        /// </returns>
+        public bool TryToGetSheetWithHeadAndKey(string url, string keyName, out Sheet sheet)
+        {
+            sheet = new Sheet()
+            {
+                Mode = SheetMode.HeadAndKey,
+                KeyName = keyName
+            };
+
+            if (!HttpManager.IsCorrectUrl(url))
+            {
+                sheet.Status = HttpManager.Status;
+                return false;
+            }
+
+            sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
+            sheet.Gid = HttpManager.GetGidFromUrl(url);
+
+            try
+            {
+                sheet.Title = GetSheetTitle(sheet.SpreadsheetId, sheet.Gid);
+                sheet.SpreadsheetTitle = GetSpreadsheetTitle(sheet.SpreadsheetId);
+                var data = GetData(sheet.SpreadsheetId, sheet.Gid);
+
+                if (data == null)
+                {
+                    throw new Exception($"Лист по адресу {url} не содержит данных");
+                }
+                else
+                {
+                    if (!data[0].Contains(keyName))
+                    {
+                        throw new Exception(
+                            $"Шапка листа по адресу {url} не содержит столбец \"{keyName}\""
+                        );
+                    }
+                }
+
+                sheet.Fill(data);
+            }
+            catch (Exception exeption)
+            {
+                sheet.Status = exeption.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        //public bool TryToGetSheet(string url, string keyName, out Sheet sheet)
+        //{
+        //    sheet = new Sheet()
+        //    {
+        //        Mode = SheetMode.HeadAndKey,
+        //        KeyName = keyName
+        //    };
+
+        //    if (!HttpManager.IsCorrectUrl(url))
+        //    {
+        //        sheet.Status = HttpManager.Status;
+        //        return false;
+        //    }
+
+        //    sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
+        //    sheet.Gid = HttpManager.GetGidFromUrl(url);
+
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception exeption)
+        //    {
+        //        sheet.Status = exeption.Message;
+        //        return false;
+        //    }
+
+        //    return true;
+        //}
 
         private string GetSpreadsheetTitle(string spreadsheetId)
         {

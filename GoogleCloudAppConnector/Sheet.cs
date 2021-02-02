@@ -31,6 +31,7 @@ namespace GetGoogleSheetDataAPI
         public string Gid { get; internal set; } = string.Empty;
         public string SpreadsheetTitle { get; internal set; }
         public string Status { get; internal set; } = string.Empty;
+        public string KeyName { get; internal set; } = string.Empty;
         public List<Row> Rows { get; internal set; } = new List<Row>();
         public SheetMode Mode { get; internal set; }
         public List<string> Head { get; private set; }
@@ -54,14 +55,14 @@ namespace GetGoogleSheetDataAPI
             {
                 if (rowIndex == 0)
                 {
-                    if (Mode != SheetMode.Simple)
+                    if (Mode == SheetMode.Simple)
                     {
-                        Head = data[rowIndex].Cast<string>().ToList();
-                        continue;
+                        Head = CreateEmptyHead(maxColumns);
                     }
                     else
                     {
-                        Head = CreateEmptyHead(maxColumns);
+                        Head = data[rowIndex].Cast<string>().ToList();
+                        continue;
                     }
                 }
 
@@ -139,6 +140,11 @@ namespace GetGoogleSheetDataAPI
                 Status = status,
                 Number = index + 1
             };
+
+            if (!string.IsNullOrWhiteSpace(KeyName))
+            {
+                row.Key = row.Cells.Find(cell => cell.Title == KeyName);
+            }
 
             Rows.Add(row);
         }

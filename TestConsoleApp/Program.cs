@@ -31,10 +31,6 @@ namespace TestConsoleApp
 
             Console.WriteLine("Подключились к Cloud App");
 
-            // замените режим для формирования таблицы с другой структурой
-            // и другим доступом к этой структуре.
-            var sheetMode = SheetMode.Head;
-
             // замените url адрес на свой для тестов.
             string url = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0";
 
@@ -45,14 +41,17 @@ namespace TestConsoleApp
             // говорящем о причине неудачи.
             // В противном случае экземпляр листа будет заполнен данными
             // и эти данные можно будет менять и через конннектор обновлять в листе google таблицы.
-            if (connector.TryToGetSheet(url, sheetMode, out Sheet sheet))
+
+            //if (connector.TryToGetSimpleSheet(url, out Sheet sheet))
+            //if (connector.TryToGetSheetWithHead(url, out Sheet sheet))
+            if (connector.TryToGetSheetWithHeadAndKey(url, "A", out Sheet sheet))
             {
                 PrintSheet(sheet, "Первое получение данных");
-                ChangeSheet(connector, sheetMode, sheet);
+                ChangeSheet(connector, sheet);
                 // Данный метод вызывается второй раз чтобы показать,
                 // что с текущим экземпляром листа можно работать и после обновления.
                 // Его структура будет соответствовать google таблице.
-                ChangeSheet(connector, sheetMode, sheet);
+                ChangeSheet(connector, sheet);
             }
             else
             {
@@ -62,14 +61,14 @@ namespace TestConsoleApp
             Console.ReadLine();
         }
 
-        private static void ChangeSheet(Connector connector, SheetMode sheetMode, Sheet sheet)
+        private static void ChangeSheet(Connector connector, Sheet sheet)
         {
             // Изменнения данных в экземпляре типа Sheet.
             // Не важен порядок изменения экземпляра листа,
             // его обновленние будет происходить в определённом порядке.
             AddRows(sheet);
 
-            switch (sheetMode)
+            switch (sheet.Mode)
             {
                 case SheetMode.Simple:
                     ChangeRows(sheet);
@@ -78,6 +77,7 @@ namespace TestConsoleApp
                     ChangeRowsWithCellTitle(sheet);
                     break;
                 case SheetMode.HeadAndKey:
+                    ChangeRowsWithTitle(sheet);
                     break;
             }
 
@@ -127,6 +127,15 @@ namespace TestConsoleApp
             sheet.Rows[6].Cells.Find(cell => cell.Title == "C").Value = "730";
             sheet.Rows[5].Cells.Find(cell => cell.Title == "C").Value = "630";
             sheet.Rows[8].Cells.Find(cell => cell.Title == "B").Value = "920";
+        }
+
+        private static void ChangeRowsWithTitle(Sheet sheet)
+        {
+            sheet.Rows
+                 .Find(row => row.Key.Value == "61")
+                 .Cells
+                 .Find(cell => cell.Title == "F")
+                 .Value = "660";
         }
 
         public static void DeleteRows(Sheet sheet)
