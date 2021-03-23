@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace GetGoogleSheetDataAPI
 {
@@ -35,8 +35,9 @@ namespace GetGoogleSheetDataAPI
 
     /// <summary>
     /// Connector - это обёртка для библиотек Google.Apis.
-    /// Через него происходит подключение к приложению "get google sheet data", которое находится на Google Cloup Platform.
-    /// Подключение проиходит с помощью получения файла credentials.json данного приложения (get google sheet data).
+    /// Через него происходит подключение к приложению на Google Cloup Platform,
+    /// к которому в свою очередь подключён вэб сервис Google Sheets API.
+    /// Подключение проиходит с помощью получения файла credentials.json данного приложения.
     /// </summary>
     /// <remarks>
     /// После успешного подключения можно получать листы гугл таблиц по их id и gid.
@@ -44,11 +45,19 @@ namespace GetGoogleSheetDataAPI
     /// </remarks>
     public class Connector
     {
-        string[] scopes = { SheetsService.Scope.Spreadsheets };
-        string applicationName = "Get Google Sheet Data";
-        byte cancellationSeconds = 15;
-        SheetsService sheetsService;
-
+        private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
+        private SheetsService sheetsService;
+ 
+        /// <summary>
+        /// Имя приложения, которое будет использоваться в заголовке User-Agent.
+        /// Значение по умолчанию <c>string.Empty</c>. 
+        /// </summary>
+        public string ApplicationName { get; set; } = string.Empty;
+        /// <summary>
+        /// Время на попытку подключения к приложению на Google Cloud Platform в секундах.
+        /// Значение по умолчанию <c>15</c>. 
+        /// </summary>
+        public byte CancellationSeconds { get; set; } = 15;
         /// <summary>
         /// В зависимости от состояния подключения меняется его статус.
         /// </summary>
@@ -56,13 +65,6 @@ namespace GetGoogleSheetDataAPI
         /// Статус текущего подключения.
         /// </value>
         public ConnectStatus Status { get; private set; } = ConnectStatus.NotConnected;
-
-        /// <summary>
-        /// Инициализирует экземпляр коннектора.
-        /// Данный коннектор не имеет подключения к приложению на Google Cloud Platform.
-        /// Чтобы создать подключение необходимо вызвать метод TryToCreateCo
-        /// </summary>
-        public Connector() { }
 
         /// <summary>
         /// Попытка подключения к приложению на Google Cloud Platform.
@@ -75,11 +77,11 @@ namespace GetGoogleSheetDataAPI
         /// </example>
         /// </summary>
         /// <remarks>
-        /// У пользователя есть 15 секунд на подключение, после этого коннектору присваивается статус ConnectorStatus.AuthorizationTimeOut.
         /// Если пользователь не входит в домент synsys.co, то ему будет отказано в подлючении.
-        /// В этом случае коннектор отключится через 15 секунд.
-        /// Если подключене состоялось, то присваивается статус ConnectorStatus.Connected
-        /// и у коннектора можно вызывать методы для получения листов и их данных.
+        /// У пользователя есть время на подключение, оно настраивается через свойство CancellationSeconds.
+        /// После истечения данного времени коннектору присваивается статус ConnectorStatus.AuthorizationTimeOut.
+        /// Если подключение состоялось, то присваивается статус ConnectorStatus.Connected 
+        /// и коннектором можно пользоваться для получения и изменения листов таблицы.
         /// </remarks>
         /// <param name="credentials">Экземпляр класса Stream полученный из файла credentials.json</param>
         public bool TryToCreateConnect(Stream credentials) 
@@ -91,12 +93,8 @@ namespace GetGoogleSheetDataAPI
             }
             catch (AggregateException ax)
             {
+                Console.WriteLine(ax);
                 Status = ConnectStatus.NotConnected;
-
-                if (ax.InnerExceptions == null)
-                {
-                    return false;
-                }
 
                 foreach (var e in ax.InnerExceptions)
                 {
@@ -115,10 +113,10 @@ namespace GetGoogleSheetDataAPI
         private SheetsService GetService(Stream credentials)
         {
             return new SheetsService(
-                new BaseClientService.Initializer()
+                new BaseClientService.Initializer
                 {
                     HttpClientInitializer = GetUserCredential(credentials),
-                    ApplicationName = applicationName,
+                    ApplicationName = ApplicationName
                 }
             );
         }
@@ -129,65 +127,58 @@ namespace GetGoogleSheetDataAPI
                 GoogleClientSecrets.Load(credentials).Secrets,
                 scopes,
                 "user",
-                GenerateCansellationToken(),
+                GenerateCancellationToken(),
                 new FileDataStore(GenerateTokenPath(), true)
             ).Result;
         }
 
-        private CancellationToken GenerateCansellationToken()
+        private CancellationToken GenerateCancellationToken()
         {
             var tokenSource = new CancellationTokenSource();
-            tokenSource.CancelAfter(TimeSpan.FromSeconds(cancellationSeconds));
+            tokenSource.CancelAfter(TimeSpan.FromSeconds(CancellationSeconds));
             return tokenSource.Token;
         }
 
-        private string GenerateTokenPath()
+        private static string GenerateTokenPath()
         {
-            string uriPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().EscapedCodeBase);
-            string outPutDirectory = new Uri(uriPath).LocalPath;
-            return Path.Combine(outPutDirectory, "token.json");
+            var uriPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().EscapedCodeBase);
+            var outputDirectory = new Uri(uriPath).LocalPath;
+            return Path.Combine(outputDirectory, "token.json");
         }
         #endregion
 
         #region GetData
+
         /// <summary>
-        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Лист представляет таблицу из списка строк. Шапка отсутствует.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение.
         /// </summary>
         /// <param name="url">Полный url адрес листа</param>
+        /// <param name="sheet"></param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet, но если url не относится к какому-то конкретному листу
-        /// гугл таблицы то данный объект будет пуст и иметь статус того, почему он пуст.
+        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
+        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSimpleSheet(string url, out Sheet sheet)
         {
-            sheet = new Sheet()
-            {
-                Mode = SheetMode.Simple,
-            };
-
-            if (!HttpManager.IsCorrectUrl(url))
-            {
-                sheet.Status = HttpManager.Status;
-                return false;
-            }
-
-            sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
-            sheet.Gid = HttpManager.GetGidFromUrl(url);
-
+            sheet = new Sheet();
+ 
             try
             {
-                sheet.Title = GetSheetTitle(sheet.SpreadsheetId, sheet.Gid);
-                sheet.SpreadsheetTitle = GetSpreadsheetTitle(sheet.SpreadsheetId);
-                var data = GetData(sheet.SpreadsheetId, sheet.Gid);
+                InitializeSheet(sheet, url, SheetMode.Simple, string.Empty);
+ 
+                var data = GetData(sheet);
 
                 if (data != null)
                 {
                     sheet.Fill(data);
                 }
             }
-            catch (Exception exeption)
+            catch (Exception exception)
             {
-                sheet.Status = exeption.Message;
+                sheet.Status = exception.ToString();
                 return false;
             }
 
@@ -195,45 +186,40 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Лист представляет таблицу из списка строк, без первой строки.
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
         /// <param name="url">Полный url адрес листа</param>
+        /// <param name="sheet"></param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet, но если url не относится к какому-то конкретному листу
-        /// гугл таблицы то данный объект будет пуст и иметь статус того, почему он пуст.
+        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
+        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSheetWithHead(string url, out Sheet sheet)
         {
-            sheet = new Sheet()
-            {
-                Mode = SheetMode.Head,
-            };
-
-            if (!HttpManager.IsCorrectUrl(url))
-            {
-                sheet.Status = HttpManager.Status;
-                return false;
-            }
-
-            sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
-            sheet.Gid = HttpManager.GetGidFromUrl(url);
+            sheet = new Sheet();
 
             try
             {
-                sheet.Title = GetSheetTitle(sheet.SpreadsheetId, sheet.Gid);
-                sheet.SpreadsheetTitle = GetSpreadsheetTitle(sheet.SpreadsheetId);
-                var data = GetData(sheet.SpreadsheetId, sheet.Gid);
+                InitializeSheet(sheet, url, SheetMode.Head, string.Empty);
+ 
+                var data = GetData(sheet);
 
                 if (data == null)
                 {
-                    throw new Exception($"Лист по адресу {url} не содержит данных");
+                    sheet.Status = $"Лист по адресу {url} не содержит данных";
+                    return false;
                 }
 
                 sheet.Fill(data);
             }
-            catch (Exception exeption)
+            catch (Exception exception)
             {
-                sheet.Status = exeption.Message;
+                sheet.Status = exception.ToString();
                 return false;
             }
 
@@ -241,169 +227,133 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Лист представляет таблицу из списка строк, без первой строки.
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек и есть ключевая ячейка.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
         /// <param name="url">Полный url адрес листа</param>
+        /// <param name="keyName">Наименование ключевого столбца таблицы</param>
+        /// <param name="sheet"></param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet, но если url не относится к какому-то конкретному листу
-        /// гугл таблицы то данный объект будет пуст и иметь статус того, почему он пуст.
+        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
+        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSheetWithHeadAndKey(string url, string keyName, out Sheet sheet)
         {
-            sheet = new Sheet()
-            {
-                Mode = SheetMode.HeadAndKey,
-                KeyName = keyName
-            };
-
-            if (!HttpManager.IsCorrectUrl(url))
-            {
-                sheet.Status = HttpManager.Status;
-                return false;
-            }
-
-            sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
-            sheet.Gid = HttpManager.GetGidFromUrl(url);
-
+            sheet = new Sheet();
+ 
             try
             {
-                sheet.Title = GetSheetTitle(sheet.SpreadsheetId, sheet.Gid);
-                sheet.SpreadsheetTitle = GetSpreadsheetTitle(sheet.SpreadsheetId);
-                var data = GetData(sheet.SpreadsheetId, sheet.Gid);
+                InitializeSheet(sheet, url, SheetMode.HeadAndKey, keyName);
+ 
+                var data = GetData(sheet);
 
                 if (data == null)
                 {
-                    throw new Exception($"Лист по адресу {url} не содержит данных");
+                    sheet.Status = $"Лист по адресу {url} не содержит данных";
+                    return false;
                 }
-                else
+
+                if (!data[0].Contains(keyName))
                 {
-                    if (!data[0].Contains(keyName))
-                    {
-                        throw new Exception(
-                            $"Шапка листа по адресу {url} не содержит столбец \"{keyName}\""
-                        );
-                    }
+                    sheet.Status = $"Шапка листа по адресу {url} не содержит столбец \"{keyName}\"";
+                    return false;
                 }
 
                 sheet.Fill(data);
             }
-            catch (Exception exeption)
+            catch (Exception exception)
             {
-                sheet.Status = exeption.Message;
+                sheet.Status = exception.ToString();
                 return false;
             }
 
             return true;
         }
 
-        //public bool TryToGetSheet(string url, string keyName, out Sheet sheet)
-        //{
-        //    sheet = new Sheet()
-        //    {
-        //        Mode = SheetMode.HeadAndKey,
-        //        KeyName = keyName
-        //    };
-
-        //    if (!HttpManager.IsCorrectUrl(url))
-        //    {
-        //        sheet.Status = HttpManager.Status;
-        //        return false;
-        //    }
-
-        //    sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
-        //    sheet.Gid = HttpManager.GetGidFromUrl(url);
-
-        //    try
-        //    {
-
-        //    }
-        //    catch (Exception exeption)
-        //    {
-        //        sheet.Status = exeption.Message;
-        //        return false;
-        //    }
-
-        //    return true;
-        //}
-
-        private string GetSpreadsheetTitle(string spreadsheetId)
+        private void InitializeSheet(Sheet sheet, string url, SheetMode mode, string keyName)
         {
-            return GetSpreadsheet(spreadsheetId).Properties.Title;
+            sheet.Mode = mode;
+            sheet.KeyName = keyName;
+
+            if (!HttpManager.IsCorrectUrl(url))
+            {
+                throw new Exception(HttpManager.Status);
+            }
+
+            sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
+            sheet.Gid = HttpManager.GetGidFromUrl(url);
+            sheet.Title = GetSheetTitle(sheet);
+            sheet.SpreadsheetTitle = GetSpreadsheetTitle(sheet);
+        }
+
+        private string GetSpreadsheetTitle(Sheet sheet)
+        {
+            return GetSpreadsheet(sheet.SpreadsheetId).Properties.Title;
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы.
+        /// Метод может бросить исключение System.NullReferenceException
+        /// если по какой-то причине sheetService не будет получен.<br/>
+        /// Метод может бросить исключение Google.Apis.Requests.RequestError в ValueResource.Get
+        /// если id или gid листа не существуют.
         /// </summary>
-        /// <remarks>
-        /// Метод можен выбросить ошибку если sheetsService is null.
-        /// Так же ошибка может возникнуть в методе Get если не будет найдено имя листа.
-        /// </remarks>
-        /// <param name="spreadsheetId">Число из url листа. /Id/</param>
-        /// <param name="gid">Число из url листа. git=Id</param>
+        /// <param name="sheet"></param>
         /// <returns></returns>
-        private IList<IList<object>> GetData(string spreadsheetId, string gid)
+        private IList<IList<object>> GetData(Sheet sheet)
         {
             return sheetsService
                 .Spreadsheets
                 .Values
-                .Get(spreadsheetId, GetSheetTitle(spreadsheetId, gid))
+                .Get(sheet.SpreadsheetId, sheet.Title)
                 .Execute()
                 .Values;
         }
 
         /// <summary>
-        /// Получение имени листа по его spreadsheetId и gid.
+        /// Метод может бросить исключение Google.Apis.Requests.RequestError
+        /// в том случае если id или gid листа не существуют.
         /// </summary>
-        /// <param name="spreadsheetId">Число из url листа. /Id/</param>
-        /// <param name="gid">Число из url листа. git=Id</param>
+        /// <param name="sheet"></param>
         /// <returns></returns>
-        private string GetSheetTitle(string spreadsheetId, string gid)
+        private string GetSheetTitle(Sheet sheet)
         {
-            foreach (Google.Apis.Sheets.v4.Data.Sheet sheet in GetSpreadsheet(spreadsheetId).Sheets)
-            {
-                if (sheet.Properties.SheetId.ToString() == gid)
-                {
-                    return sheet.Properties.Title;
-                }
-            }
-
-            return null;
+            return (from _sheet in GetSpreadsheet(sheet.SpreadsheetId).Sheets
+                    where _sheet.Properties.SheetId.ToString() == sheet.Gid
+                    select _sheet.Properties.Title).FirstOrDefault();
         }
 
         /// <summary>
-        /// Получение google таблицы по её id.
-        /// Получение происходит по запросу из метода Get.
+        /// Метод может бросить исключение Google.Apis.Requests.RequestError
+        /// в том случае если id таблицы не существуют.
         /// </summary>
-        /// <remarks>
-        /// Метод может выбросить ошибку если spreadsheetId не существует среди таблиц.
-        /// </remarks>
         /// <param name="spreadsheetId">Число из url листа. /Id/</param>
         /// <returns></returns>
         private Spreadsheet GetSpreadsheet(string spreadsheetId)
         {
-            return sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
+            return sheetsService
+                .Spreadsheets
+                .Get(spreadsheetId)
+                .Execute();
         }
 
         /// <summary>
-        /// Обновленние листа google таблицы на основе изменённого экземпляра
-        /// типа Sheet, полученного из метода TryToGetSheet.
+        /// Обновленние листа google таблицы на основе изменённого экземпляра типа Sheet.
         /// <remarks>
         /// Метод изменяет данные в ячейках,
         /// добавляет строки в конец листа и удаляет выбраные строки.
-        /// Всё это просходит на основе запросов в google.
+        /// Все эти действия просходят на основе запросов в google.
         /// </remarks>
         /// </summary>
         /// <param name="sheet"></param>
         public void UpdateSheet(Sheet sheet)
         {
-            var appendRequest = CreateAppendRequest(sheet);
-            var appendResponse = appendRequest?.Execute();
-
-            var updateRequest = CreateUpdateRequest(sheet);
-            var updateResponse = updateRequest?.Execute();
-
-            var deleteRequest = CreateDeleteRequest(sheet);
-            var delereResponse = deleteRequest?.Execute();
+            CreateAppendRequest(sheet)?.Execute();
+            CreateUpdateRequest(sheet)?.Execute();
+            CreateDeleteRequest(sheet)?.Execute();
 
             sheet.ClearDeletedRows();
             sheet.RenumberRows();
@@ -420,26 +370,20 @@ namespace GetGoogleSheetDataAPI
         /// <returns></returns>
         private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(Sheet sheet)
         {
-            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToChange).Count > 0)
+            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToChange).Count <= 0) return null;
+ 
+            var requestBody = new BatchUpdateValuesRequest
             {
-                var requestBody = new BatchUpdateValuesRequest
-                {
-                    Data = sheet.GetChangeValueRange(),
-                    ValueInputOption = SpreadsheetsResource
-                        .ValuesResource
-                        .AppendRequest
-                        .ValueInputOptionEnum
-                        .RAW
-                        .ToString()
-                };
+                Data = sheet.GetChangeValueRange(),
+                ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum
+                    .RAW
+                    .ToString()
+            };
 
-                return sheetsService
-                    .Spreadsheets
-                    .Values
-                    .BatchUpdate(requestBody, sheet.SpreadsheetId);
-            }
-
-            return null;
+            return sheetsService
+                .Spreadsheets
+                .Values
+                .BatchUpdate(requestBody, sheet.SpreadsheetId);
         }
 
         /// <summary>
@@ -487,11 +431,11 @@ namespace GetGoogleSheetDataAPI
         /// <returns></returns>
         private Request CreateDeleteDimensionRequest(int gid, int startRow, int endRow)
         {
-            return new Request()
+            return new Request
             {
-                DeleteDimension = new DeleteDimensionRequest()
+                DeleteDimension = new DeleteDimensionRequest
                 {
-                    Range = new DimensionRange()
+                    Range = new DimensionRange
                     {
                         SheetId = gid,
                         Dimension = "ROWS",
@@ -510,23 +454,17 @@ namespace GetGoogleSheetDataAPI
         /// <returns></returns>
         private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(Sheet sheet)
         {
-            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToAppend).Count > 0)
-            {
-                var request = sheetsService
-                    .Spreadsheets
-                    .Values
-                    .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
+            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToAppend).Count <= 0) return null;
+ 
+            var request = sheetsService
+                .Spreadsheets
+                .Values
+                .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
 
-                request.ValueInputOption = SpreadsheetsResource
-                    .ValuesResource
-                    .AppendRequest
-                    .ValueInputOptionEnum
-                    .USERENTERED;
+            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum
+                .USERENTERED;
 
-                return request;
-            }
-
-            return null;
+            return request;
         }
         #endregion
     }

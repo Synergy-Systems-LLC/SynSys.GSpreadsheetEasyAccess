@@ -29,12 +29,12 @@ namespace GetGoogleSheetDataAPI
         public string Title { get; internal set; } = string.Empty;
         public string SpreadsheetId { get; internal set; } = string.Empty;
         public string Gid { get; internal set; } = string.Empty;
-        public string SpreadsheetTitle { get; internal set; }
+        public string SpreadsheetTitle { get; internal set; } = string.Empty;
         public string Status { get; internal set; } = string.Empty;
         public string KeyName { get; internal set; } = string.Empty;
-        public List<Row> Rows { get; internal set; } = new List<Row>();
-        public SheetMode Mode { get; internal set; }
-        public List<string> Head { get; private set; }
+        public List<Row> Rows { get; } = new List<Row>();
+        public List<string> Head { get; internal set; }
+        public SheetMode Mode { get; set; }
 
         /// <summary>
         /// Инициализирует пустой экземпеляр таблицы готовый для заполнения.
@@ -51,13 +51,13 @@ namespace GetGoogleSheetDataAPI
             var rows = Enumerable.Range(0, data.Count);
             var maxColumns = data.First().Count;
 
-            foreach (int rowIndex in rows)
+            foreach (var rowIndex in rows)
             {
                 if (rowIndex == 0)
                 {
                     if (Mode == SheetMode.Simple)
                     {
-                        Head = CreateEmptyHead(maxColumns);
+                        CreateEmptyHead(maxColumns);
                     }
                     else
                     {
@@ -76,16 +76,14 @@ namespace GetGoogleSheetDataAPI
         /// </summary>
         /// <param name="maxLength">Максимальная длина строки</param>
         /// <returns></returns>
-        private List<string> CreateEmptyHead(int maxLength)
+        internal void CreateEmptyHead(int maxLength)
         {
-            var head = new List<string>();
+            Head = new List<string>();
 
-            for (int cellIndex = 0; cellIndex < maxLength; cellIndex++)
+            for (var cellIndex = 0; cellIndex < maxLength; cellIndex++)
             {
-                head.Add(string.Empty);
+                Head.Add(string.Empty);
             }
-
-            return head;
         }
 
         /// <summary>
@@ -106,7 +104,7 @@ namespace GetGoogleSheetDataAPI
         /// <param name="rowData">Данные для составленния строки</param>
         public void AddRow(List<string> rowData)
         {
-            int number = 1;
+            var number = 1;
 
             if (Rows.Count > 0)
             {

@@ -17,6 +17,9 @@ bld/
 # Visual Studio Code options directory
 .vscode/
 
+# JetBrains options directory
+.idea/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
