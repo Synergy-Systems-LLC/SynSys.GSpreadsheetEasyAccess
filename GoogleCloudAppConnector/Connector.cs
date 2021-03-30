@@ -60,11 +60,17 @@ namespace GetGoogleSheetDataAPI
         public byte CancellationSeconds { get; set; } = 15;
         /// <summary>
         /// В зависимости от состояния подключения меняется его статус.
+        /// Значение по умолчанию <c>NotConnected</c>
         /// </summary>
         /// <value>
         /// Статус текущего подключения.
         /// </value>
         public ConnectStatus Status { get; private set; } = ConnectStatus.NotConnected;
+        /// <summary>
+        /// Исключение возникшее во время подключения к приложению на Google Cloud Platform.
+        /// Значение по умолчанию <c>new Exception()</c>.
+        /// </summary>
+        public Exception Exception { get; private set; } = new Exception();
 
         /// <summary>
         /// Попытка подключения к приложению на Google Cloud Platform.
@@ -93,17 +99,19 @@ namespace GetGoogleSheetDataAPI
             }
             catch (AggregateException ax)
             {
-                Console.WriteLine(ax);
+                Exception = ax;
                 Status = ConnectStatus.NotConnected;
 
                 foreach (var e in ax.InnerExceptions)
                 {
                     if (e is TaskCanceledException)
                     {
+                        Exception = e;
                         Status = ConnectStatus.AuthorizationTimedOut;
-                        return false;
                     }
                 }
+
+                return false;
             }
 
             return true;

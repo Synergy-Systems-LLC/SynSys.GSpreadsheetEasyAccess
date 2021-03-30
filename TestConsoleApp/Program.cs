@@ -25,7 +25,7 @@ namespace TestConsoleApp
             {
                 if (connector.Status == ConnectStatus.NotConnected)
                 {
-                    Console.WriteLine("Подключение отсутствует");
+                    Console.WriteLine($"Подключение отсутствует.\nПричина: {connector.Exception}");
                 }
                 else if (connector.Status == ConnectStatus.AuthorizationTimedOut)
                 {
@@ -48,9 +48,9 @@ namespace TestConsoleApp
             // В противном случае экземпляр листа будет заполнен данными
             // и эти данные можно будет менять и через конннектор обновлять в листе google таблицы.
 
-            if (connector.TryToGetSimpleSheet(url, out Sheet sheet))
-            // if (connector.TryToGetSheetWithHead(url, out Sheet sheet))
-            // if (connector.TryToGetSheetWithHeadAndKey(url, "A", out Sheet sheet))
+            //if (connector.TryToGetSimpleSheet(url, out Sheet sheet))
+            //if (connector.TryToGetSheetWithHead(url, out Sheet sheet))
+            if (connector.TryToGetSheetWithHeadAndKey(url, "A", out Sheet sheet))
             {
                 PrintSheet(sheet, "Первое получение данных");
                 ChangeSheet(connector, sheet);
@@ -71,7 +71,7 @@ namespace TestConsoleApp
         {
             // Изменения данных в экземпляре типа Sheet.
             // Не важен порядок изменения экземпляра листа,
-            // его обновленние будет происходить в определённом порядке.
+            // его обновленние будет происходить в определённом порядке в коннекторе.
             AddRows(sheet);
 
             switch (sheet.Mode)
