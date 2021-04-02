@@ -5,8 +5,8 @@ using System.Linq;
 namespace GetGoogleSheetDataAPI
 {
     /// <summary>
-    /// Перечисление для определённого заполнения таблицы.
-    /// Выбор режима влияет на состояние ячеек и строк таблицы.
+    /// Перечисление для определённого заполнения листа.
+    /// Выбор режима влияет на состояние ячеек и строк листа.
     /// </summary>
     public enum SheetMode
     {
@@ -24,28 +24,60 @@ namespace GetGoogleSheetDataAPI
         HeadAndKey
     }
 
+    /// <summary>
+    /// Тип представляет один лист гугл листа.
+    /// </summary>
     public class Sheet
     {
+        /// <summary>
+        /// Имя листа
+        /// </summary>
         public string Title { get; internal set; } = string.Empty;
+        /// <summary>
+        /// Id google листа
+        /// </summary>
         public string SpreadsheetId { get; internal set; } = string.Empty;
+        /// <summary>
+        /// Id листа
+        /// </summary>
         public string Gid { get; internal set; } = string.Empty;
+        /// <summary>
+        /// Имя листа
+        /// </summary>
         public string SpreadsheetTitle { get; internal set; } = string.Empty;
+        /// <summary>
+        /// Текущий статус.<br/>
+        /// <c>Пример: Лист не содержит данных</c>
+        /// </summary>
         public string Status { get; internal set; } = string.Empty;
+        /// <summary>
+        /// Имя ключевого столбца, если он есть.
+        /// </summary>
         public string KeyName { get; internal set; } = string.Empty;
+        /// <summary>
+        /// Все строки входящие в данный лист
+        /// за исключением шапки
+        /// </summary>
         public List<Row> Rows { get; } = new List<Row>();
+        /// <summary>
+        /// Шапка (первая строка листа) если есть
+        /// </summary>
         public List<string> Head { get; internal set; }
+        /// <summary>
+        /// Режим, по которому определяется работа с листом.
+        /// </summary>
         public SheetMode Mode { get; set; }
 
         /// <summary>
-        /// Инициализирует пустой экземпеляр таблицы готовый для заполнения.
-        /// Экземпляр таблицы нельзя создавать вне библиотеки.
+        /// Инициализирует пустой экземпеляр листа готовый для заполнения.
+        /// Экземпляр листа нельзя создавать вне библиотеки.
         /// </summary>
         internal Sheet() { }
 
         /// <summary>
-        /// Заполнение таблицы с созданием строк и ячеек.
+        /// Заполнение листа с созданием строк и ячеек.
         /// </summary>
-        /// <param name="data">Данные для формирования таблицы</param>
+        /// <param name="data">Данные для формирования листа</param>
         internal void Fill(IList<IList<object>> data)
         {
             var rows = Enumerable.Range(0, data.Count);
@@ -72,7 +104,7 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Создание пустой шапки таблицы, когда она не нужна для данной таблицы.
+        /// Создание пустой шапки, когда она не нужна для данного листа.
         /// </summary>
         /// <param name="maxLength">Максимальная длина строки</param>
         /// <returns></returns>
@@ -87,8 +119,8 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Добавляет пустую строку в конец таблицы.
-        /// Размер строки будет равен максимальному для данной таблицы.
+        /// Добавляет пустую строку в конец листа.
+        /// Размер строки будет равен максимальному для данного листа.
         /// </summary>
         public void AddRow()
         {
@@ -96,9 +128,9 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Добавляет строку в конец таблицы.
-        /// Размер строки будет равен максимальному для данной таблицы
-        /// и если данных будет больше чем этот размер, то часть данных не попадёт в таблицу.
+        /// Добавляет строку в конец листа.
+        /// Размер строки будет равен максимальному для данной листа
+        /// и если данных будет больше чем этот размер, то часть данных не попадёт в лист.
         /// если данных будет меньше, то строка дозаполнится пустыми значениями.
         /// </summary>
         /// <param name="rowData">Данные для составленния строки</param>
@@ -119,7 +151,7 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Основной метод для добавления строки в конец таблицы.
+        /// Основной метод для добавления строки в конец листа.
         /// </summary>
         /// <param name="index">Индекс данной строки</param>
         /// <param name="maxLength">Максимальная длина строки</param>
@@ -148,7 +180,7 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Метод для получение ValueRange для добавления строк в google таблицу.
+        /// Получение ValueRange для добавления строк в google spreadsheet.
         /// </summary>
         /// <returns></returns>
         internal ValueRange GetAppendValueRange()
@@ -160,7 +192,7 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Метод преобразования List<Row> в List<List<object>>
+        /// Преобразование List&lt;Row&gt; в List&lt;List&lt;object&gt;&gt;
         /// </summary>
         /// <returns></returns>
         private IList<IList<object>> GetAppendRows()
@@ -180,7 +212,7 @@ namespace GetGoogleSheetDataAPI
 
         /// <summary>
         /// Метод не удаляет строку, но назначает ей статус на удаление.
-        /// Данный статус будет учитываться при удалении строк из google таблицы.
+        /// Данный статус будет учитываться при удалении строк из листа в google.
         /// </summary>
         /// <param name="row"></param>
         public void DeleteRow(Row row)
@@ -189,7 +221,7 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Метод получения ValueRange из строк со статусом ToChange.
+        /// Получение ValueRange из строк со статусом ToChange.
         /// </summary>
         /// <returns></returns>
         internal IList<ValueRange> GetChangeValueRange()
@@ -228,7 +260,7 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Метод для получения групп строк для удаления.
+        /// Получение групп строк для удаления.
         /// </summary>
         /// <returns></returns>
         internal List<List<Row>> GetDeleteRows()
@@ -239,7 +271,7 @@ namespace GetGoogleSheetDataAPI
             };
 
             var rowsToDelete = Rows.FindAll(row => row.Status == RowStatus.ToDelete);
-            // Данный список нужно зеркалить потому что удаление строк должно происходить с конца таблицы.
+            // Данный список нужно зеркалить потому что удаление строк должно происходить с конца листа.
             // В противном случае собьются индексы для последующих удалений.
             rowsToDelete.Reverse();
             var previousRow = rowsToDelete.First();
@@ -265,9 +297,9 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Метод удаляет строки со статусом RowStatus.ToDelete
+        /// Удаление строк со статусом ToDelete
         /// чтобы после обновления данных в гугл таблице можно было пользоваться
-        /// тем же инстансем типа Sheet
+        /// тем же инстансем типа Sheet.
         /// </summary>
         internal void ClearDeletedRows()
         {
@@ -278,7 +310,7 @@ namespace GetGoogleSheetDataAPI
                 Rows.Remove(row);
             }
         }
-        
+ 
         internal void RenumberRows()
         {
             int number = 1;
@@ -304,9 +336,9 @@ namespace GetGoogleSheetDataAPI
         }
 
         /// <summary>
-        /// Метод сбрасывает статусы всех строк на RowStatus.Original
+        /// Сброс статуса всех строк на Original
         /// чтобы после обновления данных в гугл таблице можно было пользоваться
-        /// тем же инстансем типа Sheet
+        /// тем же инстансем типа Sheet.
         /// </summary>
         internal void ResetRowStatuses()
         {

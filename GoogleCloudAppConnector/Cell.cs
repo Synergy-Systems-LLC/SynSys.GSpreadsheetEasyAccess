@@ -1,11 +1,14 @@
 ﻿namespace GetGoogleSheetDataAPI
 {
+    /// <summary>
+    /// Тип представляет ячейку строки.
+    /// </summary>
     public class Cell
     {
         private string value;
 
         /// <summary>
-        /// При изменении значения изменяется статус строки в которой находится ячейка.
+        /// При изменении значения изменяется статус строки в которой находится ячейка на ToChange.
         /// </summary>
         public string Value 
         { 
@@ -32,6 +35,7 @@
         /// и ссылкой на строку в которой находится
         /// </summary>
         /// <param name="value"></param>
+        /// <param name="title"></param>
         /// <param name="row"></param>
         internal Cell(string value, string title, Row row)
         {

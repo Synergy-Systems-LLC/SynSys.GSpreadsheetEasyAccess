@@ -34,9 +34,9 @@ namespace GetGoogleSheetDataAPI
     }
 
     /// <summary>
-    /// Connector - это обёртка для библиотек Google.Apis.
+    /// Connector - это обёртка для библиотек Google.Apis.<br/>
     /// Через него происходит подключение к приложению на Google Cloup Platform,
-    /// к которому в свою очередь подключён вэб сервис Google Sheets API.
+    /// к которому в свою очередь подключён вэб сервис Google Sheets API.<br/>
     /// Подключение проиходит с помощью получения файла credentials.json данного приложения.
     /// </summary>
     /// <remarks>
@@ -49,17 +49,17 @@ namespace GetGoogleSheetDataAPI
         private SheetsService sheetsService;
  
         /// <summary>
-        /// Имя приложения, которое будет использоваться в заголовке User-Agent.
+        /// Имя приложения, которое будет использоваться в заголовке User-Agent.<br/>
         /// Значение по умолчанию <c>string.Empty</c>. 
         /// </summary>
         public string ApplicationName { get; set; } = string.Empty;
         /// <summary>
-        /// Время на попытку подключения к приложению на Google Cloud Platform в секундах.
+        /// Время на попытку подключения к приложению на Google Cloud Platform в секундах.<br/>
         /// Значение по умолчанию <c>15</c>. 
         /// </summary>
         public byte CancellationSeconds { get; set; } = 15;
         /// <summary>
-        /// В зависимости от состояния подключения меняется его статус.
+        /// В зависимости от состояния подключения меняется его статус.<br/>
         /// Значение по умолчанию <c>NotConnected</c>
         /// </summary>
         /// <value>
@@ -73,19 +73,18 @@ namespace GetGoogleSheetDataAPI
         public Exception Exception { get; private set; } = new Exception();
 
         /// <summary>
-        /// Попытка подключения к приложению на Google Cloud Platform.
+        /// Попытка подключения к приложению на Google Cloud Platform.<br/>
         /// Для пользователя это выглядит как предложение к подключению в браузере.
         /// <example>
         /// <code>
-        /// var connector = new Connector();
         /// bool isConnectionSuccessful = connector.TryToCreateConnect(new MemoryStream(Properties.Resources.credentials));
         /// </code>
         /// </example>
         /// </summary>
         /// <remarks>
-        /// Если пользователь не входит в домент synsys.co, то ему будет отказано в подлючении.
-        /// У пользователя есть время на подключение, оно настраивается через свойство CancellationSeconds.
-        /// После истечения данного времени коннектору присваивается статус ConnectorStatus.AuthorizationTimeOut.
+        /// Если пользователь не входит в домент synsys.co, то ему будет отказано в подлючении.<br/>
+        /// У пользователя есть время на подключение, оно настраивается через свойство CancellationSeconds.<br/>
+        /// После истечения данного времени коннектору присваивается статус ConnectorStatus.AuthorizationTimeOut.<br/>
         /// Если подключение состоялось, то присваивается статус ConnectorStatus.Connected 
         /// и коннектором можно пользоваться для получения и изменения листов таблицы.
         /// </remarks>

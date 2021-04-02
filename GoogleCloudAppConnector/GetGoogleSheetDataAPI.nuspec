@@ -7,10 +7,15 @@
     <authors>$author$</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
-    <description>description</description>
-    <releaseNotes>Какое-то описание</releaseNotes>
+    <description>
+      Объекты для:
+      - Подключения к приложению на Google Cloud Platform 
+        у которого подключен сервис Google Sheets API;
+      - Получение и изменение данных в google таблицах.
+    </description>
+    <releaseNotes>Первая версия после изменения API</releaseNotes>
     <copyright>$copyright$</copyright>
-    <tags>GoogleSpreadsheet, GoogleSheet, Sheet</tags>
+    <tags>Spreadsheet, Google Sheets API</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.7.2" />
     </dependencies>
