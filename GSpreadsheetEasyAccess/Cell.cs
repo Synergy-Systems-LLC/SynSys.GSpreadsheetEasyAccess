@@ -1,4 +1,4 @@
-﻿namespace GetGoogleSheetDataAPI
+﻿namespace GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Тип представляет ячейку строки.

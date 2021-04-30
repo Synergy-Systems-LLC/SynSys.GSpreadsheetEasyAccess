@@ -1,4 +1,4 @@
-﻿using GetGoogleSheetDataAPI;
+﻿using GSpreadsheetEasyAccess;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,6 +31,8 @@ namespace TestConsoleApp
                 {
                     Console.WriteLine("Время на подключение закончилось");
                 }
+
+                Console.ReadLine();
  
                 return;
             }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace GetGoogleSheetDataAPI
+namespace GSpreadsheetEasyAccess
 {
     // Сделать данный класс не статичным!
     internal static class HttpManager

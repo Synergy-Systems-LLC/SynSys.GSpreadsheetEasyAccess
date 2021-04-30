@@ -11,7 +11,7 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
 
-namespace GetGoogleSheetDataAPI
+namespace GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Статусы подключения к Google Cloud Platform.

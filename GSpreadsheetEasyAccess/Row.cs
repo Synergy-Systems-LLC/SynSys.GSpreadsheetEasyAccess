@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GetGoogleSheetDataAPI
+namespace GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Статусы строки. Нужны для определения состояния строки.<br/>

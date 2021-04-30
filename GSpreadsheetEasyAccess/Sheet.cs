@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GetGoogleSheetDataAPI
+namespace GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Перечисление для определённого заполнения листа.

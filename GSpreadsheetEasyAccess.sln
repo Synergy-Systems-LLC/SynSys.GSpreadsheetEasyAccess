@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetGoogleSheetDataAPI", "GoogleCloudAppConnector\GetGoogleSheetDataAPI.csproj", "{8EE7435F-F9B5-4434-981A-077C73B31351}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSpreadsheetEasyAccess", "GSpreadsheetEasyAccess\GSpreadsheetEasyAccess.csproj", "{8EE7435F-F9B5-4434-981A-077C73B31351}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsoleApp", "TestConsoleApp\TestConsoleApp.csproj", "{B40AE848-36AA-4226-B97A-D344FA120EFF}"
 EndProject
