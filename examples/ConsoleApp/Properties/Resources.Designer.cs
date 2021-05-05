@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TestConsoleApp.Properties {
+namespace ConsoleApp.Properties {
     using System;
     
     

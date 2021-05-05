@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GSpreadsheetEasyAccess
+namespace SynSys.GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Перечисление для определённого заполнения листа.

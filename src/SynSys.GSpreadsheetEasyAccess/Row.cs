@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GSpreadsheetEasyAccess
+namespace SynSys.GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Статусы строки. Нужны для определения состояния строки.<br/>

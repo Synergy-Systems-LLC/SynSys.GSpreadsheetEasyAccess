@@ -1,4 +1,4 @@
-﻿namespace GSpreadsheetEasyAccess
+﻿namespace SynSys.GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Тип представляет ячейку строки.

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>asdf</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/Synergy-Systems-LLC/GetGoogleSheetDataAPI</projectUrl>
+    <license type="expression">MIT</license>
+    <description>description</description>
+    <releaseNotes>qwer</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>asdfg</tags>
+  </metadata>
+</package>

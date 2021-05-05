@@ -1,9 +1,9 @@
-﻿using GSpreadsheetEasyAccess;
+﻿using SynSys.GSpreadsheetEasyAccess;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace TestConsoleApp
+namespace ConsoleApp
 {
     class Program
     {

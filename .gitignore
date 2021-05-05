@@ -89,8 +89,5 @@ __pycache__/
 *.ini
 
 # Project files
-Test Projects/
-TestConsoleApp/Resources/credentials.json
-CommonFunctions/Resources/credentials.json
-SimpleSheet/Resources/credentials.json
-SheetWithHead/Resources/credentials.json
+examples/ConsoleApp/Resources/credentials.json
+examples/IronPythonApp/env/

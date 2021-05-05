@@ -64,9 +64,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GSpreadsheetEasyAccess\GSpreadsheetEasyAccess.csproj">
+    <ProjectReference Include="..\..\src\SynSys.GSpreadsheetEasyAccess\SynSys.GSpreadsheetEasyAccess.csproj">
       <Project>{8ee7435f-f9b5-4434-981a-077c73b31351}</Project>
-      <Name>GSpreadsheetEasyAccess</Name>
+      <Name>SynSys.GSpreadsheetEasyAccess</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

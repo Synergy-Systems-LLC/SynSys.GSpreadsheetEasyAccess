@@ -6,12 +6,13 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
 
-namespace GSpreadsheetEasyAccess
+namespace SynSys.GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Статусы подключения к Google Cloud Platform.
@@ -274,7 +275,7 @@ namespace GSpreadsheetEasyAccess
             }
             catch (Exception exception)
             {
-                sheet.Status = exception.ToString();
+                sheet.Status = $"Возникла непредвиденная ошибка: {exception}";
                 return false;
             }
 
