@@ -63,6 +63,8 @@ namespace ConsoleApp
             }
             else
             {
+                // По какой-то причине не получилось получить таблицу.
+                // Причина будет указана в sheet.Status.
                 Console.WriteLine(sheet.Status);
             }
 
