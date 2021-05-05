@@ -184,9 +184,14 @@ namespace SynSys.GSpreadsheetEasyAccess
                     sheet.Fill(data);
                 }
             }
+            catch (TokenResponseException exception)
+            {
+                sheet.Status = $"Возникла пробема с токеном доступа: {exception.Message}";
+                return false;
+            }
             catch (Exception exception)
             {
-                sheet.Status = exception.ToString();
+                sheet.Status = $"Возникла непредвиденная ошибка: {exception}";
                 return false;
             }
 
@@ -225,9 +230,14 @@ namespace SynSys.GSpreadsheetEasyAccess
 
                 sheet.Fill(data);
             }
+            catch (TokenResponseException exception)
+            {
+                sheet.Status = $"Возникла пробема с токеном доступа: {exception.Message}";
+                return false;
+            }
             catch (Exception exception)
             {
-                sheet.Status = exception.ToString();
+                sheet.Status = $"Возникла непредвиденная ошибка: {exception}";
                 return false;
             }
 
@@ -272,6 +282,11 @@ namespace SynSys.GSpreadsheetEasyAccess
                 }
 
                 sheet.Fill(data);
+            }
+            catch (TokenResponseException exception)
+            {
+                sheet.Status = $"Возникла пробема с токеном доступа: {exception.Message}";
+                return false;
             }
             catch (Exception exception)
             {
