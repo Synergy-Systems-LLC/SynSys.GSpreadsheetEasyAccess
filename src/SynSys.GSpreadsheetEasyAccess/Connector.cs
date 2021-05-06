@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Services;
@@ -74,8 +75,8 @@ namespace SynSys.GSpreadsheetEasyAccess
         public Exception Exception { get; private set; } = new Exception();
 
         /// <summary>
-        /// Попытка подключения к приложению на Google Cloud Platform.<br/>
-        /// Для пользователя это выглядит как предложение к подключению в браузере.
+        /// Попытка подключения к приложению на Google Cloud Platform, а именно к сервису таблиц.<br/>
+        /// Для пользователя это выглядит как предложение аутентификации в браузере.
         /// <example>
         /// <code>
         /// bool isConnectionSuccessful = connector.TryToCreateConnect(new MemoryStream(Properties.Resources.credentials));
@@ -156,7 +157,6 @@ namespace SynSys.GSpreadsheetEasyAccess
         #endregion
 
         #region GetData
-
         /// <summary>
         /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
         /// Лист представляет таблицу из списка строк. Шапка отсутствует.<br/>
@@ -164,35 +164,25 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В каждой ячейке есть строковое значение.
         /// </summary>
         /// <param name="url">Полный url адрес листа</param>
-        /// <param name="sheet"></param>
+        /// <param name="sheetModel"></param>
         /// <returns>
         /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
         /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
         /// </returns>
-        public bool TryToGetSimpleSheet(string url, out Sheet sheet)
+        public bool TryToGetSimpleSheet(string url, out SheetModel sheetModel)
         {
-            sheet = new Sheet();
- 
-            try
-            {
-                InitializeSheet(sheet, url, SheetMode.Simple, string.Empty);
- 
-                var data = GetData(sheet);
+            bool isInitializeSuccessful = TryToInitializeSheet(url, SheetMode.Simple, string.Empty, out sheetModel);
 
-                if (data != null)
-                {
-                    sheet.Fill(data);
-                }
-            }
-            catch (TokenResponseException exception)
+            if (!isInitializeSuccessful)
             {
-                sheet.Status = $"Возникла пробема с токеном доступа: {exception.Message}";
                 return false;
             }
-            catch (Exception exception)
+
+            var data = GetData(sheetModel);
+
+            if (data != null)
             {
-                sheet.Status = $"Возникла непредвиденная ошибка: {exception}";
-                return false;
+                sheetModel.Fill(data);
             }
 
             return true;
@@ -207,39 +197,29 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
         /// <param name="url">Полный url адрес листа</param>
-        /// <param name="sheet"></param>
+        /// <param name="sheetModel"></param>
         /// <returns>
         /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
         /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
         /// </returns>
-        public bool TryToGetSheetWithHead(string url, out Sheet sheet)
+        public bool TryToGetSheetWithHead(string url, out SheetModel sheetModel)
         {
-            sheet = new Sheet();
+            bool isInitializeSuccessful = TryToInitializeSheet(url, SheetMode.Head, string.Empty, out sheetModel);
 
-            try
+            if (!isInitializeSuccessful)
             {
-                InitializeSheet(sheet, url, SheetMode.Head, string.Empty);
- 
-                var data = GetData(sheet);
-
-                if (data == null)
-                {
-                    sheet.Status = $"Лист по адресу {url} не содержит данных";
-                    return false;
-                }
-
-                sheet.Fill(data);
-            }
-            catch (TokenResponseException exception)
-            {
-                sheet.Status = $"Возникла пробема с токеном доступа: {exception.Message}";
                 return false;
             }
-            catch (Exception exception)
+
+            var data = GetData(sheetModel);
+
+            if (data == null)
             {
-                sheet.Status = $"Возникла непредвиденная ошибка: {exception}";
+                sheetModel.Status = $"Лист по адресу {url} не содержит данных";
                 return false;
             }
+
+            sheetModel.Fill(data);
 
             return true;
         }
@@ -254,68 +234,76 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </summary>
         /// <param name="url">Полный url адрес листа</param>
         /// <param name="keyName">Наименование ключевого столбца таблицы</param>
-        /// <param name="sheet"></param>
+        /// <param name="sheetModel"></param>
         /// <returns>
         /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
         /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
         /// </returns>
-        public bool TryToGetSheetWithHeadAndKey(string url, string keyName, out Sheet sheet)
+        public bool TryToGetSheetWithHeadAndKey(string url, string keyName, out SheetModel sheetModel)
         {
-            sheet = new Sheet();
- 
-            try
+            bool isInitializeSuccessful = TryToInitializeSheet(url, SheetMode.HeadAndKey, keyName, out sheetModel);
+
+            if (!isInitializeSuccessful)
             {
-                InitializeSheet(sheet, url, SheetMode.HeadAndKey, keyName);
- 
-                var data = GetData(sheet);
-
-                if (data == null)
-                {
-                    sheet.Status = $"Лист по адресу {url} не содержит данных";
-                    return false;
-                }
-
-                if (!data[0].Contains(keyName))
-                {
-                    sheet.Status = $"Шапка листа по адресу {url} не содержит столбец \"{keyName}\"";
-                    return false;
-                }
-
-                sheet.Fill(data);
-            }
-            catch (TokenResponseException exception)
-            {
-                sheet.Status = $"Возникла пробема с токеном доступа: {exception.Message}";
                 return false;
             }
-            catch (Exception exception)
+
+            var data = GetData(sheetModel);
+
+            if (data == null)
             {
-                sheet.Status = $"Возникла непредвиденная ошибка: {exception}";
+                sheetModel.Status = $"Лист по адресу \"{url}\" не содержит данных";
                 return false;
             }
+
+            if (!data[0].Contains(keyName))
+            {
+                sheetModel.Status = $"Шапка листа по адресу \"{url}\" не содержит столбец \"{keyName}\"";
+                return false;
+            }
+
+            sheetModel.Fill(data);
 
             return true;
         }
 
-        private void InitializeSheet(Sheet sheet, string url, SheetMode mode, string keyName)
+        private bool TryToInitializeSheet(string url, SheetMode mode, string keyName, out SheetModel sheetModel)
         {
-            sheet.Mode = mode;
-            sheet.KeyName = keyName;
+            sheetModel = new SheetModel();
+            var commonMessage = "Во время инициализации листа";
 
             if (!HttpManager.IsCorrectUrl(url))
             {
-                throw new Exception(HttpManager.Status);
+                sheetModel.Status = $"{commonMessage} возникла пробема с Url: {HttpManager.Status}";
+                return false;
             }
 
-            sheet.SpreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
-            sheet.Gid = HttpManager.GetGidFromUrl(url);
-            sheet.Title = GetSheetTitle(sheet);
-            sheet.SpreadsheetTitle = GetSpreadsheetTitle(sheet);
-        }
+            // Данные значения можно получить из проверенного url,
+            // но это не гарантия того что существует лист с такими значениями.
+            string spreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
+            string sheetId = HttpManager.GetGidFromUrl(url);
 
-        private string GetSpreadsheetTitle(Sheet sheet)
-        {
-            return GetSpreadsheet(sheet.SpreadsheetId).Properties.Title;
+            if (!TryToGetSpreadsheet(spreadsheetId, out Spreadsheet spreadsheet, out string exceptionMessage))
+            {
+                sheetModel.Status = $"{commonMessage} {exceptionMessage}";
+                return false;
+            }
+
+            if (SheetNotFound(spreadsheet.Sheets, sheetId, out Sheet sheet))
+            {
+                sheetModel.Status = $"В таблице по адресу: \"{url}\" " +
+                                    $"не найден лист с Id: {sheetId}";
+                return false;
+            }
+
+            sheetModel.Mode = mode;
+            sheetModel.KeyName = keyName;
+            sheetModel.Gid = sheetId;
+            sheetModel.Title = sheet.Properties.Title;
+            sheetModel.SpreadsheetId = spreadsheetId;
+            sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
+
+            return true;
         }
 
         /// <summary>
@@ -326,7 +314,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </summary>
         /// <param name="sheet"></param>
         /// <returns></returns>
-        private IList<IList<object>> GetData(Sheet sheet)
+        private IList<IList<object>> GetData(SheetModel sheet)
         {
             return sheetsService
                 .Spreadsheets
@@ -336,43 +324,55 @@ namespace SynSys.GSpreadsheetEasyAccess
                 .Values;
         }
 
-        /// <summary>
-        /// Метод может бросить исключение Google.Apis.Requests.RequestError
-        /// в том случае если id или gid листа не существуют.
-        /// </summary>
-        /// <param name="sheet"></param>
-        /// <returns></returns>
-        private string GetSheetTitle(Sheet sheet)
+        private bool SheetNotFound(IList<Sheet> sheets, string sheetGid, out Sheet sheet)
         {
-            return (from _sheet in GetSpreadsheet(sheet.SpreadsheetId).Sheets
-                    where _sheet.Properties.SheetId.ToString() == sheet.Gid
-                    select _sheet.Properties.Title).FirstOrDefault();
+            sheet = (from _sheet in sheets
+                     where _sheet.Properties.SheetId.ToString() == sheetGid
+                     select _sheet).FirstOrDefault();
+
+            return sheet == null;
         }
 
-        /// <summary>
-        /// Метод может бросить исключение Google.Apis.Requests.RequestError
-        /// в том случае если id таблицы не существуют.
-        /// </summary>
-        /// <param name="spreadsheetId">Число из url листа. /Id/</param>
-        /// <returns></returns>
-        private Spreadsheet GetSpreadsheet(string spreadsheetId)
+        private bool TryToGetSpreadsheet(string spreadsheetId,
+                                         out Spreadsheet spreadsheet,
+                                         out string exceptionMessage)
         {
-            return sheetsService
-                .Spreadsheets
-                .Get(spreadsheetId)
-                .Execute();
+            spreadsheet = null;
+            exceptionMessage = string.Empty;
+
+            try
+            {
+                spreadsheet = sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
+                return true;
+            }
+            catch (GoogleApiException e)
+            {
+                exceptionMessage = $"служба Google API выбросила исключение: {e.Error.Message}\n" +
+                                   $"{HttpManager.GetMessageByCode(e.Error.Code.ToString())}";
+                return false;
+            }
+            catch (TokenResponseException e)
+            {
+                exceptionMessage = $"возникла пробема с токеном доступа: {e.Message}";
+                return false;
+            }
+            catch (Exception e)
+            {
+                exceptionMessage = $"возникла непредвиденная ошибка: {e}";
+                return false;
+            }
         }
 
         /// <summary>
         /// Обновленние листа google таблицы на основе изменённого экземпляра типа Sheet.
+        /// </summary>
         /// <remarks>
         /// Метод изменяет данные в ячейках,
-        /// добавляет строки в конец листа и удаляет выбраные строки.
+        /// добавляет строки в конец листа и удаляет выбраные строки.<br />
         /// Все эти действия просходят на основе запросов в google.
         /// </remarks>
-        /// </summary>
         /// <param name="sheet"></param>
-        public void UpdateSheet(Sheet sheet)
+        public void UpdateSheet(SheetModel sheet)
         {
             CreateAppendRequest(sheet)?.Execute();
             CreateUpdateRequest(sheet)?.Execute();
@@ -391,7 +391,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </summary>
         /// <param name="sheet">Экземпляр изменённого листа</param>
         /// <returns></returns>
-        private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(Sheet sheet)
+        private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(SheetModel sheet)
         {
             if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToChange).Count <= 0) return null;
  
@@ -415,7 +415,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </summary>
         /// <param name="sheet">Экземпляр изменённого листа</param>
         /// <returns></returns>
-        private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(Sheet sheet)
+        private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(SheetModel sheet)
         {
             if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToDelete).Count > 0)
             {
@@ -475,7 +475,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </summary>
         /// <param name="sheet">Экземпляр изменённого листа</param>
         /// <returns></returns>
-        private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(Sheet sheet)
+        private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(SheetModel sheet)
         {
             if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToAppend).Count <= 0) return null;
  

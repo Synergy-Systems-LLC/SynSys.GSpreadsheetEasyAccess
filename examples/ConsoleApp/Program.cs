@@ -52,7 +52,7 @@ namespace ConsoleApp
 
             //if (connector.TryToGetSimpleSheet(url, out Sheet sheet))
             //if (connector.TryToGetSheetWithHead(url, out Sheet sheet))
-            if (connector.TryToGetSheetWithHeadAndKey(url, "A", out Sheet sheet))
+            if (connector.TryToGetSheetWithHeadAndKey(url, "A", out SheetModel sheet))
             {
                 PrintSheet(sheet, "Первое получение данных");
                 ChangeSheet(connector, sheet);
@@ -71,7 +71,7 @@ namespace ConsoleApp
             Console.ReadLine();
         }
 
-        private static void ChangeSheet(Connector connector, Sheet sheet)
+        private static void ChangeSheet(Connector connector, SheetModel sheet)
         {
             // Изменения данных в экземпляре типа Sheet.
             // Не важен порядок изменения экземпляра листа,
@@ -102,7 +102,7 @@ namespace ConsoleApp
             PrintSheet(sheet, "Данные после обновления в google");
         }
 
-        private static void AddRows(Sheet sheet)
+        private static void AddRows(SheetModel sheet)
         {
             // Пример добавления пустой строки.
             sheet.AddRow();
@@ -119,7 +119,7 @@ namespace ConsoleApp
             );
         }
 
-        private static void ChangeRows(Sheet sheet)
+        private static void ChangeRows(SheetModel sheet)
         {
             // Данный пример не учитывает отсутствие нужных индексов
             sheet.Rows[3].Cells[5].Value = "360";
@@ -129,7 +129,7 @@ namespace ConsoleApp
             sheet.Rows[9].Cells[1].Value = "920";
         }
 
-        private static void ChangeRowsWithCellTitle(Sheet sheet)
+        private static void ChangeRowsWithCellTitle(SheetModel sheet)
         {
             // Данный пример не учитывает отсутствие ячеек с выбранными Title
             sheet.Rows[2].Cells.Find(cell => cell.Title == "F").Value = "360";
@@ -139,7 +139,7 @@ namespace ConsoleApp
             sheet.Rows[8].Cells.Find(cell => cell.Title == "B").Value = "920";
         }
 
-        private static void ChangeRowsWithTitle(Sheet sheet)
+        private static void ChangeRowsWithTitle(SheetModel sheet)
         {
             // Данный пример не учитывает отсутствие ключа с нужным значением
             // и ячейки с выбранными Title
@@ -154,7 +154,7 @@ namespace ConsoleApp
                  .Value = "820";
         }
 
-        private static void DeleteRows(Sheet sheet)
+        private static void DeleteRows(SheetModel sheet)
         {
             // Данный пример не учитывает отсутствие нужных индексов
             sheet.DeleteRow(sheet.Rows[3]);
@@ -167,7 +167,7 @@ namespace ConsoleApp
         /// </summary>
         /// <param name="sheet"></param>
         /// <param name="status"></param>
-        private static void PrintSheet(Sheet sheet, string status)
+        private static void PrintSheet(SheetModel sheet, string status)
         {
             Console.WriteLine(
                 "\n" +

@@ -27,7 +27,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// <summary>
     /// Тип представляет один лист гугл листа.
     /// </summary>
-    public class Sheet
+    public class SheetModel
     {
         /// <summary>
         /// Имя листа
@@ -40,6 +40,10 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <summary>
         /// Id листа
         /// </summary>
+        /// <remarks>
+        /// Свойство имеет такое название потому что в uri листа ему
+        /// соответствует параметр gid.
+        /// </remarks>
         public string Gid { get; internal set; } = string.Empty;
         /// <summary>
         /// Имя листа
@@ -72,7 +76,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Инициализирует пустой экземпеляр листа готовый для заполнения.
         /// Экземпляр листа нельзя создавать вне библиотеки.
         /// </summary>
-        internal Sheet() { }
+        internal SheetModel() { }
 
         /// <summary>
         /// Заполнение листа с созданием строк и ячеек.

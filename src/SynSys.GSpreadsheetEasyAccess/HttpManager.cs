@@ -91,13 +91,15 @@ namespace SynSys.GSpreadsheetEasyAccess
             switch (httpCode)
             {
                 case "400":
-                    return "Неверный запрос. Url адрес не существует";
+                    return "Неверный запрос. Url адрес не существует.";
                 case "401":
-                    return "Проблемы с авторизацией в google";
+                    return "Проблемы с авторизацией в google.";
                 case "403":
-                    return "Отказ в доступе. Обратитесь к владельцу таблицы google";
+                    return "Отказ в доступе. Обратитесь к владельцу таблицы google.";
+                case "404":
+                    return "Не найден запрашиваемый адреc. Возможно вы ошиблись в Id таблицы или Id её листа.";
                 default:
-                    return $"http status code - {httpCode}";
+                    return $"http status code - {httpCode}.";
             }
         }
     }
