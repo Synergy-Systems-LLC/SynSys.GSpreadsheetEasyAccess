@@ -25,7 +25,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     }
 
     /// <summary>
-    /// Тип представляет один лист гугл листа.
+    /// Тип представляет один лист гугл таблицы.
     /// </summary>
     public class SheetModel
     {
@@ -59,68 +59,24 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </summary>
         public string KeyName { get; internal set; } = string.Empty;
         /// <summary>
-        /// Все строки входящие в данный лист
-        /// за исключением шапки
+        /// Режим, по которому определяется работа с листом.
         /// </summary>
-        public List<Row> Rows { get; } = new List<Row>();
+        public SheetMode Mode { get; internal set; }
         /// <summary>
         /// Шапка (первая строка листа) если есть
         /// </summary>
         public List<string> Head { get; internal set; }
         /// <summary>
-        /// Режим, по которому определяется работа с листом.
+        /// Все строки входящие в данный лист
+        /// за исключением шапки
         /// </summary>
-        public SheetMode Mode { get; set; }
+        public List<Row> Rows { get; } = new List<Row>();
 
         /// <summary>
         /// Инициализирует пустой экземпеляр листа готовый для заполнения.
         /// Экземпляр листа нельзя создавать вне библиотеки.
         /// </summary>
         internal SheetModel() { }
-
-        /// <summary>
-        /// Заполнение листа с созданием строк и ячеек.
-        /// </summary>
-        /// <param name="data">Данные для формирования листа</param>
-        internal void Fill(IList<IList<object>> data)
-        {
-            var rows = Enumerable.Range(0, data.Count);
-            var maxColumns = data.First().Count;
-
-            foreach (var rowIndex in rows)
-            {
-                if (rowIndex == 0)
-                {
-                    if (Mode == SheetMode.Simple)
-                    {
-                        CreateEmptyHead(maxColumns);
-                    }
-                    else
-                    {
-                        Head = data[rowIndex].Cast<string>().ToList();
-                        continue;
-                    }
-                }
-
-                var rowData = data[rowIndex].Cast<string>().ToList();
-                AddRow(rowIndex, maxColumns, rowData, RowStatus.Original);
-            }
-        }
-
-        /// <summary>
-        /// Создание пустой шапки, когда она не нужна для данного листа.
-        /// </summary>
-        /// <param name="maxLength">Максимальная длина строки</param>
-        /// <returns></returns>
-        internal void CreateEmptyHead(int maxLength)
-        {
-            Head = new List<string>();
-
-            for (var cellIndex = 0; cellIndex < maxLength; cellIndex++)
-            {
-                Head.Add(string.Empty);
-            }
-        }
 
         /// <summary>
         /// Добавляет пустую строку в конец листа.
@@ -155,32 +111,43 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
         /// <summary>
-        /// Основной метод для добавления строки в конец листа.
+        /// Метод не удаляет строку, но назначает ей статус на удаление.
+        /// Данный статус будет учитываться при удалении строк из листа в google.
         /// </summary>
-        /// <param name="index">Индекс данной строки</param>
-        /// <param name="maxLength">Максимальная длина строки</param>
-        /// <param name="rowData">Данные для формированния строки</param>
-        /// <param name="status">
-        /// Статус строки по умолчанию ToAppend.
-        /// </param>
-        private void AddRow(
-            int index,
-            int maxLength,
-            List<string> rowData,
-            RowStatus status=RowStatus.ToAppend)
+        /// <param name="row"></param>
+        public void DeleteRow(Row row)
         {
-            var row = new Row(rowData, maxLength, Head)
-            {
-                Status = status,
-                Number = index + 1
-            };
+            row.Status = RowStatus.ToDelete;
+        }
 
-            if (!string.IsNullOrWhiteSpace(KeyName))
+
+        /// <summary>
+        /// Заполнение листа с созданием строк и ячеек.
+        /// </summary>
+        /// <param name="data">Данные для формирования листа</param>
+        internal void Fill(IList<IList<object>> data)
+        {
+            var rows = Enumerable.Range(0, data.Count);
+            var maxColumns = data.First().Count;
+
+            foreach (var rowIndex in rows)
             {
-                row.Key = row.Cells.Find(cell => cell.Title == KeyName);
+                if (rowIndex == 0)
+                {
+                    if (Mode == SheetMode.Simple)
+                    {
+                        CreateEmptyHead(maxColumns);
+                    }
+                    else
+                    {
+                        Head = data[rowIndex].Cast<string>().ToList();
+                        continue;
+                    }
+                }
+
+                var rowData = data[rowIndex].Cast<string>().ToList();
+                AddRow(rowIndex, maxColumns, rowData, RowStatus.Original);
             }
-
-            Rows.Add(row);
         }
 
         /// <summary>
@@ -193,35 +160,6 @@ namespace SynSys.GSpreadsheetEasyAccess
             {
                 Values = GetAppendRows()
             };
-        }
-
-        /// <summary>
-        /// Преобразование List&lt;Row&gt; в List&lt;List&lt;object&gt;&gt;
-        /// </summary>
-        /// <returns></returns>
-        private IList<IList<object>> GetAppendRows()
-        {
-            var data = new List<IList<object>>();
-
-            foreach (var row in Rows)
-            {
-                if (row.Status == RowStatus.ToAppend)
-                {
-                    data.Add(row.GetData());
-                }
-            }
-
-            return data;
-        }
-
-        /// <summary>
-        /// Метод не удаляет строку, но назначает ей статус на удаление.
-        /// Данный статус будет учитываться при удалении строк из листа в google.
-        /// </summary>
-        /// <param name="row"></param>
-        public void DeleteRow(Row row)
-        {
-            row.Status = RowStatus.ToDelete;
         }
 
         /// <summary>
@@ -350,6 +288,66 @@ namespace SynSys.GSpreadsheetEasyAccess
             {
                 row.Status = RowStatus.Original;
             }
+        }
+
+
+        /// <summary>
+        /// Создание пустой шапки, когда она не нужна для данного листа.
+        /// </summary>
+        /// <param name="maxLength">Максимальная длина строки</param>
+        /// <returns></returns>
+        private void CreateEmptyHead(int maxLength)
+        {
+            Head = new List<string>();
+
+            for (var cellIndex = 0; cellIndex < maxLength; cellIndex++)
+            {
+                Head.Add(string.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Основной метод для добавления строки в конец листа.
+        /// </summary>
+        /// <param name="index">Индекс данной строки</param>
+        /// <param name="maxLength">Максимальная длина строки</param>
+        /// <param name="rowData">Данные для формированния строки</param>
+        /// <param name="status">
+        /// Статус строки по умолчанию ToAppend.
+        /// </param>
+        private void AddRow(int index, int maxLength, List<string> rowData, RowStatus status=RowStatus.ToAppend)
+        {
+            var row = new Row(rowData, maxLength, Head)
+            {
+                Status = status,
+                Number = index + 1
+            };
+
+            if (!string.IsNullOrWhiteSpace(KeyName))
+            {
+                row.Key = row.Cells.Find(cell => cell.Title == KeyName);
+            }
+
+            Rows.Add(row);
+        }
+
+        /// <summary>
+        /// Преобразование List&lt;Row&gt; в List&lt;List&lt;object&gt;&gt;
+        /// </summary>
+        /// <returns></returns>
+        private IList<IList<object>> GetAppendRows()
+        {
+            var data = new List<IList<object>>();
+
+            foreach (var row in Rows)
+            {
+                if (row.Status == RowStatus.ToAppend)
+                {
+                    data.Add(row.GetData());
+                }
+            }
+
+            return data;
         }
     }
 }

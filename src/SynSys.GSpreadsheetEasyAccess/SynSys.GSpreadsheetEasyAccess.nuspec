@@ -4,13 +4,18 @@
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>asdf</authors>
+    <authors>Pavel Altynnikov</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <projectUrl>https://github.com/Synergy-Systems-LLC/GetGoogleSheetDataAPI</projectUrl>
+    <projectUrl>https://github.com/Synergy-Systems-LLC/SynSys.GSpreadsheetEasyAccess</projectUrl>
     <license type="expression">MIT</license>
-    <description>description</description>
-    <releaseNotes>qwer</releaseNotes>
+    <description>
+      Объекты для:
+      - Подключение к приложению на Google Cloud Platform у которого обязательно должен быть
+        подключен сервис Google Sheets API;
+      - Получение и изменение данных в гугл таблицах.
+    </description>
+    <releaseNotes>" "</releaseNotes>
     <copyright>$copyright$</copyright>
-    <tags>asdfg</tags>
+    <tags>Spreadsheet, Google Sheets API</tags>
   </metadata>
 </package>

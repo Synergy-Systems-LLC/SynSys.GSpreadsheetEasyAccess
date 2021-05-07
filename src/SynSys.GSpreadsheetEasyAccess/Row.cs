@@ -76,7 +76,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
         /// <summary>
-        /// Метод для преобразования строки из List&lt;Cell&gt; в List&lt;object&gt;.
+        /// Преобразование строки из List&lt;Cell&gt; в List&lt;object&gt;.
         /// Это нужно для подготовки данных к отправке в google таблицу.
         /// </summary>
         /// <returns></returns>

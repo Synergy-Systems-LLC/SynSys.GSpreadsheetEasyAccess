@@ -118,45 +118,6 @@ namespace SynSys.GSpreadsheetEasyAccess
             return true;
         }
 
-        #region SheetService
-        private SheetsService GetService(Stream credentials)
-        {
-            return new SheetsService(
-                new BaseClientService.Initializer
-                {
-                    HttpClientInitializer = GetUserCredential(credentials),
-                    ApplicationName = ApplicationName
-                }
-            );
-        }
-
-        private UserCredential GetUserCredential(Stream credentials)
-        {
-            return GoogleWebAuthorizationBroker.AuthorizeAsync(
-                GoogleClientSecrets.Load(credentials).Secrets,
-                scopes,
-                "user",
-                GenerateCancellationToken(),
-                new FileDataStore(GenerateTokenPath(), true)
-            ).Result;
-        }
-
-        private CancellationToken GenerateCancellationToken()
-        {
-            var tokenSource = new CancellationTokenSource();
-            tokenSource.CancelAfter(TimeSpan.FromSeconds(CancellationSeconds));
-            return tokenSource.Token;
-        }
-
-        private static string GenerateTokenPath()
-        {
-            var uriPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().EscapedCodeBase);
-            var outputDirectory = new Uri(uriPath).LocalPath;
-            return Path.Combine(outputDirectory, "token.json");
-        }
-        #endregion
-
-        #region GetData
         /// <summary>
         /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
         /// Лист представляет таблицу из списка строк. Шапка отсутствует.<br/>
@@ -267,6 +228,28 @@ namespace SynSys.GSpreadsheetEasyAccess
             return true;
         }
 
+        /// <summary>
+        /// Обновленние листа google таблицы на основе изменённого экземпляра типа Sheet.
+        /// </summary>
+        /// <remarks>
+        /// Метод изменяет данные в ячейках,
+        /// добавляет строки в конец листа и удаляет выбраные строки.<br />
+        /// Все эти действия просходят на основе запросов в google.
+        /// </remarks>
+        /// <param name="sheet"></param>
+        public void UpdateSheet(SheetModel sheet)
+        {
+            CreateAppendRequest(sheet)?.Execute();
+            CreateUpdateRequest(sheet)?.Execute();
+            CreateDeleteRequest(sheet)?.Execute();
+
+            sheet.ClearDeletedRows();
+            sheet.RenumberRows();
+            sheet.ResetRowStatuses();
+        }
+
+
+        #region Data
         private bool TryToInitializeSheet(string url, SheetMode mode, string keyName, out SheetModel sheetModel)
         {
             sheetModel = new SheetModel();
@@ -361,26 +344,6 @@ namespace SynSys.GSpreadsheetEasyAccess
                 exceptionMessage = $"возникла непредвиденная ошибка: {e}";
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Обновленние листа google таблицы на основе изменённого экземпляра типа Sheet.
-        /// </summary>
-        /// <remarks>
-        /// Метод изменяет данные в ячейках,
-        /// добавляет строки в конец листа и удаляет выбраные строки.<br />
-        /// Все эти действия просходят на основе запросов в google.
-        /// </remarks>
-        /// <param name="sheet"></param>
-        public void UpdateSheet(SheetModel sheet)
-        {
-            CreateAppendRequest(sheet)?.Execute();
-            CreateUpdateRequest(sheet)?.Execute();
-            CreateDeleteRequest(sheet)?.Execute();
-
-            sheet.ClearDeletedRows();
-            sheet.RenumberRows();
-            sheet.ResetRowStatuses();
         }
         #endregion
 
@@ -488,6 +451,44 @@ namespace SynSys.GSpreadsheetEasyAccess
                 .USERENTERED;
 
             return request;
+        }
+        #endregion
+
+        #region SheetService
+        private SheetsService GetService(Stream credentials)
+        {
+            return new SheetsService(
+                new BaseClientService.Initializer
+                {
+                    HttpClientInitializer = GetUserCredential(credentials),
+                    ApplicationName = ApplicationName
+                }
+            );
+        }
+
+        private UserCredential GetUserCredential(Stream credentials)
+        {
+            return GoogleWebAuthorizationBroker.AuthorizeAsync(
+                GoogleClientSecrets.Load(credentials).Secrets,
+                scopes,
+                "user",
+                GenerateCancellationToken(),
+                new FileDataStore(GenerateTokenPath(), true)
+            ).Result;
+        }
+
+        private CancellationToken GenerateCancellationToken()
+        {
+            var tokenSource = new CancellationTokenSource();
+            tokenSource.CancelAfter(TimeSpan.FromSeconds(CancellationSeconds));
+            return tokenSource.Token;
+        }
+
+        private static string GenerateTokenPath()
+        {
+            var uriPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().EscapedCodeBase);
+            var outputDirectory = new Uri(uriPath).LocalPath;
+            return Path.Combine(outputDirectory, "token.json");
         }
         #endregion
     }
