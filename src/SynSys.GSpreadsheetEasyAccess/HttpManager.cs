@@ -4,77 +4,33 @@ using System.Text.RegularExpressions;
 namespace SynSys.GSpreadsheetEasyAccess
 {
     // Сделать данный класс не статичным!
-    internal static class HttpManager
+    public static class HttpManager
     {
-        internal static string Status { get; set; }
+        public static string Status { get; set; }
 
-        internal static bool IsCorrectUrl(string url)
+        public static string GetSpreadsheetIdFromUri(string uri)
         {
-            if (String.IsNullOrEmpty(url))
-            {
-                Status = "Url пустой";
-                return false;
-            }
-
-            if (NotExistsSpreadsheet(url))
-            {
-                Status = "Url адрес не принадлежит google spreadsheet";
-                return false;
-            }
-
-            if (NotExistsId(url))
-            {
-                Status = "В Url адресе некорректный spreadsheetId";
-                return false;
-            }
-
-            if (NotExistsGid(url))
-            {
-                Status = "В Url адресе некорректный gid листа или он отсутствует";
-                return false;
-            }
-
-            return true;
-        }
-
-        private static bool NotExistsSpreadsheet(string url)
-        {
-            if (url.Contains("spreadsheets"))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private static bool NotExistsId(string url)
-        {
-            var match = Regex.Match(url, @"(?s)(?<=d/).+?(?=/edit)");
-            return !match.Success;
-        }
-
-        private static bool NotExistsGid(string url)
-        {
-            var match = Regex.Match(url, @"(?s)(?<=gid=)\d+");
-            return !match.Success;
-        }
-
-        internal static string GetSpreadsheetIdFromUrl(string url)
-        {
-            var match = Regex.Match(url, @"(?s)(?<=d/).+?(?=/edit)");
+            var match = Regex.Match(uri, @"(?s)(?<=d/).+?(?=/edit)");
             return match.ToString();
         }
 
-        internal static string GetGidFromUrl(string url)
+        public static int GetGidFromUri(string uri)
         {
-            var match = Regex.Match(url, @"(?s)(?<=gid=)\d+");
-            return match.ToString();
+            var match = Regex.Match(uri, @"(?s)(?<=gid=)\d+");
+
+            if (string.IsNullOrWhiteSpace(match.Value))
+            {
+                return -1;
+            }
+
+            return int.Parse(match.Value);
         }
+
 
         internal static string GetHttpStatusCode(string errorMessage)
         {
             string pattern = @"\[(\d+)\]";
-            var rx = new Regex(pattern); //один из вариантов
+            var rx = new Regex(pattern);
 
             if (rx.IsMatch(errorMessage))
             {
@@ -101,6 +57,58 @@ namespace SynSys.GSpreadsheetEasyAccess
                 default:
                     return $"http status code - {httpCode}.";
             }
+        }
+
+        internal static bool IsCorrectUrl(string uri)
+        {
+            if (string.IsNullOrEmpty(uri))
+            {
+                Status = "Url пустой";
+                return false;
+            }
+
+            if (NotExistsSpreadsheet(uri))
+            {
+                Status = "Url адрес не принадлежит google spreadsheet";
+                return false;
+            }
+
+            if (NotExistsId(uri))
+            {
+                Status = "В Url адресе некорректный spreadsheetId";
+                return false;
+            }
+
+            if (NotExistsGid(uri))
+            {
+                Status = "В Url адресе некорректный gid листа или он отсутствует";
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private static bool NotExistsSpreadsheet(string url)
+        {
+            if (url.Contains("spreadsheets"))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool NotExistsId(string url)
+        {
+            var match = Regex.Match(url, @"(?s)(?<=d/).+?(?=/edit)");
+            return !match.Success;
+        }
+
+        private static bool NotExistsGid(string url)
+        {
+            var match = Regex.Match(url, @"(?s)(?<=gid=)\d+");
+            return !match.Success;
         }
     }
 }

@@ -124,15 +124,85 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В каждой строке одинаковое количество ячеек.<br/>
         /// В каждой ячейке есть строковое значение.
         /// </summary>
-        /// <param name="url">Полный url адрес листа</param>
+        /// <param name="uri"></param>
         /// <param name="sheetModel"></param>
         /// <returns>
         /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
         /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
         /// </returns>
-        public bool TryToGetSimpleSheet(string url, out SheetModel sheetModel)
+        public bool TryToGetSimpleSheet(string uri, out SheetModel sheetModel)
         {
-            bool isInitializeSuccessful = TryToInitializeSheet(url, SheetMode.Simple, string.Empty, out sheetModel);
+            return TryToGetSimpleSheet(
+                HttpManager.GetSpreadsheetIdFromUri(uri),
+                HttpManager.GetGidFromUri(uri),
+                out sheetModel
+            );
+        }
+
+        /// <summary>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Лист представляет таблицу из списка строк. Шапка отсутствует.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение.
+        /// </summary>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="gid"></param>
+        /// <param name="sheetModel"></param>
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
+        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// </returns>
+        public bool TryToGetSimpleSheet(string spreadsheetId,
+                                        int gid,
+                                        out SheetModel sheetModel)
+        {
+            bool isInitializeSuccessful = TryToInitializeSheet(
+                spreadsheetId,
+                gid,
+                SheetMode.Head,
+                string.Empty,
+                out sheetModel
+            );
+
+            if (!isInitializeSuccessful)
+            {
+                return false;
+            }
+
+            var data = GetData(sheetModel);
+
+            if (data != null)
+            {
+                sheetModel.Fill(data);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Лист представляет таблицу из списка строк. Шапка отсутствует.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение.
+        /// </summary>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="sheetName"></param>
+        /// <param name="sheetModel"></param>
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
+        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// </returns>
+        public bool TryToGetSimpleSheet(string spreadsheetId,
+                                        string sheetName,
+                                        out SheetModel sheetModel)
+        {
+            bool isInitializeSuccessful = TryToInitializeSheet(
+                spreadsheetId,
+                sheetName,
+                SheetMode.Head,
+                string.Empty,
+                out sheetModel
+            );
 
             if (!isInitializeSuccessful)
             {
@@ -157,15 +227,46 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В каждой ячейке есть строковое значение и наименование,
         /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
-        /// <param name="url">Полный url адрес листа</param>
+        /// <param name="uri">Полный uri адрес листа</param>
         /// <param name="sheetModel"></param>
         /// <returns>
         /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
         /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
         /// </returns>
-        public bool TryToGetSheetWithHead(string url, out SheetModel sheetModel)
+        public bool TryToGetSheetWithHead(string uri, out SheetModel sheetModel)
         {
-            bool isInitializeSuccessful = TryToInitializeSheet(url, SheetMode.Head, string.Empty, out sheetModel);
+            return TryToGetSheetWithHead(
+                HttpManager.GetSpreadsheetIdFromUri(uri),
+                HttpManager.GetGidFromUri(uri),
+                out sheetModel
+            );
+        }
+
+        /// <summary>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Лист представляет таблицу из списка строк, без первой строки.
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="spreadsheetId">Полный url адрес листа</param>
+        /// <param name="sheetModel"></param>
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
+        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// </returns>
+        public bool TryToGetSheetWithHead(string spreadsheetId,
+                                          int gid,
+                                          out SheetModel sheetModel)
+        {
+            bool isInitializeSuccessful = TryToInitializeSheet(
+                spreadsheetId,
+                gid,
+                SheetMode.Head,
+                string.Empty,
+                out sheetModel
+            );
 
             if (!isInitializeSuccessful)
             {
@@ -176,7 +277,53 @@ namespace SynSys.GSpreadsheetEasyAccess
 
             if (data == null)
             {
-                sheetModel.Status = $"Лист по адресу {url} не содержит данных";
+                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
+                                    $"с gid: {gid} не содержит данных";
+                return false;
+            }
+
+            sheetModel.Fill(data);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Лист представляет таблицу из списка строк, без первой строки.
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="spreadsheetId">Полный url адрес листа</param>
+        /// <param name="sheetModel"></param>
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
+        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// </returns>
+        public bool TryToGetSheetWithHead(string spreadsheetId,
+                                          string sheetName,
+                                          out SheetModel sheetModel)
+        {
+            bool isInitializeSuccessful = TryToInitializeSheet(
+                spreadsheetId,
+                sheetName,
+                SheetMode.Head,
+                string.Empty,
+                out sheetModel
+            );
+
+            if (!isInitializeSuccessful)
+            {
+                return false;
+            }
+
+            var data = GetData(sheetModel);
+
+            if (data == null)
+            {
+                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
+                                    $"с name: {sheetName} не содержит данных";
                 return false;
             }
 
@@ -193,16 +340,54 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В каждой ячейке есть строковое значение и наименование,
         /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
-        /// <param name="url">Полный url адрес листа</param>
+        /// <param name="spreadsheetId">Полный url адрес листа</param>
+        /// <param name="gid">Полный url адрес листа</param>
         /// <param name="keyName">Наименование ключевого столбца таблицы</param>
         /// <param name="sheetModel"></param>
         /// <returns>
         /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
         /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
         /// </returns>
-        public bool TryToGetSheetWithHeadAndKey(string url, string keyName, out SheetModel sheetModel)
+        public bool TryToGetSheetWithHeadAndKey(string uri,
+                                                string keyName,
+                                                out SheetModel sheetModel)
         {
-            bool isInitializeSuccessful = TryToInitializeSheet(url, SheetMode.HeadAndKey, keyName, out sheetModel);
+            return TryToGetSheetWithHeadAndKey(
+                HttpManager.GetSpreadsheetIdFromUri(uri),
+                HttpManager.GetGidFromUri(uri),
+                keyName,
+                out sheetModel
+            );
+        }
+
+        /// <summary>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Лист представляет таблицу из списка строк, без первой строки.
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек и есть ключевая ячейка.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="spreadsheetId">Полный url адрес листа</param>
+        /// <param name="gid">Полный url адрес листа</param>
+        /// <param name="keyName">Наименование ключевого столбца таблицы</param>
+        /// <param name="sheetModel"></param>
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
+        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// </returns>
+        public bool TryToGetSheetWithHeadAndKey(string spreadsheetId,
+                                                int gid,
+                                                string keyName,
+                                                out SheetModel sheetModel)
+        {
+            bool isInitializeSuccessful = TryToInitializeSheet(
+                spreadsheetId,
+                gid,
+                SheetMode.HeadAndKey,
+                keyName,
+                out sheetModel
+            );
 
             if (!isInitializeSuccessful)
             {
@@ -213,13 +398,70 @@ namespace SynSys.GSpreadsheetEasyAccess
 
             if (data == null)
             {
-                sheetModel.Status = $"Лист по адресу \"{url}\" не содержит данных";
+                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
+                                    $"с gid: {gid} не содержит данных";
                 return false;
             }
 
             if (!data[0].Contains(keyName))
             {
-                sheetModel.Status = $"Шапка листа по адресу \"{url}\" не содержит столбец \"{keyName}\"";
+                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId}" +
+                                    $"$ с gid: {gid} не содержит ключа {keyName}";
+                return false;
+            }
+
+            sheetModel.Fill(data);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Лист представляет таблицу из списка строк, без первой строки.
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек и есть ключевая ячейка.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="spreadsheetId">Полный url адрес листа</param>
+        /// <param name="gid">Полный url адрес листа</param>
+        /// <param name="keyName">Наименование ключевого столбца таблицы</param>
+        /// <param name="sheetModel"></param>
+        /// <returns>
+        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
+        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// </returns>
+        public bool TryToGetSheetWithHeadAndKey(string spreadsheetId,
+                                                string sheetName,
+                                                string keyName,
+                                                out SheetModel sheetModel)
+        {
+            bool isInitializeSuccessful = TryToInitializeSheet(
+                spreadsheetId,
+                sheetName,
+                SheetMode.HeadAndKey,
+                keyName,
+                out sheetModel
+            );
+
+            if (!isInitializeSuccessful)
+            {
+                return false;
+            }
+
+            var data = GetData(sheetModel);
+
+            if (data == null)
+            {
+                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
+                                    $"с name: {sheetName} не содержит данных";
+                return false;
+            }
+
+            if (!data[0].Contains(keyName))
+            {
+                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
+                                    $"с name: {sheetName} не содержит ключ {keyName}";
                 return false;
             }
 
@@ -250,21 +492,20 @@ namespace SynSys.GSpreadsheetEasyAccess
 
 
         #region Data
-        private bool TryToInitializeSheet(string url, SheetMode mode, string keyName, out SheetModel sheetModel)
+        private bool TryToInitializeSheet(string spreadsheetId,
+                                          int gid,
+                                          SheetMode mode,
+                                          string keyName,
+                                          out SheetModel sheetModel)
         {
             sheetModel = new SheetModel();
             var commonMessage = "Во время инициализации листа";
 
-            if (!HttpManager.IsCorrectUrl(url))
+            if (gid < 0)
             {
-                sheetModel.Status = $"{commonMessage} возникла пробема с Url: {HttpManager.Status}";
+                sheetModel.Status = $"Был введён некорректный gid листа: {gid}. Возможно он отсутствует в uri";
                 return false;
             }
-
-            // Данные значения можно получить из проверенного url,
-            // но это не гарантия того что существует лист с такими значениями.
-            string spreadsheetId = HttpManager.GetSpreadsheetIdFromUrl(url);
-            string sheetId = HttpManager.GetGidFromUrl(url);
 
             if (!TryToGetSpreadsheet(spreadsheetId, out Spreadsheet spreadsheet, out string exceptionMessage))
             {
@@ -272,48 +513,61 @@ namespace SynSys.GSpreadsheetEasyAccess
                 return false;
             }
 
-            if (SheetNotFound(spreadsheet.Sheets, sheetId, out Sheet sheet))
+            if (SheetNotFound(spreadsheet.Sheets, gid, out Sheet sheet))
             {
-                sheetModel.Status = $"В таблице по адресу: \"{url}\" " +
-                                    $"не найден лист с Id: {sheetId}";
+                sheetModel.Status = $"{commonMessage} " +
+                                    $"В таблице по адресу: \"{spreadsheet.SpreadsheetId}\" " +
+                                    $"не найден лист с Id: {gid}";
                 return false;
             }
 
             sheetModel.Mode = mode;
             sheetModel.KeyName = keyName;
-            sheetModel.Gid = sheetId;
+            sheetModel.Gid = gid.ToString();
             sheetModel.Title = sheet.Properties.Title;
-            sheetModel.SpreadsheetId = spreadsheetId;
+            sheetModel.SpreadsheetId = spreadsheet.SpreadsheetId;
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
 
             return true;
         }
 
-        /// <summary>
-        /// Метод может бросить исключение System.NullReferenceException
-        /// если по какой-то причине sheetService не будет получен.<br/>
-        /// Метод может бросить исключение Google.Apis.Requests.RequestError в ValueResource.Get
-        /// если id или gid листа не существуют.
-        /// </summary>
-        /// <param name="sheet"></param>
-        /// <returns></returns>
-        private IList<IList<object>> GetData(SheetModel sheet)
+        private bool TryToInitializeSheet(string spreadsheetId,
+                                          string sheetName,
+                                          SheetMode mode,
+                                          string keyName,
+                                          out SheetModel sheetModel)
         {
-            return sheetsService
-                .Spreadsheets
-                .Values
-                .Get(sheet.SpreadsheetId, sheet.Title)
-                .Execute()
-                .Values;
-        }
+            sheetModel = new SheetModel();
+            var commonMessage = "Во время инициализации листа";
 
-        private bool SheetNotFound(IList<Sheet> sheets, string sheetGid, out Sheet sheet)
-        {
-            sheet = (from _sheet in sheets
-                     where _sheet.Properties.SheetId.ToString() == sheetGid
-                     select _sheet).FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(sheetName))
+            {
+                sheetModel.Status = $"Былo введёнo пустое имя листа";
+                return false;
+            }
 
-            return sheet == null;
+            if (!TryToGetSpreadsheet(spreadsheetId, out Spreadsheet spreadsheet, out string exceptionMessage))
+            {
+                sheetModel.Status = $"{commonMessage} {exceptionMessage}";
+                return false;
+            }
+
+            if (SheetNotFound(spreadsheet.Sheets, sheetName, out Sheet sheet))
+            {
+                sheetModel.Status = $"{commonMessage} " +
+                                    $"В таблице по адресу: \"{spreadsheet.SpreadsheetId}\" " +
+                                    $"не найден лист с именем: {sheetName}";
+                return false;
+            }
+
+            sheetModel.Mode = mode;
+            sheetModel.KeyName = keyName;
+            sheetModel.Gid = sheet.Properties.SheetId.ToString();
+            sheetModel.Title = sheet.Properties.Title;
+            sheetModel.SpreadsheetId = spreadsheet.SpreadsheetId;
+            sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
+
+            return true;
         }
 
         private bool TryToGetSpreadsheet(string spreadsheetId,
@@ -344,6 +598,42 @@ namespace SynSys.GSpreadsheetEasyAccess
                 exceptionMessage = $"возникла непредвиденная ошибка: {e}";
                 return false;
             }
+        }
+
+        private bool SheetNotFound(IList<Sheet> sheets, string sheetName, out Sheet sheet)
+        {
+            sheet = (from _sheet in sheets
+                     where _sheet.Properties.Title == sheetName
+                     select _sheet).FirstOrDefault();
+
+            return sheet == null;
+        }
+
+        private bool SheetNotFound(IList<Sheet> sheets, int gid, out Sheet sheet)
+        {
+            sheet = (from _sheet in sheets
+                     where _sheet.Properties.SheetId == gid
+                     select _sheet).FirstOrDefault();
+
+            return sheet == null;
+        }
+
+        /// <summary>
+        /// Метод может бросить исключение System.NullReferenceException
+        /// если по какой-то причине sheetService не будет получен.<br/>
+        /// Метод может бросить исключение Google.Apis.Requests.RequestError в ValueResource.Get
+        /// если id или gid листа не существуют.
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <returns></returns>
+        private IList<IList<object>> GetData(SheetModel sheet)
+        {
+            return sheetsService
+                .Spreadsheets
+                .Values
+                .Get(sheet.SpreadsheetId, sheet.Title)
+                .Execute()
+                .Values;
         }
         #endregion
 
