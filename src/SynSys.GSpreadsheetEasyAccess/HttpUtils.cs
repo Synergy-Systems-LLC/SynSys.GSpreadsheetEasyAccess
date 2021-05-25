@@ -1,19 +1,27 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
-    // Сделать данный класс не статичным!
-    public static class HttpManager
+    public static class HttpUtils
     {
-        public static string Status { get; set; }
-
+        /// <summary>
+        /// Получение идентификатора гугл таблицы.
+        /// </summary>
+        /// <param name="uri">Полный uri адрес листа гугл таблицы</param>
+        /// <returns></returns>
         public static string GetSpreadsheetIdFromUri(string uri)
         {
             var match = Regex.Match(uri, @"(?s)(?<=d/).+?(?=/edit)");
             return match.ToString();
         }
 
+        /// <summary>
+        /// Получение идентификатора листа гугл таблицы.
+        /// </summary>
+        /// <param name="uri">Полный uri адрес листа гугл таблицы</param>
+        /// <returns>
+        /// Возвращает -1 если в uri нет gid.
+        /// </returns>
         public static int GetGidFromUri(string uri)
         {
             var match = Regex.Match(uri, @"(?s)(?<=gid=)\d+");
@@ -24,6 +32,42 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
 
             return int.Parse(match.Value);
+        }
+
+        /// <summary>
+        /// Проверка корректности полного uri листа гугл таблицы.
+        /// </summary>
+        /// <param name="uri">Полный uri адрес листа гугл таблицы</param>
+        /// <param name="status">Информация о том почему uri не корректный</param>
+        /// <returns></returns>
+        public static bool IsCorrectUri(string uri, out string status)
+        {
+            if (string.IsNullOrEmpty(uri))
+            {
+                status = "Url пустой";
+                return false;
+            }
+
+            if (NotExistsSpreadsheet(uri))
+            {
+                status = "Url адрес не принадлежит google spreadsheet";
+                return false;
+            }
+
+            if (NotExistsId(uri))
+            {
+                status = "В Url адресе некорректный spreadsheetId";
+                return false;
+            }
+
+            if (NotExistsGid(uri))
+            {
+                status = "В Url адресе некорректный gid листа или он отсутствует";
+                return false;
+            }
+
+            status = string.Empty;
+            return true;
         }
 
 
@@ -57,35 +101,6 @@ namespace SynSys.GSpreadsheetEasyAccess
                 default:
                     return $"http status code - {httpCode}.";
             }
-        }
-
-        internal static bool IsCorrectUrl(string uri)
-        {
-            if (string.IsNullOrEmpty(uri))
-            {
-                Status = "Url пустой";
-                return false;
-            }
-
-            if (NotExistsSpreadsheet(uri))
-            {
-                Status = "Url адрес не принадлежит google spreadsheet";
-                return false;
-            }
-
-            if (NotExistsId(uri))
-            {
-                Status = "В Url адресе некорректный spreadsheetId";
-                return false;
-            }
-
-            if (NotExistsGid(uri))
-            {
-                Status = "В Url адресе некорректный gid листа или он отсутствует";
-                return false;
-            }
-
-            return true;
         }
 
 
