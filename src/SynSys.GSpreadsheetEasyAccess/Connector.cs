@@ -84,7 +84,6 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </example>
         /// </summary>
         /// <remarks>
-        /// Если пользователь не входит в домент synsys.co, то ему будет отказано в подлючении.<br/>
         /// У пользователя есть время на подключение, оно настраивается через свойство CancellationSeconds.<br/>
         /// После истечения данного времени коннектору присваивается статус ConnectorStatus.AuthorizationTimeOut.<br/>
         /// Если подключение состоялось, то присваивается статус ConnectorStatus.Connected 
@@ -119,38 +118,40 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
         /// <summary>
-        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа SheetModel.<br/>
         /// Лист представляет таблицу из списка строк. Шапка отсутствует.<br/>
         /// В каждой строке одинаковое количество ячеек.<br/>
         /// В каждой ячейке есть строковое значение.
         /// </summary>
-        /// <param name="uri"></param>
-        /// <param name="sheetModel"></param>
+        /// <param name="uri">Полный uri листа гугл таблицы</param>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
-        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// Всегда вернёт объект типа SheetModel из out параметра.<br/>
+        /// Если при получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
+        /// а в sheetModel.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSimpleSheet(string uri, out SheetModel sheetModel)
         {
             return TryToGetSimpleSheet(
-                HttpManager.GetSpreadsheetIdFromUri(uri),
-                HttpManager.GetGidFromUri(uri),
+                HttpUtils.GetSpreadsheetIdFromUri(uri),
+                HttpUtils.GetGidFromUri(uri),
                 out sheetModel
             );
         }
 
         /// <summary>
-        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа SheetModel.<br/>
         /// Лист представляет таблицу из списка строк. Шапка отсутствует.<br/>
         /// В каждой строке одинаковое количество ячеек.<br/>
         /// В каждой ячейке есть строковое значение.
         /// </summary>
-        /// <param name="spreadsheetId"></param>
-        /// <param name="gid"></param>
-        /// <param name="sheetModel"></param>
+        /// <param name="spreadsheetId">Идентификатор гугл таблицы</param>
+        /// <param name="gid">Идентификатор листа</param>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
-        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// Всегда вернёт объект типа SheetModel из out параметра.<br/>
+        /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
+        /// а в SheetModel.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSimpleSheet(string spreadsheetId,
                                         int gid,
@@ -180,17 +181,18 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
         /// <summary>
-        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа SheetModel.<br/>
         /// Лист представляет таблицу из списка строк. Шапка отсутствует.<br/>
         /// В каждой строке одинаковое количество ячеек.<br/>
         /// В каждой ячейке есть строковое значение.
         /// </summary>
-        /// <param name="spreadsheetId"></param>
-        /// <param name="sheetName"></param>
-        /// <param name="sheetModel"></param>
+        /// <param name="spreadsheetId">Идентификатор гугл таблицы</param>
+        /// <param name="sheetName">Имя листа</param>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
-        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// Всегда вернёт объект типа SheetModel из out параметра.<br/>
+        /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
+        /// а в SheetModel.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSimpleSheet(string spreadsheetId,
                                         string sheetName,
@@ -220,7 +222,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
         /// <summary>
-        /// Попытка получить данные из листа гугл таблицы в виде объекта типа Sheet.<br/>
+        /// Попытка получить данные из листа гугл таблицы в виде объекта типа SheetModel.<br/>
         /// Лист представляет таблицу из списка строк, без первой строки.
         /// Первая строка уходит в шапку таблицы.<br/>
         /// В каждой строке одинаковое количество ячеек.<br/>
@@ -228,16 +230,17 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
         /// <param name="uri">Полный uri адрес листа</param>
-        /// <param name="sheetModel"></param>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
-        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// Всегда вернёт объект типа SheetModel из out параметра.<br/>
+        /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
+        /// а в SheetModel.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSheetWithHead(string uri, out SheetModel sheetModel)
         {
             return TryToGetSheetWithHead(
-                HttpManager.GetSpreadsheetIdFromUri(uri),
-                HttpManager.GetGidFromUri(uri),
+                HttpUtils.GetSpreadsheetIdFromUri(uri),
+                HttpUtils.GetGidFromUri(uri),
                 out sheetModel
             );
         }
@@ -250,11 +253,13 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В каждой ячейке есть строковое значение и наименование,
         /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
-        /// <param name="spreadsheetId">Полный url адрес листа</param>
-        /// <param name="sheetModel"></param>
+        /// <param name="spreadsheetId">Идентификатор гугл таблицы</param>
+        /// <param name="gid">Идентификатор листа</param>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
-        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// Всегда вернёт объект типа SheetModel из out параметра.<br/>
+        /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
+        /// а в SheetModel.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSheetWithHead(string spreadsheetId,
                                           int gid,
@@ -295,11 +300,13 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В каждой ячейке есть строковое значение и наименование,
         /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
-        /// <param name="spreadsheetId">Полный url адрес листа</param>
-        /// <param name="sheetModel"></param>
+        /// <param name="spreadsheetId">Идентификатор гугл таблицы</param>
+        /// <param name="sheetName">Имя листа</param>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
-        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// Всегда вернёт объект типа SheetModel из out параметра.<br/>
+        /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
+        /// а в SheetModel.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSheetWithHead(string spreadsheetId,
                                           string sheetName,
@@ -340,21 +347,21 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В каждой ячейке есть строковое значение и наименование,
         /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
-        /// <param name="spreadsheetId">Полный url адрес листа</param>
-        /// <param name="gid">Полный url адрес листа</param>
-        /// <param name="keyName">Наименование ключевого столбца таблицы</param>
-        /// <param name="sheetModel"></param>
+        /// <param name="uri">Полный uri адрес листа</param>
+        /// <param name="keyName">Имя ключевого столбца.</param>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
-        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// Всегда вернёт объект типа SheetModel из out параметра.<br/>
+        /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
+        /// а в SheetModel.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSheetWithHeadAndKey(string uri,
                                                 string keyName,
                                                 out SheetModel sheetModel)
         {
             return TryToGetSheetWithHeadAndKey(
-                HttpManager.GetSpreadsheetIdFromUri(uri),
-                HttpManager.GetGidFromUri(uri),
+                HttpUtils.GetSpreadsheetIdFromUri(uri),
+                HttpUtils.GetGidFromUri(uri),
                 keyName,
                 out sheetModel
             );
@@ -368,13 +375,14 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В каждой ячейке есть строковое значение и наименование,
         /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
-        /// <param name="spreadsheetId">Полный url адрес листа</param>
-        /// <param name="gid">Полный url адрес листа</param>
-        /// <param name="keyName">Наименование ключевого столбца таблицы</param>
-        /// <param name="sheetModel"></param>
+        /// <param name="spreadsheetId">Идентификатор гугл таблицы</param>
+        /// <param name="gid">Идентификатор листа</param>
+        /// <param name="keyName">Имя ключевого столбца.</param>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
-        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// Всегда вернёт объект типа SheetModel из out параметра.<br/>
+        /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
+        /// а в SheetModel.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSheetWithHeadAndKey(string spreadsheetId,
                                                 int gid,
@@ -423,13 +431,14 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В каждой ячейке есть строковое значение и наименование,
         /// которое совпадает с шапкой столбца для данной ячейки.
         /// </summary>
-        /// <param name="spreadsheetId">Полный url адрес листа</param>
-        /// <param name="gid">Полный url адрес листа</param>
-        /// <param name="keyName">Наименование ключевого столбца таблицы</param>
-        /// <param name="sheetModel"></param>
+        /// <param name="spreadsheetId">Идентификатор гугл таблицы</param>
+        /// <param name="sheetName">Имя листа</param>
+        /// <param name="keyName">Имя ключевого столбца.</param>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
         /// <returns>
-        /// Всегда вернёт объект типа Sheet из out параметра, но если возникнет ошибка,
-        /// то в Sheet.Status будет её значение, а в Sheet.Rows будет пустой список.
+        /// Всегда вернёт объект типа SheetModel из out параметра.<br/>
+        /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
+        /// а в SheetModel.Rows будет пустой список.
         /// </returns>
         public bool TryToGetSheetWithHeadAndKey(string spreadsheetId,
                                                 string sheetName,
@@ -471,23 +480,23 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
         /// <summary>
-        /// Обновленние листа google таблицы на основе изменённого экземпляра типа Sheet.
+        /// Обновленние листа гугл таблицы на основе изменённого экземпляра типа SheetModel.
         /// </summary>
         /// <remarks>
         /// Метод изменяет данные в ячейках,
         /// добавляет строки в конец листа и удаляет выбраные строки.<br />
         /// Все эти действия просходят на основе запросов в google.
         /// </remarks>
-        /// <param name="sheet"></param>
-        public void UpdateSheet(SheetModel sheet)
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
+        public void UpdateSheet(SheetModel sheetModel)
         {
-            CreateAppendRequest(sheet)?.Execute();
-            CreateUpdateRequest(sheet)?.Execute();
-            CreateDeleteRequest(sheet)?.Execute();
+            CreateAppendRequest(sheetModel)?.Execute();
+            CreateUpdateRequest(sheetModel)?.Execute();
+            CreateDeleteRequest(sheetModel)?.Execute();
 
-            sheet.ClearDeletedRows();
-            sheet.RenumberRows();
-            sheet.ResetRowStatuses();
+            sheetModel.ClearDeletedRows();
+            sheetModel.RenumberRows();
+            sheetModel.ResetRowStatuses();
         }
 
 
@@ -585,7 +594,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             catch (GoogleApiException e)
             {
                 exceptionMessage = $"служба Google API выбросила исключение: {e.Error.Message}\n" +
-                                   $"{HttpManager.GetMessageByCode(e.Error.Code.ToString())}";
+                                   $"{HttpUtils.GetMessageByCode(e.Error.Code.ToString())}";
                 return false;
             }
             catch (TokenResponseException e)

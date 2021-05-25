@@ -2,6 +2,9 @@
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
+    /// <summary>
+    /// Класс функций для работы с uri и http статус кодами.
+    /// </summary>
     public static class HttpUtils
     {
         /// <summary>
