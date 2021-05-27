@@ -165,19 +165,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                 out sheetModel
             );
 
-            if (!isInitializeSuccessful)
-            {
-                return false;
-            }
-
-            var data = GetData(sheetModel);
-
-            if (data != null)
-            {
-                sheetModel.Fill(data);
-            }
-
-            return true;
+            return TryToFillSimpleSheet(sheetModel, isInitializeSuccessful);
         }
 
         /// <summary>
@@ -206,19 +194,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                 out sheetModel
             );
 
-            if (!isInitializeSuccessful)
-            {
-                return false;
-            }
-
-            var data = GetData(sheetModel);
-
-            if (data != null)
-            {
-                sheetModel.Fill(data);
-            }
-
-            return true;
+            return TryToFillSimpleSheet(sheetModel, isInitializeSuccessful);
         }
 
         /// <summary>
@@ -273,23 +249,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                 out sheetModel
             );
 
-            if (!isInitializeSuccessful)
-            {
-                return false;
-            }
-
-            var data = GetData(sheetModel);
-
-            if (data == null)
-            {
-                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
-                                    $"с gid: {gid} не содержит данных";
-                return false;
-            }
-
-            sheetModel.Fill(data);
-
-            return true;
+            return TryToFillSimpleSheet(sheetModel, isInitializeSuccessful);
         }
 
         /// <summary>
@@ -320,23 +280,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                 out sheetModel
             );
 
-            if (!isInitializeSuccessful)
-            {
-                return false;
-            }
-
-            var data = GetData(sheetModel);
-
-            if (data == null)
-            {
-                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
-                                    $"с name: {sheetName} не содержит данных";
-                return false;
-            }
-
-            sheetModel.Fill(data);
-
-            return true;
+            return TryToFillSimpleSheet(sheetModel, isInitializeSuccessful);
         }
 
         /// <summary>
@@ -397,30 +341,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                 out sheetModel
             );
 
-            if (!isInitializeSuccessful)
-            {
-                return false;
-            }
-
-            var data = GetData(sheetModel);
-
-            if (data == null)
-            {
-                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
-                                    $"с gid: {gid} не содержит данных";
-                return false;
-            }
-
-            if (!data[0].Contains(keyName))
-            {
-                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId}" +
-                                    $"$ с gid: {gid} не содержит ключа {keyName}";
-                return false;
-            }
-
-            sheetModel.Fill(data);
-
-            return true;
+            return TryToFillSheetWithHeadAndKey(sheetModel, keyName, isInitializeSuccessful);
         }
 
         /// <summary>
@@ -453,30 +374,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                 out sheetModel
             );
 
-            if (!isInitializeSuccessful)
-            {
-                return false;
-            }
-
-            var data = GetData(sheetModel);
-
-            if (data == null)
-            {
-                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
-                                    $"с name: {sheetName} не содержит данных";
-                return false;
-            }
-
-            if (!data[0].Contains(keyName))
-            {
-                sheetModel.Status = $"Лист из таблицы spreadsheet: {spreadsheetId} " +
-                                    $"с name: {sheetName} не содержит ключ {keyName}";
-                return false;
-            }
-
-            sheetModel.Fill(data);
-
-            return true;
+            return TryToFillSheetWithHeadAndKey(sheetModel, keyName, isInitializeSuccessful);
         }
 
         /// <summary>
@@ -500,7 +398,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
 
-        #region Data
+        #region WorkWithSheetModel
         private bool TryToInitializeSheet(string spreadsheetId,
                                           int gid,
                                           SheetMode mode,
@@ -525,8 +423,8 @@ namespace SynSys.GSpreadsheetEasyAccess
             if (SheetNotFound(spreadsheet.Sheets, gid, out Sheet sheet))
             {
                 sheetModel.Status = $"{commonMessage} " +
-                                    $"В таблице по адресу: \"{spreadsheet.SpreadsheetId}\" " +
-                                    $"не найден лист с Id: {gid}";
+                                    $"В таблице Id: \"{spreadsheet.SpreadsheetId}\" " +
+                                    $"не найден лист Id: {gid}";
                 return false;
             }
 
@@ -625,6 +523,72 @@ namespace SynSys.GSpreadsheetEasyAccess
                      select _sheet).FirstOrDefault();
 
             return sheet == null;
+        }
+
+        private bool TryToFillSimpleSheet(SheetModel sheetModel, bool isInitializeSuccessful)
+        {
+            if (!isInitializeSuccessful)
+            {
+                return false;
+            }
+
+            IList<IList<object>> data;
+
+            try
+            {
+                data = GetData(sheetModel);
+            }
+            catch(Exception e)
+            {
+                sheetModel.Status = $"Во время получения данных возникло исключение: {e}";
+                return false;
+            }
+
+            if (data == null)
+            {
+                sheetModel.Status = $"Лист не содержит данных";
+                return false;
+            }
+
+            sheetModel.Fill(data);
+
+            return true;
+        }
+
+        private bool TryToFillSheetWithHeadAndKey(SheetModel sheetModel, string keyName, bool isInitializeSuccessful)
+        {
+            if (!isInitializeSuccessful)
+            {
+                return false;
+            }
+
+            IList<IList<object>> data;
+
+            try
+            {
+                data = GetData(sheetModel);
+            }
+            catch(Exception e)
+            {
+                sheetModel.Status = $"Во время получения данных возникло исключение: {e}";
+                return false;
+            }
+
+            if (data == null)
+            {
+                sheetModel.Status = $"Лист не содержит данных";
+                return false;
+            }
+
+            if (!data[0].Contains(keyName))
+            {
+                sheetModel.Status = $"Лист не содержит ключ {keyName}";
+                return false;
+            }
+
+            sheetModel.Fill(data);
+
+            return true;
         }
 
         /// <summary>
