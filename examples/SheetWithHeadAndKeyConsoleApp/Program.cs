@@ -3,12 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ConsoleApp
+namespace SheetWithHeadAndKeyConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Запуск SheetWithHeadAndKeyConsoleApp\n");
+
             // Инициализируем коннектор и настраиваем его если нужно.
             var connector = new Connector()
             {
@@ -51,14 +53,12 @@ namespace ConsoleApp
             // то экземпляр SheetModel будет пустым со статусом в виде строки, говорящем о причине неудачи.
             // В противном случае экземпляр листа будет заполнен данными.
             // Эти данные можно менять и через конннектор обновлять в листе гугл таблицы.
-            //if (connector.TryToGetSimpleSheet(uri, out SheetModel sheet))
-            //if (connector.TryToGetSheetWithHead(uri, out SheetModel sheet))
             if (connector.TryToGetSheetWithHeadAndKey(uri, "A", out SheetModel sheet))
             {
                 PrintSheet(sheet, "Первое получение данных");
 
                 ChangeSheet(sheet);
-                PrintSheet(sheet, "Данные до обновления в google");
+                PrintSheet(sheet, "Изменённые данные до обновления в google");
 
                 // Метод для обновления данных в листе google таблицы на основе измененний
                 // экземпляра типа Sheet.
@@ -69,7 +69,7 @@ namespace ConsoleApp
                 // что с текущим экземпляром листа можно работать и после обновления.
                 // Его структура будет соответствовать google таблице.
                 ChangeSheet(sheet);
-                PrintSheet(sheet, "Данные до обновления в google");
+                PrintSheet(sheet, "Изменённые данные до обновления в google");
 
                 connector.UpdateSheet(sheet);
                 PrintSheet(sheet, "Данные после обновления в google");
@@ -93,20 +93,7 @@ namespace ConsoleApp
         private static void ChangeSheet(SheetModel sheet)
         {
             AddRows(sheet);
-
-            switch (sheet.Mode)
-            {
-                case SheetMode.Simple:
-                    ChangeRows(sheet);
-                    break;
-                case SheetMode.Head:
-                    ChangeRowsWithCellTitle(sheet);
-                    break;
-                case SheetMode.HeadAndKey:
-                    ChangeRowsWithTitle(sheet);
-                    break;
-            }
-
+            ChangeRows(sheet);
             DeleteRows(sheet);
         }
 
@@ -129,26 +116,6 @@ namespace ConsoleApp
         }
 
         private static void ChangeRows(SheetModel sheet)
-        {
-            // Данный пример не учитывает отсутствие нужных индексов
-            sheet.Rows[3].Cells[5].Value = "360";
-            sheet.Rows[4].Cells[5].Value = "460";
-            sheet.Rows[7].Cells[2].Value = "730";
-            sheet.Rows[6].Cells[2].Value = "630";
-            sheet.Rows[9].Cells[1].Value = "920";
-        }
-
-        private static void ChangeRowsWithCellTitle(SheetModel sheet)
-        {
-            // Данный пример не учитывает отсутствие ячеек с выбранными Title
-            sheet.Rows[2].Cells.Find(cell => cell.Title == "F").Value = "360";
-            sheet.Rows[3].Cells.Find(cell => cell.Title == "F").Value = "460";
-            sheet.Rows[6].Cells.Find(cell => cell.Title == "C").Value = "730";
-            sheet.Rows[5].Cells.Find(cell => cell.Title == "C").Value = "630";
-            sheet.Rows[8].Cells.Find(cell => cell.Title == "B").Value = "920";
-        }
-
-        private static void ChangeRowsWithTitle(SheetModel sheet)
         {
             // Данный пример не учитывает отсутствие ключа с нужным значением
             // и ячейки с выбранными Title
