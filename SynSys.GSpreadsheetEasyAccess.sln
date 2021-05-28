@@ -1,11 +1,8 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynSys.GSpreadsheetEasyAccess", "src\SynSys.GSpreadsheetEasyAccess\SynSys.GSpreadsheetEasyAccess.csproj", "{8EE7435F-F9B5-4434-981A-077C73B31351}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "examples\ConsoleApp\ConsoleApp.csproj", "{B40AE848-36AA-4226-B97A-D344FA120EFF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{21C09F8E-A1B4-4779-8998-14885DDE78FD}"
 EndProject
@@ -13,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{41
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "IronPythonApp", "examples\IronPythonApp\IronPythonApp.pyproj", "{AA13417E-1AC7-493B-8F3C-7E265170235E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSheetConsoleApp", "examples\SimpleSheetConsoleApp\SimpleSheetConsoleApp.csproj", "{B40AE848-36AA-4226-B97A-D344FA120EFF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSheetConsoleApp", "examples\SimpleSheetConsoleApp\SimpleSheetConsoleApp.csproj", "{7329ED5A-BAE7-401D-8832-AFE7529FE5C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheetWithHeadConsoleApp", "examples\SheetWithHeadConsoleApp\SheetWithHeadConsoleApp.csproj", "{F32295A3-6F3D-4D79-8FC8-BB25ABE346E9}"
 EndProject
@@ -34,12 +31,12 @@ Global
 		{8EE7435F-F9B5-4434-981A-077C73B31351}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EE7435F-F9B5-4434-981A-077C73B31351}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EE7435F-F9B5-4434-981A-077C73B31351}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B40AE848-36AA-4226-B97A-D344FA120EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B40AE848-36AA-4226-B97A-D344FA120EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B40AE848-36AA-4226-B97A-D344FA120EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B40AE848-36AA-4226-B97A-D344FA120EFF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AA13417E-1AC7-493B-8F3C-7E265170235E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AA13417E-1AC7-493B-8F3C-7E265170235E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7329ED5A-BAE7-401D-8832-AFE7529FE5C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7329ED5A-BAE7-401D-8832-AFE7529FE5C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7329ED5A-BAE7-401D-8832-AFE7529FE5C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7329ED5A-BAE7-401D-8832-AFE7529FE5C1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F32295A3-6F3D-4D79-8FC8-BB25ABE346E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F32295A3-6F3D-4D79-8FC8-BB25ABE346E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F32295A3-6F3D-4D79-8FC8-BB25ABE346E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -54,8 +51,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8EE7435F-F9B5-4434-981A-077C73B31351} = {21C09F8E-A1B4-4779-8998-14885DDE78FD}
-		{B40AE848-36AA-4226-B97A-D344FA120EFF} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
 		{AA13417E-1AC7-493B-8F3C-7E265170235E} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
+		{7329ED5A-BAE7-401D-8832-AFE7529FE5C1} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
 		{F32295A3-6F3D-4D79-8FC8-BB25ABE346E9} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
 		{012DF087-3069-48FC-BE50-F27E6B1E940C} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
 	EndGlobalSection

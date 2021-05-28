@@ -40,7 +40,7 @@ namespace SheetWithHeadAndKeyConsoleApp
                 return;
             }
 
-            Console.WriteLine("Подключились к Cloud App");
+            Console.WriteLine("Подключились к Cloud App\n");
 
             // Замените url адрес на свой для тестов.
             // Если вы воспользовались данным uri адресом, то после успешного завершения работы программы,
@@ -53,7 +53,13 @@ namespace SheetWithHeadAndKeyConsoleApp
             // то экземпляр SheetModel будет пустым со статусом в виде строки, говорящем о причине неудачи.
             // В противном случае экземпляр листа будет заполнен данными.
             // Эти данные можно менять и через конннектор обновлять в листе гугл таблицы.
-            if (connector.TryToGetSheetWithHeadAndKey(uri, "A", out SheetModel sheet))
+            //if (connector.TryToGetSheetWithHeadAndKey(uri, "A", out SheetModel sheet))
+            //if (connector.TryToGetSheetWithHeadAndKey(HttpUtils.GetSpreadsheetIdFromUri(uri),
+            //                                          "TestSheet",
+            //                                          "A", out SheetModel sheet))
+            if (connector.TryToGetSheetWithHeadAndKey(HttpUtils.GetSpreadsheetIdFromUri(uri),
+                                                      HttpUtils.GetGidFromUri(uri),
+                                                      "A", out SheetModel sheet))
             {
                 PrintSheet(sheet, "Первое получение данных");
 

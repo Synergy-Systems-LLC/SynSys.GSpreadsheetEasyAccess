@@ -423,7 +423,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             if (SheetNotFound(spreadsheet.Sheets, gid, out Sheet sheet))
             {
                 sheetModel.Status = $"{commonMessage} " +
-                                    $"В таблице Id: \"{spreadsheet.SpreadsheetId}\" " +
+                                    $"в таблице Id: \"{spreadsheet.SpreadsheetId}\" " +
                                     $"не найден лист Id: {gid}";
                 return false;
             }
@@ -462,7 +462,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             if (SheetNotFound(spreadsheet.Sheets, sheetName, out Sheet sheet))
             {
                 sheetModel.Status = $"{commonMessage} " +
-                                    $"В таблице по адресу: \"{spreadsheet.SpreadsheetId}\" " +
+                                    $"в таблице Id: \"{spreadsheet.SpreadsheetId}\" " +
                                     $"не найден лист с именем: {sheetName}";
                 return false;
             }
