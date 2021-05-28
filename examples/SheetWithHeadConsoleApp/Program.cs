@@ -3,22 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ConsoleApp
+namespace SheetWithHeadConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Запуск SheetWithHeadConsoleApp\n");
+
             // Инициализируем коннектор и настраиваем его если нужно.
             var connector = new Connector()
             {
+                // Установка данных свойств опциональна.
                 ApplicationName = "Get google sheet data",
                 CancellationSeconds = 20,
             };
  
             // Попытка подключиться к приложению на Google Cloud Platform.
             // Метод вернёт флаг подключения и у экземпляра коннектора будет возможность
-            // вызывать методы для получения листов google таблиц.
+            // вызывать методы для получения листов гугл таблиц.
             bool isConnectionSuccessful = connector.TryToCreateConnect(GetCredentialStream());
 
             if (!isConnectionSuccessful)
@@ -37,29 +40,43 @@ namespace ConsoleApp
                 return;
             }
 
-            Console.WriteLine("Подключились к Cloud App");
+            Console.WriteLine("Подключились к Cloud App\n");
 
-            // замените url адрес на свой для тестов.
-            const string url = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0";
+            // Замените url адрес на свой для тестов.
+            // Если вы воспользовались данным uri адресом, то после успешного завершения работы программы,
+            // скопируйте содержимое из листа "Copy of TestSheet" в лист "TestSheet".
+            const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
 
-            // Попытка получения листа по url.
-            // Метод вернёт флаг получения листа и экземпляр типа Sheet.
+            // Попытка получения листа по uri.
+            // Метод вернёт флаг получения листа и экземпляр типа SheetModel.
             // Если данные из листа не были получены,
-            // то экземпляр sheet будет пустым со статусом в виде строки,
-            // говорящем о причине неудачи.
-            // В противном случае экземпляр листа будет заполнен данными
-            // и эти данные можно будет менять и через конннектор обновлять в листе google таблицы.
-
-            //if (connector.TryToGetSimpleSheet(url, out Sheet sheet))
-            //if (connector.TryToGetSheetWithHead(url, out Sheet sheet))
-            if (connector.TryToGetSheetWithHeadAndKey(url, "A", out SheetModel sheet))
+            // то экземпляр SheetModel будет пустым со статусом в виде строки, говорящем о причине неудачи.
+            // В противном случае экземпляр листа будет заполнен данными.
+            // Эти данные можно менять и через конннектор обновлять в листе гугл таблицы.
+            //if (connector.TryToGetSimpleSheet(uri, out SheetModel sheet))
+            //if (connector.TryToGetSimpleSheet(HttpUtils.GetSpreadsheetIdFromUri(uri),
+            //                                  "TestSheet", out SheetModel sheet))
+            if (connector.TryToGetSheetWithHead(HttpUtils.GetSpreadsheetIdFromUri(uri),
+                                                HttpUtils.GetGidFromUri(uri), out SheetModel sheet))
             {
                 PrintSheet(sheet, "Первое получение данных");
-                ChangeSheet(connector, sheet);
+
+                ChangeSheet(sheet);
+                PrintSheet(sheet, "Изменённые данные до обновления в google");
+
+                // Метод для обновления данных в листе google таблицы на основе измененний
+                // экземпляра типа Sheet.
+                connector.UpdateSheet(sheet);
+                PrintSheet(sheet, "Данные после обновления в google");
+
                 // Данный метод вызывается второй раз чтобы показать,
                 // что с текущим экземпляром листа можно работать и после обновления.
                 // Его структура будет соответствовать google таблице.
-                ChangeSheet(connector, sheet);
+                ChangeSheet(sheet);
+                PrintSheet(sheet, "Изменённые данные до обновления в google");
+
+                connector.UpdateSheet(sheet);
+                PrintSheet(sheet, "Данные после обновления в google");
             }
             else
             {
@@ -71,46 +88,29 @@ namespace ConsoleApp
             Console.ReadLine();
         }
 
-        private static void ChangeSheet(Connector connector, SheetModel sheet)
+        /// <summary>
+        /// Изменения данных в экземпляре типа Sheet.
+        /// Не важен порядок изменения экземпляра листа,
+        /// его обновленние будет происходить в определённом порядке в коннекторе.
+        /// </summary>
+        /// <param name="sheet"></param>
+        private static void ChangeSheet(SheetModel sheet)
         {
-            // Изменения данных в экземпляре типа Sheet.
-            // Не важен порядок изменения экземпляра листа,
-            // его обновленние будет происходить в определённом порядке в коннекторе.
             AddRows(sheet);
-
-            switch (sheet.Mode)
-            {
-                case SheetMode.Simple:
-                    ChangeRows(sheet);
-                    break;
-                case SheetMode.Head:
-                    ChangeRowsWithCellTitle(sheet);
-                    break;
-                case SheetMode.HeadAndKey:
-                    ChangeRowsWithTitle(sheet);
-                    break;
-            }
-
+            ChangeRows(sheet);
             DeleteRows(sheet);
-
-            PrintSheet(sheet, "Данные до обновления в google");
-
-            // Метод для обновления данных в листе google таблицы на основе измененний
-            // экземпляра типа Sheet.
-            connector.UpdateSheet(sheet);
-
-            PrintSheet(sheet, "Данные после обновления в google");
         }
 
         private static void AddRows(SheetModel sheet)
         {
-            // Пример добавления пустой строки.
+            // Добавления пустой строки.
             sheet.AddRow();
 
-            // Пример добавления строки часть которой будет заполнена пустыми строками.
+            // Добавления строки часть которой будет заполнена пустыми строками.
             sheet.AddRow(new List<string>() { "123", "asd" });
 
-            // Пример добавления строки где часть данных не попадёт в строку.
+            // Добавления строки где часть данных не попадёт в строку, а именно "k" и "l".
+            // Потому что в "TestSheet" 10 столбцов.
             sheet.AddRow(
                 new List<string>()
                 {
@@ -121,37 +121,12 @@ namespace ConsoleApp
 
         private static void ChangeRows(SheetModel sheet)
         {
-            // Данный пример не учитывает отсутствие нужных индексов
-            sheet.Rows[3].Cells[5].Value = "360";
-            sheet.Rows[4].Cells[5].Value = "460";
-            sheet.Rows[7].Cells[2].Value = "730";
-            sheet.Rows[6].Cells[2].Value = "630";
-            sheet.Rows[9].Cells[1].Value = "920";
-        }
-
-        private static void ChangeRowsWithCellTitle(SheetModel sheet)
-        {
             // Данный пример не учитывает отсутствие ячеек с выбранными Title
             sheet.Rows[2].Cells.Find(cell => cell.Title == "F").Value = "360";
             sheet.Rows[3].Cells.Find(cell => cell.Title == "F").Value = "460";
             sheet.Rows[6].Cells.Find(cell => cell.Title == "C").Value = "730";
             sheet.Rows[5].Cells.Find(cell => cell.Title == "C").Value = "630";
             sheet.Rows[8].Cells.Find(cell => cell.Title == "B").Value = "920";
-        }
-
-        private static void ChangeRowsWithTitle(SheetModel sheet)
-        {
-            // Данный пример не учитывает отсутствие ключа с нужным значением
-            // и ячейки с выбранными Title
-            sheet.Rows.Find(row => row.Key.Value == "51")
-                 .Cells.Find(cell => cell.Title == "F")
-                 .Value = "560";
-            sheet.Rows.Find(row => row.Key.Value == "71")
-                 .Cells.Find(cell => cell.Title == "C")
-                 .Value = "730";
-            sheet.Rows.Find(row => row.Key.Value == "81")
-                 .Cells.Find(cell => cell.Title == "B")
-                 .Value = "820";
         }
 
         private static void DeleteRows(SheetModel sheet)
