@@ -408,6 +408,12 @@ namespace SynSys.GSpreadsheetEasyAccess
             sheetModel = new SheetModel();
             var commonMessage = "Во время инициализации листа";
 
+            if (string.IsNullOrWhiteSpace(spreadsheetId))
+            {
+                sheetModel.Status = "HttpUtils не смог распознать spreadsheetId в ведённом uri";
+                return false;
+            }
+
             if (gid < 0)
             {
                 sheetModel.Status = $"Был введён некорректный gid листа: {gid}. Возможно он отсутствует в uri";
@@ -446,6 +452,12 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             sheetModel = new SheetModel();
             var commonMessage = "Во время инициализации листа";
+
+            if (string.IsNullOrWhiteSpace(spreadsheetId))
+            {
+                sheetModel.Status = "HttpUtils не смог распознать spreadsheetId в ведённом uri";
+                return false;
+            }
 
             if (string.IsNullOrWhiteSpace(sheetName))
             {
@@ -491,8 +503,16 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
             catch (GoogleApiException e)
             {
-                exceptionMessage = $"служба Google API выбросила исключение: {e.Error.Message}\n" +
-                                   $"{HttpUtils.GetMessageByCode(e.Error.Code.ToString())}";
+                if (e.Error == null)
+                {
+                    exceptionMessage = $"служба Google API выбросила исключение: {e.Message}";
+                }
+                else
+                {
+                    exceptionMessage = $"служба Google API выбросила исключение: {e.Error.Message}\n" +
+                                       $"{HttpUtils.GetMessageByCode(e.Error.Code.ToString())}";
+                }
+
                 return false;
             }
             catch (TokenResponseException e)
