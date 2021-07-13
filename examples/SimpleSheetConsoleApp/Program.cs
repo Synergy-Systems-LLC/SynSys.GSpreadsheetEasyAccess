@@ -2,14 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
-namespace ConsoleApp
+namespace SimpleSheetConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Запуск SimpleSheetConsoleApp\n");
+            Console.WriteLine($"Запуск {nameof(SimpleSheetConsoleApp)}\n");
 
             // Инициализируем коннектор и настраиваем его если нужно.
             var connector = new Connector()
@@ -129,14 +130,20 @@ namespace ConsoleApp
             sheet.Rows[7].Cells[2].Value = "730";
             sheet.Rows[6].Cells[2].Value = "630";
             sheet.Rows[9].Cells[1].Value = "920";
+
+            // Пример того, что можно изменять добавленную строку
+            sheet.Rows.Last().Cells[0].Value = "change";
+            sheet.Rows.Last().Cells[1].Value = "added";
+            sheet.Rows.Last().Cells[2].Value = "line";
         }
 
         private static void DeleteRows(SheetModel sheet)
         {
-            // Пример не учитывает отсутствие нужных индексов
+            // Данный пример не учитывает отсутствие нужных индексов
             sheet.DeleteRow(sheet.Rows[3]);
-            sheet.DeleteRow(sheet.Rows[2]);
-            sheet.DeleteRow(sheet.Rows[8]);
+
+            // Удаление добавленой строки со статусом RowStatus.ToAppend
+            sheet.DeleteRow(sheet.Rows[10]);
         }
 
         /// <summary>
@@ -160,7 +167,7 @@ namespace ConsoleApp
 
                 foreach (var cell in row.Cells)
                 {
-                    Console.Write($"|{cell.Value, 3}");
+                    Console.Write($"|{cell.Value, 6}");
                 }
 
                 Console.Write($"| {row.Status}");

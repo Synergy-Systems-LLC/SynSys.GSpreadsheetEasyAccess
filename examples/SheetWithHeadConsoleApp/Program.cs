@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SheetWithHeadConsoleApp
 {
@@ -9,7 +10,7 @@ namespace SheetWithHeadConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Запуск SheetWithHeadConsoleApp\n");
+            Console.WriteLine($"Запуск {nameof(SheetWithHeadConsoleApp)}\n");
 
             // Инициализируем коннектор и настраиваем его если нужно.
             var connector = new Connector()
@@ -127,14 +128,20 @@ namespace SheetWithHeadConsoleApp
             sheet.Rows[6].Cells.Find(cell => cell.Title == "C").Value = "730";
             sheet.Rows[5].Cells.Find(cell => cell.Title == "C").Value = "630";
             sheet.Rows[8].Cells.Find(cell => cell.Title == "B").Value = "920";
+
+            // Пример того, что можно изменять добавленную строку
+            sheet.Rows.Last().Cells[0].Value = "change";
+            sheet.Rows.Last().Cells[1].Value = "added";
+            sheet.Rows.Last().Cells[2].Value = "line";
         }
 
         private static void DeleteRows(SheetModel sheet)
         {
             // Данный пример не учитывает отсутствие нужных индексов
             sheet.DeleteRow(sheet.Rows[3]);
-            sheet.DeleteRow(sheet.Rows[2]);
-            sheet.DeleteRow(sheet.Rows[8]);
+
+            // Удаление добавленой строки со статусом RowStatus.ToAppend
+            sheet.DeleteRow(sheet.Rows[10]);
         }
 
         /// <summary>
@@ -158,7 +165,7 @@ namespace SheetWithHeadConsoleApp
 
                 foreach (var cell in row.Cells)
                 {
-                    Console.Write($"|{cell.Value, 3}");
+                    Console.Write($"|{cell.Value, 6}");
                 }
 
                 Console.Write($"| {row.Status}");

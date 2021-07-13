@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SheetWithHeadAndKeyConsoleApp
 {
@@ -9,7 +10,7 @@ namespace SheetWithHeadAndKeyConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Запуск SheetWithHeadAndKeyConsoleApp\n");
+            Console.WriteLine($"Запуск {nameof(SheetWithHeadAndKeyConsoleApp)}\n");
 
             // Инициализируем коннектор и настраиваем его если нужно.
             var connector = new Connector()
@@ -125,23 +126,29 @@ namespace SheetWithHeadAndKeyConsoleApp
         {
             // Данный пример не учитывает отсутствие ключа с нужным значением
             // и ячейки с выбранными Title
-            sheet.Rows.Find(row => row.Key.Value == "51")
+            sheet.Rows.Find(row => row.Key.Value == "31")
                  .Cells.Find(cell => cell.Title == "F")
-                 .Value = "560";
-            sheet.Rows.Find(row => row.Key.Value == "71")
-                 .Cells.Find(cell => cell.Title == "C")
-                 .Value = "730";
-            sheet.Rows.Find(row => row.Key.Value == "81")
+                 .Value = "360";
+            sheet.Rows.Find(row => row.Key.Value == "51")
                  .Cells.Find(cell => cell.Title == "B")
-                 .Value = "820";
+                 .Value = "520";
+            sheet.Rows.Find(row => row.Key.Value == "61")
+                 .Cells.Find(cell => cell.Title == "C")
+                 .Value = "630";
+
+            // Изменение добавленных строк со статусом RowStatus.ToAppend
+            sheet.Rows.Last().Cells[0].Value = "change";
+            sheet.Rows.Last().Cells[1].Value = "added";
+            sheet.Rows.Last().Cells[2].Value = "line";
         }
 
         private static void DeleteRows(SheetModel sheet)
         {
             // Данный пример не учитывает отсутствие нужных индексов
             sheet.DeleteRow(sheet.Rows[3]);
-            sheet.DeleteRow(sheet.Rows[2]);
-            sheet.DeleteRow(sheet.Rows[8]);
+
+            // Удаление добавленой строки со статусом RowStatus.ToAppend
+            sheet.DeleteRow(sheet.Rows[10]);
         }
 
         /// <summary>
@@ -165,7 +172,7 @@ namespace SheetWithHeadAndKeyConsoleApp
 
                 foreach (var cell in row.Cells)
                 {
-                    Console.Write($"|{cell.Value, 3}");
+                    Console.Write($"|{cell.Value, 6}");
                 }
 
                 Console.Write($"| {row.Status}");
