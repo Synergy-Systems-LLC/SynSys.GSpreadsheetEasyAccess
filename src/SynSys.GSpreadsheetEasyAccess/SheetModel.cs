@@ -65,7 +65,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <summary>
         /// Шапка (первая строка листа) если есть
         /// </summary>
-        public List<string> Head { get; internal set; }
+        public List<string> Head { get; internal set; } = new List<string>();
         /// <summary>
         /// Все строки входящие в данный лист
         /// за исключением шапки
