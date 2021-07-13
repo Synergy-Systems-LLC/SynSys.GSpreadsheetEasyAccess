@@ -103,21 +103,26 @@ namespace SynSys.GSpreadsheetEasyAccess
                 number = Rows.Last().Number;
             }
 
-            AddRow(
-                number,
-                Head.Count,
-                rowData
-            );
+            AddRow(number, Head.Count, rowData);
         }
 
         /// <summary>
-        /// Метод не удаляет строку, но назначает ей статус на удаление.
+        /// Метод удаляет строку только если у неё был статус RowStatus.ToAppend.<br/>
+        /// В противном случае метод не удаляет строку, а назначает ей статус на удаление RowStatus.ToDelete.<br/>
         /// Данный статус будет учитываться при удалении строк из листа в google.
         /// </summary>
         /// <param name="row"></param>
         public void DeleteRow(Row row)
         {
-            row.Status = RowStatus.ToDelete;
+            if (row.Status == RowStatus.ToAppend)
+            {
+                Rows.Remove(row);
+                RenumberRows();
+            }
+            else
+            {
+                row.Status = RowStatus.ToDelete;
+            }
         }
 
 
