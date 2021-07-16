@@ -1,4 +1,4 @@
-﻿using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Sheets.v4.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -132,26 +132,26 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="data">Данные для формирования листа</param>
         internal void Fill(IList<IList<object>> data)
         {
-            var rows = Enumerable.Range(0, data.Count);
-            var maxColumns = data.First().Count;
+            IEnumerable<int> rowIndexes = Enumerable.Range(0, data.Count);
+            int maxRowLength = GetMaxRowLength(data);
 
-            foreach (var rowIndex in rows)
+            foreach (int rowIndex in rowIndexes)
             {
                 if (rowIndex == 0)
                 {
                     if (Mode == SheetMode.Simple)
                     {
-                        CreateEmptyHead(maxColumns);
+                        CreateEmptyHead(maxRowLength);
                     }
                     else
                     {
-                        Head = data[rowIndex].Cast<string>().ToList();
+                        Head = data[0].Cast<string>().ToList();
                         continue;
                     }
                 }
 
                 var rowData = data[rowIndex].Cast<string>().ToList();
-                AddRow(rowIndex, maxColumns, rowData, RowStatus.Original);
+                AddRow(rowIndex + 1, maxRowLength, rowData, RowStatus.Original);
             }
         }
 
@@ -334,6 +334,18 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
 
             Rows.Add(row);
+        }
+
+        private int GetMaxRowLength(IList<IList<object>> data)
+        {
+            if (Mode == SheetMode.Simple)
+            {
+                return data.Select(row => row.Count).Max();
+            }
+            else
+            {
+                return data.First().Count;
+            }
         }
 
         /// <summary>
