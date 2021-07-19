@@ -56,9 +56,11 @@ namespace SheetWithHeadConsoleApp
             // Эти данные можно менять и через конннектор обновлять в листе гугл таблицы.
             //if (connector.TryToGetSimpleSheet(uri, out SheetModel sheet))
             //if (connector.TryToGetSimpleSheet(HttpUtils.GetSpreadsheetIdFromUri(uri),
-            //                                  "TestSheet", out SheetModel sheet))
+            //                                  "TestSheet",
+            //                                  out SheetModel sheet))
             if (connector.TryToGetSheetWithHead(HttpUtils.GetSpreadsheetIdFromUri(uri),
-                                                HttpUtils.GetGidFromUri(uri), out SheetModel sheet))
+                                                HttpUtils.GetGidFromUri(uri),
+                                                out SheetModel sheet))
             {
                 PrintSheet(sheet, "Первое получение данных");
 
@@ -123,11 +125,11 @@ namespace SheetWithHeadConsoleApp
         private static void ChangeRows(SheetModel sheet)
         {
             // Данный пример не учитывает отсутствие ячеек с выбранными Title
-            sheet.Rows[2].Cells.Find(cell => cell.Title == "F").Value = "360";
-            sheet.Rows[3].Cells.Find(cell => cell.Title == "F").Value = "460";
-            sheet.Rows[6].Cells.Find(cell => cell.Title == "C").Value = "730";
-            sheet.Rows[5].Cells.Find(cell => cell.Title == "C").Value = "630";
-            sheet.Rows[8].Cells.Find(cell => cell.Title == "B").Value = "920";
+            sheet.Rows[2].Cells.Find(cell => cell.Title == "Head 6").Value = "360";
+            sheet.Rows[3].Cells.Find(cell => cell.Title == "Head 6").Value = "460";
+            sheet.Rows[6].Cells.Find(cell => cell.Title == "Head 3").Value = "730";
+            sheet.Rows[5].Cells.Find(cell => cell.Title == "Head 3").Value = "630";
+            sheet.Rows[8].Cells.Find(cell => cell.Title == "Head 2").Value = "920";
 
             // Пример того, что можно изменять добавленную строку
             sheet.Rows.Last().Cells[0].Value = "change";
@@ -165,7 +167,7 @@ namespace SheetWithHeadConsoleApp
 
                 foreach (var cell in row.Cells)
                 {
-                    Console.Write($"|{cell.Value, 6}");
+                    Console.Write($"|{cell.Value, 7}");
                 }
 
                 Console.Write($"| {row.Status}");

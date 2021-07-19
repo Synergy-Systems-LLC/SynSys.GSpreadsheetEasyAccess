@@ -167,7 +167,7 @@ namespace SimpleSheetConsoleApp
 
                 foreach (var cell in row.Cells)
                 {
-                    Console.Write($"|{cell.Value, 6}");
+                    Console.Write($"|{cell.Value, 7}");
                 }
 
                 Console.Write($"| {row.Status}");

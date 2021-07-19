@@ -54,13 +54,15 @@ namespace SheetWithHeadAndKeyConsoleApp
             // то экземпляр SheetModel будет пустым со статусом в виде строки, говорящем о причине неудачи.
             // В противном случае экземпляр листа будет заполнен данными.
             // Эти данные можно менять и через конннектор обновлять в листе гугл таблицы.
-            //if (connector.TryToGetSheetWithHeadAndKey(uri, "A", out SheetModel sheet))
+            //if (connector.TryToGetSheetWithHeadAndKey(uri, "Head 1", out SheetModel sheet))
             //if (connector.TryToGetSheetWithHeadAndKey(HttpUtils.GetSpreadsheetIdFromUri(uri),
             //                                          "TestSheet",
-            //                                          "A", out SheetModel sheet))
+            //                                          "Head 1",
+            //                                          out SheetModel sheet))
             if (connector.TryToGetSheetWithHeadAndKey(HttpUtils.GetSpreadsheetIdFromUri(uri),
                                                       HttpUtils.GetGidFromUri(uri),
-                                                      "A", out SheetModel sheet))
+                                                      "Head 1",
+                                                      out SheetModel sheet))
             {
                 PrintSheet(sheet, "Первое получение данных");
 
@@ -127,14 +129,14 @@ namespace SheetWithHeadAndKeyConsoleApp
             // Данный пример не учитывает отсутствие ключа с нужным значением
             // и ячейки с выбранными Title
             sheet.Rows.Find(row => row.Key.Value == "31")
-                 .Cells.Find(cell => cell.Title == "F")
+                 .Cells.Find(cell => cell.Title == "Head 6")
                  .Value = "360";
-            sheet.Rows.Find(row => row.Key.Value == "51")
-                 .Cells.Find(cell => cell.Title == "B")
-                 .Value = "520";
             sheet.Rows.Find(row => row.Key.Value == "61")
-                 .Cells.Find(cell => cell.Title == "C")
+                 .Cells.Find(cell => cell.Title == "Head 3")
                  .Value = "630";
+            sheet.Rows.Find(row => row.Key.Value == "51")
+                 .Cells.Find(cell => cell.Title == "Head 2")
+                 .Value = "520";
 
             // Изменение добавленных строк со статусом RowStatus.ToAppend
             sheet.Rows.Last().Cells[0].Value = "change";
@@ -172,7 +174,7 @@ namespace SheetWithHeadAndKeyConsoleApp
 
                 foreach (var cell in row.Cells)
                 {
-                    Console.Write($"|{cell.Value, 6}");
+                    Console.Write($"|{cell.Value, 7}");
                 }
 
                 Console.Write($"| {row.Status}");
