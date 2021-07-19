@@ -1,4 +1,4 @@
-using Google.Apis.Sheets.v4.Data;
+﻿using Google.Apis.Sheets.v4.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -93,17 +93,10 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// и если данных будет больше чем этот размер, то часть данных не попадёт в лист.
         /// если данных будет меньше, то строка дозаполнится пустыми значениями.
         /// </summary>
-        /// <param name="rowData">Данные для составленния строки</param>
-        public void AddRow(List<string> rowData)
+        /// <param name="data">Данные для составленния строки</param>
+        public void AddRow(List<string> data)
         {
-            var number = 1;
-
-            if (Rows.Count > 0)
-            {
-                number = Rows.Last().Number;
-            }
-
-            AddRow(number, Head.Count, rowData);
+            AddRow(FindNextRowNumber(), Head.Count, data);
         }
 
         /// <summary>
@@ -296,36 +289,21 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
 
-        /// <summary>
-        /// Создание пустой шапки, когда она не нужна для данного листа.
-        /// </summary>
-        /// <param name="maxLength">Максимальная длина строки</param>
-        /// <returns></returns>
-        private void CreateEmptyHead(int maxLength)
+        private void CreateEmptyHead(int length)
         {
-            Head = new List<string>();
-
-            for (var cellIndex = 0; cellIndex < maxLength; cellIndex++)
+            for (var i = 0; i < length; i++)
             {
                 Head.Add(string.Empty);
             }
         }
 
-        /// <summary>
-        /// Основной метод для добавления строки в конец листа.
-        /// </summary>
-        /// <param name="index">Индекс данной строки</param>
-        /// <param name="maxLength">Максимальная длина строки</param>
-        /// <param name="rowData">Данные для формированния строки</param>
-        /// <param name="status">
-        /// Статус строки по умолчанию ToAppend.
-        /// </param>
-        private void AddRow(int index, int maxLength, List<string> rowData, RowStatus status=RowStatus.ToAppend)
+        private void AddRow(
+            int number, int length, List<string> data, RowStatus status=RowStatus.ToAppend)
         {
-            var row = new Row(rowData, maxLength, Head)
+            var row = new Row(data, length, Head)
             {
                 Status = status,
-                Number = index + 1
+                Number = number
             };
 
             if (!string.IsNullOrWhiteSpace(KeyName))
@@ -334,6 +312,18 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
 
             Rows.Add(row);
+        }
+
+        private int FindNextRowNumber()
+        {
+            if (Rows.Count > 0)
+            {
+                return Rows.Last().Number + 1;
+            }
+            else
+            {
+                return 1;
+            }
         }
 
         private int GetMaxRowLength(IList<IList<object>> data)
@@ -348,10 +338,6 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
         }
 
-        /// <summary>
-        /// Преобразование List&lt;Row&gt; в List&lt;List&lt;object&gt;&gt;
-        /// </summary>
-        /// <returns></returns>
         private IList<IList<object>> GetAppendRows()
         {
             var data = new List<IList<object>>();
