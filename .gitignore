@@ -92,4 +92,5 @@ __pycache__/
 examples/SimpleSheetConsoleApp/Resources/credentials.json
 examples/SheetWithHeadConsoleApp/Resources/credentials.json
 examples/SheetWithHeadAndKeyConsoleApp/Resources/credentials.json
+examples/SerializationSheetModelConsoleApp/Resources/credentials.json
 examples/IronPythonApp/env/
