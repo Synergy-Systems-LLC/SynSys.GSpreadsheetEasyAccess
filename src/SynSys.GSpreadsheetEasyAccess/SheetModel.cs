@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Sheets.v4.Data;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,11 +33,15 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <summary>
         /// Имя листа
         /// </summary>
+        [JsonProperty]
         public string Title { get; internal set; } = string.Empty;
+
         /// <summary>
         /// Id google листа
         /// </summary>
+        [JsonProperty]
         public string SpreadsheetId { get; internal set; } = string.Empty;
+
         /// <summary>
         /// Id листа
         /// </summary>
@@ -44,32 +49,45 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Свойство имеет такое название потому что в uri листа ему
         /// соответствует параметр gid.
         /// </remarks>
+        [JsonProperty]
         public string Gid { get; internal set; } = string.Empty;
+
         /// <summary>
         /// Имя листа
         /// </summary>
+        [JsonProperty]
         public string SpreadsheetTitle { get; internal set; } = string.Empty;
+
         /// <summary>
         /// Текущий статус.<br/>
         /// <c>Пример: Лист не содержит данных</c>
         /// </summary>
+        [JsonProperty]
         public string Status { get; internal set; } = string.Empty;
+
         /// <summary>
         /// Имя ключевого столбца, если он есть.
         /// </summary>
+        [JsonProperty]
         public string KeyName { get; internal set; } = string.Empty;
+
         /// <summary>
         /// Режим, по которому определяется работа с листом.
         /// </summary>
+        [JsonProperty]
         public SheetMode Mode { get; internal set; }
+
         /// <summary>
         /// Шапка (первая строка листа) если есть
         /// </summary>
+        [JsonProperty]
         public List<string> Head { get; internal set; } = new List<string>();
+
         /// <summary>
         /// Все строки входящие в данный лист
         /// за исключением шапки
         /// </summary>
+        [JsonProperty]
         public List<Row> Rows { get; } = new List<Row>();
 
         /// <summary>

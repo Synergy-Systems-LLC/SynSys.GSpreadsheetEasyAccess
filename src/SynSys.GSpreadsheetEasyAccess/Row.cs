@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
@@ -36,19 +37,30 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <summary>
         /// Номер, не индекс!
         /// </summary>
+        [JsonProperty]
         public int Number { get; internal set; }
+
         /// <summary>
         /// Текущий статус.
         /// </summary>
+        [JsonProperty]
         public RowStatus Status { get; internal set; } = RowStatus.ToAppend;
+
         /// <summary>
         /// Все ячейки этой строки.
         /// </summary>
+        [JsonProperty]
         public List<Cell> Cells { get; internal set; } = new List<Cell>();
+
         /// <summary>
         /// Ключевая ячейка.
         /// </summary>
+        [JsonProperty]
         public Cell Key { get; internal set; }
+
+
+        [JsonConstructor]
+        internal Row() { }
 
         /// <summary>
         /// Иниализация и заполнение строки таблицы.

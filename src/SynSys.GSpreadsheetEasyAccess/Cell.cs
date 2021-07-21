@@ -1,4 +1,6 @@
-﻿namespace SynSys.GSpreadsheetEasyAccess
+﻿using Newtonsoft.Json;
+
+namespace SynSys.GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Тип представляет ячейку строки.
@@ -11,32 +13,32 @@
         /// Если строка, в которой находится данная ячейка имеет статус Original, то
         /// при изменении значения ячейки, изменится статус строки на ToChange.
         /// </summary>
+        [JsonProperty]
         public string Value 
         { 
             get => value;
             set
             {
                 this.value = value;
-                // Данная проверка нужна для того, чтобы не менять RowStatus.ToAppend.
-                // Потому что не важно сколько раз изменятся значения в добавлямой строке,
-                // она всё равно будет добавляться в таблицу.
-                // Изменения могут происходить только в существующей строке таблицы.
-                if (Host.Status == RowStatus.Original)
-                {
-                    Host.Status = RowStatus.ToChange;
-                }
+                ChangeHostStatus();
             }
         }
 
         /// <summary>
-        /// Название столбца в которой находится ячейка.
+        /// Название столбца в котором находится ячейка.
         /// </summary>
+        [JsonProperty]
         public string Title { get; }
 
         /// <summary>
         /// Ссылка на строку в которой эта ячейка располагается.
         /// </summary>
-        public Row Host { get; internal set; }
+        [JsonProperty]
+        public Row Host { get; set; }
+
+
+        [JsonConstructor]
+        internal Cell() { }
 
         /// <summary>
         /// Инициализирует ячейку данных таблицы со значением
@@ -50,6 +52,29 @@
             this.value = value;
             Title = title;
             Host = row;
+        }
+
+
+        private void ChangeHostStatus()
+        {
+            // Эта проверка нужна для случая, когда происходит десериализация листа.
+            // В этот момент Host не определён, так как располагается после свойства Value.
+            // Если переместить свойство Host до Value, то каждый раз при десериализации
+            // у всех строк со статусом RowStatus.Original статус будет меняться на RowStatus.ToChange.
+            // Это не происходит при обычной работе, потому что Value назначается через конструктор
+            // Cell, а десериализация происходит при передаче значения свойству.
+            if (Host == null)
+            {
+                return;
+            }
+
+            // Эта проверка нужна для того, чтобы не менять RowStatus.ToAppend.
+            // Потому что не важно сколько раз изменятся значение в добавлямой строке,
+            // она всё равно будет добавляться в таблицу и статус RowStatus.ToChange будет не корректным.
+            if (Host.Status == RowStatus.Original)
+            {
+                Host.Status = RowStatus.ToChange;
+            }
         }
     }
 }
