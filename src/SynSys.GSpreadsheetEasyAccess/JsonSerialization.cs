@@ -12,6 +12,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Сериализует экземпляр указаного листа в JSON с применением выбранного форматирования.
         /// </summary>
         /// <param name="sheet"></param>
+        /// <param name="formatting"></param>
         /// <returns>Строковое представление объекта в формате JSON</returns>
         public static string SerializeSheet(SheetModel sheet, Formatting formatting)
         {

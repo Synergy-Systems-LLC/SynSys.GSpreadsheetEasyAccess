@@ -515,7 +515,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
                 return false;
             }
-            catch (TokenResponseException e)
+            catch (TokenResponseException)
             {
                 exceptionMessage = $"возникла пробема с токеном доступа. " +
                                    $"Старый токен удалён, а при следующем запуске будет создан новый.";
