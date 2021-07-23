@@ -122,13 +122,15 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// В противном случае метод не удаляет строку, а назначает ей статус на удаление RowStatus.ToDelete.<br/>
         /// Данный статус будет учитываться при удалении строк из листа в google.
         /// </summary>
-        /// <param name="row"></param>
+        /// <param name="row">Удаляемая строка</param>
         public void DeleteRow(Row row)
         {
             if (row.Status == RowStatus.ToAppend)
             {
+                int nextRowNumber = row.Number + 1;
+
                 Rows.Remove(row);
-                RenumberRows();
+                DecreaseAllFollowingRowNumbersByOne(nextRowNumber);
             }
             else
             {
@@ -313,22 +315,14 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
         }
  
+        /// <summary>
+        /// Перенумерация всех строк.<br/>
+        /// Используется при удалении некоторых строк из листа, при этом не ясно какие именно строки
+        /// были удалены.
+        /// </summary>
         internal void RenumberRows()
         {
-            int number = 1;
-
-            switch (Mode)
-            {
-                case SheetMode.Simple:
-                    number = 1;
-                    break;
-                case SheetMode.Head:
-                    number = 2;
-                    break;
-                case SheetMode.HeadAndKey:
-                    number = 2;
-                    break;
-            }
+            int number = FindFirstRowNumber();
 
             foreach (var row in Rows)
             {
@@ -340,7 +334,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <summary>
         /// Сброс статуса всех строк на Original
         /// чтобы после обновления данных в гугл таблице можно было пользоваться
-        /// тем же инстансем типа Sheet.
+        /// тем же инстансем SheetModel.
         /// </summary>
         internal void ResetRowStatuses()
         {
@@ -374,6 +368,30 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
 
             Rows.Add(row);
+        }
+
+        /// <summary>
+        /// Уменьшение всех строк начиная с заданной.<br/>
+        /// Используется при физическом удалении одной конкретной строки.
+        /// </summary>
+        /// <param name="startRowNumber">Номер строки с которой надо начать уменьшение</param>
+        private void DecreaseAllFollowingRowNumbersByOne(int startRowNumber)
+        {
+            foreach (var row in Rows.FindAll(r => r.Number >= startRowNumber))
+            {
+                row.Number -= 1;
+            }
+        }
+
+        private int FindFirstRowNumber()
+        {
+            if (Mode == SheetMode.Head
+                || Mode == SheetMode.HeadAndKey)
+            {
+                return 2;
+            }
+
+            return 1;
         }
 
         private int FindNextRowNumber()
