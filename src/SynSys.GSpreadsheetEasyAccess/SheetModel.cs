@@ -1,4 +1,4 @@
-﻿using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -133,6 +133,24 @@ namespace SynSys.GSpreadsheetEasyAccess
             else
             {
                 row.Status = RowStatus.ToDelete;
+            }
+        }
+
+        /// <summary>
+        /// Назначение всем строкам статус на удаление и 
+        /// физическое удаление ещё не добавленных строк.
+        /// </summary>
+        public void Clean()
+        {
+            for (int i = Rows.Count - 1; i >= 0; i--)
+            {
+                if (Rows[i].Status == RowStatus.ToAppend)
+                {
+                    Rows.RemoveAt(i);
+                    continue;
+                }
+
+                Rows[i].Status = RowStatus.ToDelete;
             }
         }
 
