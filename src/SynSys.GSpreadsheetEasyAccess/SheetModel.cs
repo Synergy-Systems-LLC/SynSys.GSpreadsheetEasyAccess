@@ -1,8 +1,10 @@
-using Google.Apis.Sheets.v4.Data;
+﻿using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
+[assembly:InternalsVisibleTo("SynSys.GSpreadsheetEasyAccess.Tests")]
 namespace SynSys.GSpreadsheetEasyAccess
 {
     /// <summary>

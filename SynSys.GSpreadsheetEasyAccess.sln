@@ -23,6 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{22895566
 		build\build-package.bat = build\build-package.bat
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6CF4E8AB-0014-4FAC-B32B-1857FB68B54D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynSys.GSpreadsheetEasyAccess.Tests", "tests\SynSys.GSpreadsheetEasyAccess.Tests\SynSys.GSpreadsheetEasyAccess.Tests.csproj", "{6AE3FB11-1EC0-4E7A-811E-88A161CCDC9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,10 @@ Global
 		{14F235BC-153E-4981-AD58-20E3EDD2DFBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14F235BC-153E-4981-AD58-20E3EDD2DFBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14F235BC-153E-4981-AD58-20E3EDD2DFBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AE3FB11-1EC0-4E7A-811E-88A161CCDC9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AE3FB11-1EC0-4E7A-811E-88A161CCDC9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AE3FB11-1EC0-4E7A-811E-88A161CCDC9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AE3FB11-1EC0-4E7A-811E-88A161CCDC9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +70,7 @@ Global
 		{F32295A3-6F3D-4D79-8FC8-BB25ABE346E9} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
 		{012DF087-3069-48FC-BE50-F27E6B1E940C} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
 		{14F235BC-153E-4981-AD58-20E3EDD2DFBF} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
+		{6AE3FB11-1EC0-4E7A-811E-88A161CCDC9F} = {6CF4E8AB-0014-4FAC-B32B-1857FB68B54D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E026FE4-8101-4170-9E61-F67A73511531}
