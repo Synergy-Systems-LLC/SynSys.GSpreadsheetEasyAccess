@@ -154,6 +154,32 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
         }
 
+        /// <summary>
+        /// Проверка шапки.
+        /// </summary>
+        /// <param name="requiredHeaders"></param>
+        /// <param name="lostedHeaders"></param>
+        /// <returns>
+        /// true если нет хотя бы одного заголовка; в противном случае false.
+        /// </returns>
+        public bool DoesNotContainsSomeHeaders(
+            IEnumerable<string> requiredHeaders, out List<string> lostedHeaders)
+        {
+            bool result = false;
+            lostedHeaders = new List<string>();
+
+            foreach (string header in requiredHeaders)
+            {
+                if (!Head.Contains(header))
+                {
+                    lostedHeaders.Add(header);
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+
 
         /// <summary>
         /// Заполнение листа с созданием строк и ячеек.
