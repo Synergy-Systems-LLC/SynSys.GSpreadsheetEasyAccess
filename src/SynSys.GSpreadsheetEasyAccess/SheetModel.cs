@@ -94,6 +94,13 @@ namespace SynSys.GSpreadsheetEasyAccess
         public List<Row> Rows { get; } = new List<Row>();
 
         /// <summary>
+        /// Показывает пустой ли лист.
+        /// </summary>
+        /// <returns></returns>
+        [JsonIgnore]
+        public bool IsEmpty { get => Rows.Count == 0; }
+
+        /// <summary>
         /// Добавляет пустую строку в конец листа.
         /// Размер строки будет равен максимальному для данного листа.
         /// </summary>
