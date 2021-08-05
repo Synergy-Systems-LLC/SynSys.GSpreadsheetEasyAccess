@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -93,12 +94,6 @@ namespace SynSys.GSpreadsheetEasyAccess
         public List<Row> Rows { get; } = new List<Row>();
 
         /// <summary>
-        /// Инициализирует пустой экземпеляр листа готовый для заполнения.
-        /// Экземпляр листа нельзя создавать вне библиотеки.
-        /// </summary>
-        internal SheetModel() { }
-
-        /// <summary>
         /// Добавляет пустую строку в конец листа.
         /// Размер строки будет равен максимальному для данного листа.
         /// </summary>
@@ -184,6 +179,11 @@ namespace SynSys.GSpreadsheetEasyAccess
             return result;
         }
 
+        /// <summary>
+        /// Инициализирует пустой экземпеляр листа готовый для заполнения.
+        /// Экземпляр листа нельзя создавать вне библиотеки.
+        /// </summary>
+        internal SheetModel() { }
 
         /// <summary>
         /// Заполнение листа с созданием строк и ячеек.
