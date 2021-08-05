@@ -180,6 +180,59 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
         /// <summary>
+        /// Слияние с другой версией этого же листа.<br/>
+        /// Лист считается таким же если у него совпадают все основные характеристики 
+        /// кроме списка строк.<br/>
+        /// Перед слиянием выполняется сравнение строк. После сравнения происходят изменения строк
+        /// если нужно.<br/>
+        /// У строк меняются значения ячеек и статусы, добавляются недостающие строки.<br/>
+        /// </summary>
+        /// <param name="otherSheet"></param>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentException">
+        /// </exception>
+        public void Merge(SheetModel otherSheet)
+        {
+            if (otherSheet == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (IsNotSameSheet(otherSheet, out string failReason))
+            {
+                throw new ArgumentException($"Sheets are not same. Reason: {failReason}");
+            }
+
+            int maximumRows = Math.Max(Rows.Count, otherSheet.Rows.Count);
+            var rowsWithToAppendStatus = new List<Row>();
+
+            for (int i = 0; i < maximumRows; i++)
+            {
+                Row currentRow = GetRowByIndex(i, Rows);
+                Row otherRow = GetRowByIndex(i, otherSheet.Rows);
+
+                if (MatchingRowNotFoundInOtherSheet(currentRow, otherRow))
+                {
+                    PrepareRowForDeletion(currentRow, rowsWithToAppendStatus);
+                    continue;
+                }
+
+                if (MatchingRowNotFoundInCurrentSheet(currentRow, otherRow))
+                {
+                    AddRow(otherRow.GetData().Cast<string>().ToList());
+                    continue;
+                }
+
+                MergeRows(currentRow, otherRow);
+            }
+
+            // Эти строки надо удалять потому что им нельзя дать статус RowStatus.ToDelete.
+            // А данный статус им нельзя давать потому что их и так не было в гугл таблице.
+            DeleteRows(rowsWithToAppendStatus);
+        }
+
+
+        /// <summary>
         /// Инициализирует пустой экземпеляр листа готовый для заполнения.
         /// Экземпляр листа нельзя создавать вне библиотеки.
         /// </summary>
@@ -433,6 +486,129 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
 
             return data;
+        }
+
+        private bool IsNotSameSheet(SheetModel otherSheet, out string failReason)
+        {
+            if (Title != otherSheet.Title)
+            {
+                failReason = nameof(otherSheet.Title);
+                return true;
+            }
+
+            if (SpreadsheetId != otherSheet.SpreadsheetId)
+            {
+                failReason = nameof(otherSheet.SpreadsheetId);
+                return true;
+            }
+
+            if (Gid != otherSheet.Gid)
+            {
+                failReason = nameof(otherSheet.Gid);
+                return true;
+            }
+
+            if (SpreadsheetTitle != otherSheet.SpreadsheetTitle)
+            {
+                failReason = nameof(otherSheet.SpreadsheetTitle);
+                return true;
+            }
+
+            if (Status != otherSheet.Status)
+            {
+                failReason = nameof(otherSheet.Status);
+                return true;
+            }
+
+            if (KeyName != otherSheet.KeyName)
+            {
+                failReason = nameof(otherSheet.KeyName);
+                return true;
+            }
+
+            if (Mode != otherSheet.Mode)
+            {
+                failReason = nameof(otherSheet.Mode);
+                return true;
+            }
+
+            if (IsNotSameHead(otherSheet.Head))
+            {
+                failReason = nameof(otherSheet.Head);
+                return true;
+            }
+
+            failReason = string.Empty;
+            return false;
+        }
+
+        private bool IsNotSameHead(List<string> otherHead)
+        {
+            if (otherHead.Count != Head.Count)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < Head.Count; i++)
+            {
+                if (Head[i] != otherHead[i])
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private Row GetRowByIndex(int index, List<Row> rows)
+        {
+            if (index < rows.Count)
+            {
+                return rows[index];
+            }
+
+            return null;
+        }
+
+        private static bool MatchingRowNotFoundInCurrentSheet(Row currentRow, Row otherRow)
+        {
+            return currentRow == null && otherRow != null;
+        }
+
+        private static bool MatchingRowNotFoundInOtherSheet(Row currentRow, Row otherRow)
+        {
+            return currentRow != null && otherRow == null;
+        }
+
+        private static void PrepareRowForDeletion(Row currentRow, List<Row> rowsWithToAppendStatus)
+        {
+            if (currentRow.Status == RowStatus.ToAppend)
+            {
+                rowsWithToAppendStatus.Add(currentRow);
+            }
+            else
+            {
+                currentRow.Status = RowStatus.ToDelete;
+            }
+        }
+
+        private static void MergeRows(Row currentRow, Row otherRow)
+        {
+            for (int j = 0; j < currentRow.Cells.Count; j++)
+            {
+                if (currentRow.Cells[j].Value != otherRow.Cells[j].Value)
+                {
+                    currentRow.Cells[j].Value = otherRow.Cells[j].Value;
+                }
+            }
+        }
+
+        private void DeleteRows(List<Row> rowsToAppend)
+        {
+            foreach (Row row in rowsToAppend)
+            {
+                Rows.Remove(row);
+            }
         }
     }
 }
