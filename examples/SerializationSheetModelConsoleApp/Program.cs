@@ -62,6 +62,7 @@ namespace SerializationSheetModelConsoleApp
 
             Console.ReadLine();
         }
+
         private static void ChangeSheet(SheetModel sheet)
         {
             AddRows(sheet);
