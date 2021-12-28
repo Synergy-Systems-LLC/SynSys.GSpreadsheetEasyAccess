@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Principal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceAccount.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
