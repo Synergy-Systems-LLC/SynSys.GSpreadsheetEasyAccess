@@ -12,6 +12,7 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
+using SynSys.GSpreadsheetEasyAccess.Authentication;
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
@@ -115,6 +116,16 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Для получения доступа к сервису гугл таблиц необходимо пройти аутентификацию.
+        /// Необходимо указать кто аутентификацируется.
+        /// </summary>
+        /// <param name="principal"></param>
+        public void AuthenticateAs(Principal principal)
+        {
+            sheetsService = principal.GetSheetsService();
         }
 
         /// <summary>

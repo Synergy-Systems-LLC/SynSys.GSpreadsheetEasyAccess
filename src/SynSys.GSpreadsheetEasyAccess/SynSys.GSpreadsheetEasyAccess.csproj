@@ -81,5 +81,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SynSys.GSpreadsheetEasyAccess.Authentication\SynSys.GSpreadsheetEasyAccess.Authentication.csproj">
+      <Project>{1b4f1aab-734a-4fa1-8e4a-b88d9f2016d0}</Project>
+      <Name>SynSys.GSpreadsheetEasyAccess.Authentication</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
