@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GSpreadsheetEasyAccess")]
+[assembly: AssemblyTitle("SynSys.GSpreadsheetEasyAccess")]
 [assembly: AssemblyDescription("Библиотека для подключения к google spreadsheet")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Synergy Systems")]
-[assembly: AssemblyProduct("GSpreadsheetEasyAccess")]
+[assembly: AssemblyProduct("SynSys.GSpreadsheetEasyAccess")]
 [assembly: AssemblyCopyright("Synergy Systems")]
 [assembly: AssemblyTrademark("Synergy Systems")]
 [assembly: AssemblyCulture("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.14.0.0")]
-[assembly: AssemblyFileVersion("0.14.0.0")]
+[assembly: AssemblyVersion("0.15.0.0")]
+[assembly: AssemblyFileVersion("0.15.0.0")]
