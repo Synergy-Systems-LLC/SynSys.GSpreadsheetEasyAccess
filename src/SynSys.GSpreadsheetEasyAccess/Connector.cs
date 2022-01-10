@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,6 +12,7 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
+using SynSys.GSpreadsheetEasyAccess.Authentication;
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
@@ -49,6 +50,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     {
         private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
         private SheetsService sheetsService;
+        private Principal _principal;
  
         /// <summary>
         /// Имя приложения, которое будет использоваться в заголовке User-Agent.<br/>
@@ -115,6 +117,17 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Для получения доступа к сервису гугл таблиц необходимо пройти аутентификацию.
+        /// Необходимо указать кто аутентифицируется.
+        /// </summary>
+        /// <param name="principal"></param>
+        public void AuthenticateAs(Principal principal)
+        {
+            _principal = principal;
+            sheetsService = principal.GetSheetsService();
         }
 
         /// <summary>
@@ -386,8 +399,18 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Все эти действия просходят на основе запросов в google.
         /// </remarks>
         /// <param name="sheetModel">Модель листа гугл таблицы</param>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal это ServiceAccount
+        /// </exception>
         public void UpdateSheet(SheetModel sheetModel)
         {
+            if (_principal is ServiceAccount)
+            {
+                throw new InvalidOperationException(
+                    $"Используя {nameof(ServiceAccount)} нельзя обновлять листы гугл таблиц."
+                );
+            }
+
             CreateAppendRequest(sheetModel)?.Execute();
             CreateUpdateRequest(sheetModel)?.Execute();
             CreateDeleteRequest(sheetModel)?.Execute();
