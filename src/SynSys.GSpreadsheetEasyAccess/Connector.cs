@@ -121,7 +121,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         /// <summary>
         /// Для получения доступа к сервису гугл таблиц необходимо пройти аутентификацию.
-        /// Необходимо указать кто аутентификацируется.
+        /// Необходимо указать кто аутентифицируется.
         /// </summary>
         /// <param name="principal"></param>
         public void AuthenticateAs(Principal principal)
