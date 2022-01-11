@@ -61,6 +61,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Время на попытку подключения к приложению на Google Cloud Platform в секундах.<br/>
         /// Значение по умолчанию <c>15</c>. 
         /// </summary>
+        [ObsoleteAttribute("В одной из следующих версий данное свойство будет удалено.")]
         public byte CancellationSeconds { get; set; } = 15;
         /// <summary>
         /// В зависимости от состояния подключения меняется его статус.<br/>
@@ -69,11 +70,13 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <value>
         /// Статус текущего подключения.
         /// </value>
+        [ObsoleteAttribute("В одной из следующих версий данное свойство будет удалено.")]
         public ConnectStatus Status { get; private set; } = ConnectStatus.NotConnected;
         /// <summary>
         /// Исключение возникшее во время подключения к приложению на Google Cloud Platform.
         /// Значение по умолчанию <c>new Exception()</c>.
         /// </summary>
+        [ObsoleteAttribute("В одной из следующих версий данное свойство будет удалено.")]
         public Exception Exception { get; private set; } = new Exception();
 
         /// <summary>
@@ -92,6 +95,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// и коннектором можно пользоваться для получения и изменения листов таблицы.
         /// </remarks>
         /// <param name="credentials">Экземпляр класса Stream полученный из файла credentials.json</param>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать AuthenticateAs")]
         public bool TryToCreateConnect(Stream credentials) 
         {
             try
@@ -143,6 +147,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Если при получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
         /// а в sheetModel.Rows будет пустой список.
         /// </returns>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать GetSimpleSheet")]
         public bool TryToGetSimpleSheet(string uri, out SheetModel sheetModel)
         {
             return TryToGetSimpleSheet(
@@ -166,6 +171,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
         /// а в SheetModel.Rows будет пустой список.
         /// </returns>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать GetSimpleSheet")]
         public bool TryToGetSimpleSheet(string spreadsheetId,
                                         int gid,
                                         out SheetModel sheetModel)
@@ -195,6 +201,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
         /// а в SheetModel.Rows будет пустой список.
         /// </returns>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать GetSimpleSheet")]
         public bool TryToGetSimpleSheet(string spreadsheetId,
                                         string sheetName,
                                         out SheetModel sheetModel)
@@ -225,6 +232,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
         /// а в SheetModel.Rows будет пустой список.
         /// </returns>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать GetSheetWithHead")]
         public bool TryToGetSheetWithHead(string uri, out SheetModel sheetModel)
         {
             return TryToGetSheetWithHead(
@@ -250,6 +258,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
         /// а в SheetModel.Rows будет пустой список.
         /// </returns>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать GetSheetWithHead")]
         public bool TryToGetSheetWithHead(string spreadsheetId,
                                           int gid,
                                           out SheetModel sheetModel)
@@ -281,6 +290,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
         /// а в SheetModel.Rows будет пустой список.
         /// </returns>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать GetSheetWithHead")]
         public bool TryToGetSheetWithHead(string spreadsheetId,
                                           string sheetName,
                                           out SheetModel sheetModel)
@@ -312,6 +322,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
         /// а в SheetModel.Rows будет пустой список.
         /// </returns>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать GetSheetWithHeadAndKey")]
         public bool TryToGetSheetWithHeadAndKey(string uri,
                                                 string keyName,
                                                 out SheetModel sheetModel)
@@ -341,6 +352,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
         /// а в SheetModel.Rows будет пустой список.
         /// </returns>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать GetSheetWithHeadAndKey")]
         public bool TryToGetSheetWithHeadAndKey(string spreadsheetId,
                                                 int gid,
                                                 string keyName,
@@ -374,6 +386,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Если получении данных возникнет ошибка, то в sheetModel.Status будет её значение,
         /// а в SheetModel.Rows будет пустой список.
         /// </returns>
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён. Вместо него следует использовать GetSheetWithHeadAndKey")]
         public bool TryToGetSheetWithHeadAndKey(string spreadsheetId,
                                                 string sheetName,
                                                 string keyName,
@@ -422,6 +435,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
 
         #region WorkWithSheetModel
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён.")]
         private bool TryToInitializeSheet(string spreadsheetId,
                                           int gid,
                                           SheetMode mode,
@@ -467,6 +481,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             return true;
         }
 
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён.")]
         private bool TryToInitializeSheet(string spreadsheetId,
                                           string sheetName,
                                           SheetMode mode,
@@ -512,6 +527,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             return true;
         }
 
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён.")]
         private bool TryToGetSpreadsheet(string spreadsheetId,
                                          out Spreadsheet spreadsheet,
                                          out string exceptionMessage)
@@ -569,6 +585,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             return sheet == null;
         }
 
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён.")]
         private bool TryToFillSimpleSheet(SheetModel sheetModel, bool isInitializeSuccessful)
         {
             if (!isInitializeSuccessful)
@@ -599,6 +616,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             return true;
         }
 
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён.")]
         private bool TryToFillSheetWithHeadAndKey(SheetModel sheetModel, string keyName, bool isInitializeSuccessful)
         {
             if (!isInitializeSuccessful)
@@ -762,6 +780,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         #endregion
 
         #region SheetService
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён.")]
         private SheetsService GetService(Stream credentials)
         {
             return new SheetsService(
@@ -773,6 +792,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             );
         }
 
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён.")]
         private UserCredential GetUserCredential(Stream credentials)
         {
             return GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -784,6 +804,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             ).Result;
         }
 
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён.")]
         private CancellationToken GenerateCancellationToken()
         {
             var tokenSource = new CancellationTokenSource();
@@ -791,6 +812,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             return tokenSource.Token;
         }
 
+        [ObsoleteAttribute("В одной из следующих версий данный метод будет удалён.")]
         private static string GenerateTokenPath()
         {
             var uriPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().EscapedCodeBase);
