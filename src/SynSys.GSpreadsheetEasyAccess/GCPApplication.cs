@@ -1,4 +1,4 @@
-﻿using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using System;
@@ -31,6 +31,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         public SheetModel GetSheet(string uri)
         {
+            CheckPrincipal();
             CheckUri(uri);
 
             return GetSheet(
@@ -41,7 +42,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         public SheetModel GetSheet(string spreadsheetId, int gid)
         {
-            CheckSheetAttribut(gid);
+            CheckPrincipal();
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
@@ -54,7 +55,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         public SheetModel GetSheet(string spreadsheetId, string sheetName)
         {
-            CheckSheetAttribut(sheetName);
+            CheckPrincipal();
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
@@ -67,6 +68,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         public SheetModel GetSheetWithHead(string uri)
         {
+            CheckPrincipal();
             CheckUri(uri);
 
             return GetSheetWithHead(
@@ -77,7 +79,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         public SheetModel GetSheetWithHead(string spreadsheetId, int gid)
         {
-            CheckSheetAttribut(gid);
+            CheckPrincipal();
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
@@ -90,7 +92,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         public SheetModel GetSheetWithHead(string spreadsheetId, string sheetName)
         {
-            CheckSheetAttribut(sheetName);
+            CheckPrincipal();
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
@@ -103,6 +105,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         public SheetModel GetSheetWithHeadAndKey(string uri, string keyName)
         {
+            CheckPrincipal();
             CheckUri(uri);
 
             return GetSheetWithHeadAndKey(
@@ -114,7 +117,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, int gid, string keyName)
         {
-            CheckSheetAttribut(gid);
+            CheckPrincipal();
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
@@ -127,7 +130,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
         public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetName, string keyName)
         {
-            CheckSheetAttribut(sheetName);
+            CheckPrincipal();
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
@@ -139,6 +142,21 @@ namespace SynSys.GSpreadsheetEasyAccess
         }
 
         public void UpdateSheet(SheetModel sheetModel)
+        {
+            CheckPrincipal();
+
+            CreateAppendRequest(sheetModel)?.Execute();
+            CreateUpdateRequest(sheetModel)?.Execute();
+            CreateDeleteRequest(sheetModel)?.Execute();
+
+            sheetModel.ClearDeletedRows();
+            sheetModel.RenumberRows();
+            sheetModel.ResetRowStatuses();
+        }
+
+
+        #region GetSheetModel
+        private void CheckPrincipal()
         {
             if (_principal == null)
             {
@@ -153,18 +171,8 @@ namespace SynSys.GSpreadsheetEasyAccess
                     $"Используя {nameof(ServiceAccount)} нельзя обновлять листы гугл таблиц."
                 );
             }
-
-            CreateAppendRequest(sheetModel)?.Execute();
-            CreateUpdateRequest(sheetModel)?.Execute();
-            CreateDeleteRequest(sheetModel)?.Execute();
-
-            sheetModel.ClearDeletedRows();
-            sheetModel.RenumberRows();
-            sheetModel.ResetRowStatuses();
         }
 
-
-        #region GetSheetModel
         private void CheckUri(string uri)
         {
             if (string.IsNullOrWhiteSpace(uri))
