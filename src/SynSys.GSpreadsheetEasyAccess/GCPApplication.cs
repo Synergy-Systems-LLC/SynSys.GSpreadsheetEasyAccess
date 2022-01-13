@@ -68,6 +68,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         public SheetModel GetSheet(string spreadsheetId, int gid)
         {
             CheckPrincipal();
+            CheckSheetAttribute(gid);
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
@@ -94,6 +95,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         public SheetModel GetSheet(string spreadsheetId, string sheetName)
         {
             CheckPrincipal();
+            CheckSheetAttribute(sheetName);
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
@@ -145,6 +147,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         public SheetModel GetSheetWithHead(string spreadsheetId, int gid)
         {
             CheckPrincipal();
+            CheckSheetAttribute(gid);
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
@@ -172,6 +175,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         public SheetModel GetSheetWithHead(string spreadsheetId, string sheetName)
         {
             CheckPrincipal();
+            CheckSheetAttribute(sheetName);
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
@@ -226,6 +230,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, int gid, string keyName)
         {
             CheckPrincipal();
+            CheckSheetAttribute(gid);
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
@@ -254,6 +259,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetName, string keyName)
         {
             CheckPrincipal();
+            CheckSheetAttribute(sheetName);
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
             Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
@@ -316,7 +322,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
         }
 
-        private void CheckSheetAttribut(int gid)
+        private void CheckSheetAttribute(int gid)
         {
             if (gid < 0)
             {
@@ -326,7 +332,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
         }
 
-        private void CheckSheetAttribut(string sheetName)
+        private void CheckSheetAttribute(string sheetName)
         {
             if (string.IsNullOrWhiteSpace(sheetName))
             {
