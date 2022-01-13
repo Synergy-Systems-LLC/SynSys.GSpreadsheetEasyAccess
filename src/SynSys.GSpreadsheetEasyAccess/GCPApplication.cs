@@ -7,6 +7,12 @@ using System.Linq;
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
+    /// <summary>
+    /// Задача класса получать и обновлять данные из гугл таблиц.
+    /// </summary>
+    /// <remarks>
+    /// Пользоваться методами класса можно только после успешной аутентификации.
+    /// </remarks>
     class GCPApplication
     {
         private SheetsService _sheetsService;
@@ -23,6 +29,18 @@ namespace SynSys.GSpreadsheetEasyAccess
             _sheetsService = principal.GetSheetsService();
         }
 
+        /// <summary>
+        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
+        /// Лист представлен списком строк.<br/>
+        /// Шапка отсутствует.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение.
+        /// </summary>
+        /// <param name="uri">Полный uri адрес листа</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public SheetModel GetSheet(string uri)
         {
             CheckPrincipal();
@@ -34,6 +52,19 @@ namespace SynSys.GSpreadsheetEasyAccess
             );
         }
 
+        /// <summary>
+        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
+        /// Лист представлен списком строк.<br/>
+        /// Шапка отсутствует.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение.
+        /// </summary>
+        /// <param name="spreadsheetId">Id таблицы</param>
+        /// <param name="gid">Id листа</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public SheetModel GetSheet(string spreadsheetId, int gid)
         {
             CheckPrincipal();
@@ -47,6 +78,19 @@ namespace SynSys.GSpreadsheetEasyAccess
             return CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
         }
 
+        /// <summary>
+        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
+        /// Лист представлен списком строк.<br/>
+        /// Шапка отсутствует.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение.
+        /// </summary>
+        /// <param name="spreadsheetId">Id таблицы</param>
+        /// <param name="sheetName">Имя листа</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public SheetModel GetSheet(string spreadsheetId, string sheetName)
         {
             CheckPrincipal();
@@ -60,6 +104,19 @@ namespace SynSys.GSpreadsheetEasyAccess
             return CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
         }
 
+        /// <summary>
+        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
+        /// Лист представлен списком строк, без первой строки.<br/>
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="uri">Полный uri адрес листа</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public SheetModel GetSheetWithHead(string uri)
         {
             CheckPrincipal();
@@ -71,6 +128,20 @@ namespace SynSys.GSpreadsheetEasyAccess
             );
         }
 
+        /// <summary>
+        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
+        /// Лист представлен списком строк, без первой строки.<br/>
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="spreadsheetId">Id таблицы</param>
+        /// <param name="gid">Id листа</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public SheetModel GetSheetWithHead(string spreadsheetId, int gid)
         {
             CheckPrincipal();
@@ -84,6 +155,20 @@ namespace SynSys.GSpreadsheetEasyAccess
             return CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
         }
 
+        /// <summary>
+        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
+        /// Лист представлен списком строк, без первой строки.<br/>
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="spreadsheetId">Id таблицы</param>
+        /// <param name="sheetName">Имя листа</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public SheetModel GetSheetWithHead(string spreadsheetId, string sheetName)
         {
             CheckPrincipal();
@@ -97,6 +182,20 @@ namespace SynSys.GSpreadsheetEasyAccess
             return CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
         }
 
+        /// <summary>
+        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
+        /// Лист представлен списком строк, без первой строки.<br/>
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек и есть ключевая ячейка.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="keyName"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public SheetModel GetSheetWithHeadAndKey(string uri, string keyName)
         {
             CheckPrincipal();
@@ -109,6 +208,21 @@ namespace SynSys.GSpreadsheetEasyAccess
             );
         }
 
+        /// <summary>
+        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
+        /// Лист представлен списком строк, без первой строки.<br/>
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек и есть ключевая ячейка.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="gid"></param>
+        /// <param name="keyName"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, int gid, string keyName)
         {
             CheckPrincipal();
@@ -122,6 +236,21 @@ namespace SynSys.GSpreadsheetEasyAccess
             return CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
         }
 
+        /// <summary>
+        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
+        /// Лист представлен списком строк, без первой строки.<br/>
+        /// Первая строка уходит в шапку таблицы.<br/>
+        /// В каждой строке одинаковое количество ячеек и есть ключевая ячейка.<br/>
+        /// В каждой ячейке есть строковое значение и наименование,
+        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// </summary>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="sheetName"></param>
+        /// <param name="keyName"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetName, string keyName)
         {
             CheckPrincipal();
@@ -135,6 +264,18 @@ namespace SynSys.GSpreadsheetEasyAccess
             return CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
         }
 
+        /// <summary>
+        /// Обновленние листа гугл таблицы на основе изменённого экземпляра типа SheetModel.
+        /// </summary>
+        /// <remarks>
+        /// Метод изменяет данные в ячейках,
+        /// добавляет строки в конец листа и удаляет выбраные строки.<br />
+        /// Все эти действия просходят на основе запросов в google.
+        /// </remarks>
+        /// <param name="sheetModel">Модель листа гугл таблицы</param>
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         public void UpdateSheet(SheetModel sheetModel)
         {
             CheckPrincipal();
@@ -247,12 +388,6 @@ namespace SynSys.GSpreadsheetEasyAccess
         #endregion
 
         #region UpdateSheetModel
-        /// <summary>
-        /// Создание запроса на обновление листа в google таблице.
-        /// В запросе содержатся изменения значений в ячейках листа.
-        /// </summary>
-        /// <param name="sheet">Экземпляр изменённого листа</param>
-        /// <returns></returns>
         private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(SheetModel sheet)
         {
             if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToChange).Count <= 0) return null;
@@ -271,12 +406,6 @@ namespace SynSys.GSpreadsheetEasyAccess
                 .BatchUpdate(requestBody, sheet.SpreadsheetId);
         }
 
-        /// <summary>
-        /// Создание запроса на обновление листа в google таблице.
-        /// В запросе содержатся группы строк для удаления.
-        /// </summary>
-        /// <param name="sheet">Экземпляр изменённого листа</param>
-        /// <returns></returns>
         private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(SheetModel sheet)
         {
             if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToDelete).Count > 0)
@@ -307,13 +436,6 @@ namespace SynSys.GSpreadsheetEasyAccess
             return null;
         }
 
-        /// <summary>
-        /// Создание запроса на удаление группы строк.
-        /// </summary>
-        /// <param name="gid">Id листа</param>
-        /// <param name="startRow">Начальная строка из группы строк для удаления</param>
-        /// <param name="endRow">Конечная строка из группы строк для удаления</param>
-        /// <returns></returns>
         private Request CreateDeleteDimensionRequest(int gid, int startRow, int endRow)
         {
             return new Request
@@ -331,12 +453,6 @@ namespace SynSys.GSpreadsheetEasyAccess
             };
         }
 
-        /// <summary>
-        /// Создание запроса на обновление листа в google таблице.
-        /// В запросе содержатся строки для добавления в конец листа.
-        /// </summary>
-        /// <param name="sheet">Экземпляр изменённого листа</param>
-        /// <returns></returns>
         private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(SheetModel sheet)
         {
             if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToAppend).Count <= 0) return null;
