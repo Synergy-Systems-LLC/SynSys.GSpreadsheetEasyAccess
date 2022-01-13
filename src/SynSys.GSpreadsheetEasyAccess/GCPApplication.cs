@@ -13,12 +13,6 @@ namespace SynSys.GSpreadsheetEasyAccess
         private Principal _principal;
  
         /// <summary>
-        /// Имя приложения, которое будет использоваться в заголовке User-Agent.<br/>
-        /// Значение по умолчанию <c>string.Empty</c>. 
-        /// </summary>
-        public string ApplicationName { get; set; } = string.Empty;
-
-        /// <summary>
         /// Для получения доступа к сервису гугл таблиц необходимо пройти аутентификацию.
         /// Необходимо указать кто аутентифицируется.
         /// </summary>
