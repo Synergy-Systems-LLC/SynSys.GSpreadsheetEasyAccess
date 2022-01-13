@@ -1,4 +1,4 @@
-using Google.Apis.Sheets.v4;
+﻿using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using System;
@@ -13,11 +13,11 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// <remarks>
     /// Пользоваться методами класса можно только после успешной аутентификации.
     /// </remarks>
-    class GCPApplication
+    public class GCPApplication
     {
         private SheetsService _sheetsService;
         private Principal _principal;
- 
+
         /// <summary>
         /// Для получения доступа к сервису гугл таблиц необходимо пройти аутентификацию.
         /// Необходимо указать кто аутентифицируется.
