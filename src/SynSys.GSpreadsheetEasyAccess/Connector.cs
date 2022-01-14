@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -49,7 +49,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     public class Connector
     {
         private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
-        private SheetsService sheetsService;
+        private SheetsService _sheetsService;
         private Principal _principal;
  
         /// <summary>
@@ -100,7 +100,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-                sheetsService = GetService(credentials);
+                _sheetsService = GetService(credentials);
                 Status = ConnectStatus.Connected;
             }
             catch (AggregateException ax)
@@ -131,7 +131,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         public void AuthenticateAs(Principal principal)
         {
             _principal = principal;
-            sheetsService = principal.GetSheetsService();
+            _sheetsService = principal.GetSheetsService();
         }
 
         /// <summary>
@@ -537,7 +537,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
             try
             {
-                spreadsheet = sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
+                spreadsheet = _sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
                 return true;
             }
             catch (GoogleApiException e)
@@ -663,7 +663,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <returns></returns>
         private IList<IList<object>> GetData(SheetModel sheet)
         {
-            return sheetsService
+            return _sheetsService
                 .Spreadsheets
                 .Values
                 .Get(sheet.SpreadsheetId, sheet.Title)
@@ -691,7 +691,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                     .ToString()
             };
 
-            return sheetsService
+            return _sheetsService
                 .Spreadsheets
                 .Values
                 .BatchUpdate(requestBody, sheet.SpreadsheetId);
@@ -724,7 +724,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                 }
 
                 return new SpreadsheetsResource.BatchUpdateRequest(
-                    sheetsService,
+                    _sheetsService,
                     requestBody,
                     sheet.SpreadsheetId
                 );
@@ -767,7 +767,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToAppend).Count <= 0) return null;
  
-            var request = sheetsService
+            var request = _sheetsService
                 .Spreadsheets
                 .Values
                 .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
