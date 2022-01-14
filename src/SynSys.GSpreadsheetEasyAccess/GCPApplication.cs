@@ -8,10 +8,13 @@ using System.Linq;
 namespace SynSys.GSpreadsheetEasyAccess
 {
     /// <summary>
-    /// Задача класса получать и обновлять данные из гугл таблиц.
+    /// Класс представляет приложение на Google Cloud Platform у которого есть доступ
+    /// к сервису google таблиц 
+    /// <a href="https://developers.google.com/sheets/api?hl=en_US">Google Sheets API</a>.
     /// </summary>
     /// <remarks>
-    /// Пользоваться методами класса можно только после успешной аутентификации.
+    /// Задача класса получать и обновлять данные из гугл таблиц.<br/>
+    /// Пользоваться методами можно только после успешной аутентификации.
     /// </remarks>
     public class GCPApplication
     {
