@@ -1,4 +1,4 @@
-﻿using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using System;
@@ -287,7 +287,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </exception>
         public void UpdateSheet(SheetModel sheetModel)
         {
-            CheckPrincipal();
+            CheckPrincipalForUpdateSheet();
 
             CreateAppendRequest(sheetModel)?.Execute();
             CreateUpdateRequest(sheetModel)?.Execute();
@@ -308,6 +308,11 @@ namespace SynSys.GSpreadsheetEasyAccess
                     $"Перед тем как обновлять лист, необходимо аутентифицироваться."
                 );
             }
+        }
+
+        private void CheckPrincipalForUpdateSheet()
+        {
+            CheckPrincipal();
 
             if (_principal is ServiceAccount)
             {
