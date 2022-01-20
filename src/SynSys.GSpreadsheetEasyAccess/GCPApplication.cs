@@ -1,4 +1,4 @@
-using Google.Apis.Sheets.v4;
+﻿using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using System;
@@ -13,7 +13,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// <a href="https://developers.google.com/sheets/api?hl=en_US">Google Sheets API</a>.
     /// </summary>
     /// <remarks>
-    /// Задача класса получать и обновлять данные из гугл таблиц.<br/>
+    /// Задача класса получать и обновлять данные из google таблиц.<br/>
     /// Пользоваться методами можно только после успешной аутентификации.
     /// </remarks>
     public class GCPApplication
@@ -31,9 +31,9 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            _principal = principal;
-            _sheetsService = principal.GetSheetsService();
-        }
+                _principal = principal;
+                _sheetsService = principal.GetSheetsService();
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не получилось авторизовать пользователя", e);
@@ -54,14 +54,14 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            CheckPrincipal();
-            CheckUri(uri);
+                CheckPrincipal();
+                CheckUri(uri);
 
-            return GetSheet(
-                HttpUtils.GetSpreadsheetIdFromUri(uri),
-                HttpUtils.GetGidFromUri(uri)
-            );
-        }
+                return GetSheet(
+                    HttpUtils.GetSpreadsheetIdFromUri(uri),
+                    HttpUtils.GetGidFromUri(uri)
+                );
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось создать SheetModel", e);
@@ -83,17 +83,17 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            CheckPrincipal();
-            CheckSheetAttribute(gid);
+                CheckPrincipal();
+                CheckSheetAttribute(gid);
 
-            Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
-            IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
+                Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
+                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
+                IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
 
-            ValidateData(data);
+                ValidateData(data);
 
-            return CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
-        }
+                return CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось создать SheetModel", e);
@@ -115,17 +115,17 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try 
             {
-            CheckPrincipal();
-            CheckSheetAttribute(sheetName);
+                CheckPrincipal();
+                CheckSheetAttribute(sheetName);
 
-            Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
-            IList<IList<object>> data = GetData(spreadsheetId, sheetName);
+                Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
+                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
+                IList<IList<object>> data = GetData(spreadsheetId, sheetName);
 
-            ValidateData(data);
+                ValidateData(data);
 
-            return CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
-        }
+                return CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось создать SheetModel", e);
@@ -147,14 +147,14 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            CheckPrincipal();
-            CheckUri(uri);
+                CheckPrincipal();
+                CheckUri(uri);
 
-            return GetSheetWithHead(
-                HttpUtils.GetSpreadsheetIdFromUri(uri),
-                HttpUtils.GetGidFromUri(uri)
-            );
-        }
+                return GetSheetWithHead(
+                    HttpUtils.GetSpreadsheetIdFromUri(uri),
+                    HttpUtils.GetGidFromUri(uri)
+                );
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось создать SheetModel", e);
@@ -177,17 +177,17 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            CheckPrincipal();
-            CheckSheetAttribute(gid);
+                CheckPrincipal();
+                CheckSheetAttribute(gid);
 
-            Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
-            IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
+                Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
+                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
+                IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
 
-            ValidateData(data);
+                ValidateData(data);
 
-            return CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
-        }
+                return CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось создать SheetModel", e);
@@ -210,17 +210,17 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            CheckPrincipal();
-            CheckSheetAttribute(sheetName);
+                CheckPrincipal();
+                CheckSheetAttribute(sheetName);
 
-            Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
-            IList<IList<object>> data = GetData(spreadsheetId, sheetName);
+                Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
+                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
+                IList<IList<object>> data = GetData(spreadsheetId, sheetName);
 
-            ValidateData(data);
+                ValidateData(data);
 
-            return CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
-        }
+                return CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось создать SheetModel", e);
@@ -243,15 +243,15 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            CheckPrincipal();
-            CheckUri(uri);
+                CheckPrincipal();
+                CheckUri(uri);
 
-            return GetSheetWithHeadAndKey(
-                HttpUtils.GetSpreadsheetIdFromUri(uri),
-                HttpUtils.GetGidFromUri(uri),
-                keyName
-            );
-        }
+                return GetSheetWithHeadAndKey(
+                    HttpUtils.GetSpreadsheetIdFromUri(uri),
+                    HttpUtils.GetGidFromUri(uri),
+                    keyName
+                );
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось создать SheetModel", e);
@@ -275,17 +275,17 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            CheckPrincipal();
-            CheckSheetAttribute(gid);
+                CheckPrincipal();
+                CheckSheetAttribute(gid);
 
-            Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
-            IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
+                Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
+                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
+                IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
 
-            ValidateData(data, keyName);
+                ValidateData(data, keyName);
 
-            return CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
-        }
+                return CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось создать SheetModel", e);
@@ -309,17 +309,17 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            CheckPrincipal();
-            CheckSheetAttribute(sheetName);
+                CheckPrincipal();
+                CheckSheetAttribute(sheetName);
 
-            Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
-            IList<IList<object>> data = GetData(spreadsheetId, sheetName);
+                Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
+                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
+                IList<IList<object>> data = GetData(spreadsheetId, sheetName);
 
-            ValidateData(data, keyName);
+                ValidateData(data, keyName);
 
-            return CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
-        }
+                return CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось создать SheetModel", e);
@@ -340,16 +340,16 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-            CheckPrincipalForUpdateSheet();
+                CheckPrincipalForUpdateSheet();
 
-            CreateAppendRequest(sheetModel)?.Execute();
-            CreateUpdateRequest(sheetModel)?.Execute();
-            CreateDeleteRequest(sheetModel)?.Execute();
+                CreateAppendRequest(sheetModel)?.Execute();
+                CreateUpdateRequest(sheetModel)?.Execute();
+                CreateDeleteRequest(sheetModel)?.Execute();
 
-            sheetModel.ClearDeletedRows();
-            sheetModel.RenumberRows();
-            sheetModel.ResetRowStatuses();
-        }
+                sheetModel.ClearDeletedRows();
+                sheetModel.RenumberRows();
+                sheetModel.ResetRowStatuses();
+            }
             catch(Exception e)
             {
                 throw new GCPApplicationException("Не удалось обновить данные на google spreadsheet", e);
@@ -358,6 +358,9 @@ namespace SynSys.GSpreadsheetEasyAccess
 
 
         #region GetSheetModel
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         private void CheckPrincipal()
         {
             if (_principal == null)
@@ -368,6 +371,9 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
         }
 
+        /// <exception cref="InvalidOperationException">
+        /// Если principal null или ServiceAccount
+        /// </exception>
         private void CheckPrincipalForUpdateSheet()
         {
             CheckPrincipal();
@@ -380,30 +386,41 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
         }
 
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
         private void CheckUri(string uri)
         {
             if (string.IsNullOrWhiteSpace(uri))
             {
-                throw new ArgumentException("uri не может быть пустым");
+                throw new ArgumentException("uri не может быть пустым", nameof(uri));
             }
         }
 
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
         private void CheckSheetAttribute(int gid)
         {
             if (gid < 0)
             {
                 throw new ArgumentException(
-                    $"Был введён некорректный gid листа. Возможно он отсутствует в uri"
+                    $"gid листа не может быть отрицательным числом",
+                    nameof(gid)
                 );
             }
         }
 
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
         private void CheckSheetAttribute(string sheetName)
         {
             if (string.IsNullOrWhiteSpace(sheetName))
             {
                 throw new ArgumentException(
-                    $"Не существует листа с пустым именем" // Подумай над формулировкой
+                    $"Не существует листа с пустым именем",
+                    nameof(sheetName)
                 );
             }
         }
@@ -423,21 +440,28 @@ namespace SynSys.GSpreadsheetEasyAccess
                 .Values;
         }
 
+
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
         private void ValidateData(IList<IList<object>> data)
         {
-            if (data == null)
+            if (data == null || data.Count == 0)
             {
-                throw new InvalidOperationException($"Лист не содержит данных");
+                throw new ArgumentException($"Лист не содержит данных", nameof(data));
             }
         }
 
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
         private void ValidateData(IList<IList<object>> data, string keyName)
         {
             ValidateData(data);
 
             if (!data[0].Contains(keyName))
             {
-                throw new InvalidOperationException($"Лист не содержит ключ {keyName}");
+                throw new ArgumentException($"Лист не содержит ключ {keyName}", nameof(keyName));
             }
         }
 
