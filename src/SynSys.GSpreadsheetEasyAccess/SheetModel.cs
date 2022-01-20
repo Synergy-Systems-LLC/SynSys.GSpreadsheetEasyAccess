@@ -406,6 +406,86 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
         }
 
+        internal static SheetModel CreateSheetModel(Spreadsheet spreadsheet, Sheet sheet, SheetMode mode, string keyName, IList<IList<object>> data)
+        {
+            var sheetModel = new SheetModel()
+            {
+                SpreadsheetId = spreadsheet.SpreadsheetId,
+                SpreadsheetTitle = spreadsheet.Properties.Title,
+                Gid = sheet.Properties.SheetId.ToString(),
+                Title = sheet.Properties.Title,
+                Mode = mode,
+                KeyName = keyName
+            };
+
+            sheetModel.Fill(data);
+
+            return sheetModel;
+        }
+
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
+        internal static void CheckUri(string uri)
+        {
+            if (string.IsNullOrWhiteSpace(uri))
+            {
+                throw new ArgumentException("uri не может быть пустым", nameof(uri));
+            }
+        }
+
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
+        internal static void CheckSheetAttribute(int gid)
+        {
+            if (gid < 0)
+            {
+                throw new ArgumentException(
+                    $"gid листа не может быть отрицательным числом",
+                    nameof(gid)
+                );
+            }
+        }
+
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
+        internal static void CheckSheetAttribute(string sheetName)
+        {
+            if (string.IsNullOrWhiteSpace(sheetName))
+            {
+                throw new ArgumentException(
+                    $"Не существует листа с пустым именем",
+                    nameof(sheetName)
+                );
+            }
+        }
+
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
+        internal static void ValidateData(IList<IList<object>> data)
+        {
+            if (data == null || data.Count == 0)
+            {
+                throw new ArgumentException($"Лист не содержит данных", nameof(data));
+            }
+        }
+
+        /// <exception cref="ArgumentException">
+        /// Если uri не корректный
+        /// </exception>
+        internal static void ValidateData(IList<IList<object>> data, string keyName)
+        {
+            ValidateData(data);
+
+            if (!data[0].Contains(keyName))
+            {
+                throw new ArgumentException($"Лист не содержит ключ {keyName}", nameof(keyName));
+            }
+        }
+
 
         private void CreateEmptyHead(int length)
         {
