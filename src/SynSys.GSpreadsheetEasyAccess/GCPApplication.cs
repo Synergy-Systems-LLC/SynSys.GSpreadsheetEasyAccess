@@ -26,10 +26,18 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Необходимо указать кто аутентифицируется.
         /// </summary>
         /// <param name="principal"></param>
+        /// <exception cref="GCPApplicationException"></exception>
         public void AuthenticateAs(Principal principal)
         {
+            try
+            {
             _principal = principal;
             _sheetsService = principal.GetSheetsService();
+        }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не получилось авторизовать пользователя", e);
+            }
         }
 
         /// <summary>
@@ -41,11 +49,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </summary>
         /// <param name="uri">Полный uri адрес листа</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public SheetModel GetSheet(string uri)
         {
+            try
+            {
             CheckPrincipal();
             CheckUri(uri);
 
@@ -54,6 +62,11 @@ namespace SynSys.GSpreadsheetEasyAccess
                 HttpUtils.GetGidFromUri(uri)
             );
         }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось создать SheetModel", e);
+            }
+        }
 
         /// <summary>
         /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
@@ -65,11 +78,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="spreadsheetId">Id таблицы</param>
         /// <param name="gid">Id листа</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public SheetModel GetSheet(string spreadsheetId, int gid)
         {
+            try
+            {
             CheckPrincipal();
             CheckSheetAttribute(gid);
 
@@ -80,6 +93,11 @@ namespace SynSys.GSpreadsheetEasyAccess
             ValidateData(data);
 
             return CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
+        }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось создать SheetModel", e);
+            }
         }
 
         /// <summary>
@@ -92,11 +110,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="spreadsheetId">Id таблицы</param>
         /// <param name="sheetName">Имя листа</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public SheetModel GetSheet(string spreadsheetId, string sheetName)
         {
+            try 
+            {
             CheckPrincipal();
             CheckSheetAttribute(sheetName);
 
@@ -107,6 +125,11 @@ namespace SynSys.GSpreadsheetEasyAccess
             ValidateData(data);
 
             return CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
+        }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось создать SheetModel", e);
+            }
         }
 
         /// <summary>
@@ -119,11 +142,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </summary>
         /// <param name="uri">Полный uri адрес листа</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public SheetModel GetSheetWithHead(string uri)
         {
+            try
+            {
             CheckPrincipal();
             CheckUri(uri);
 
@@ -131,6 +154,11 @@ namespace SynSys.GSpreadsheetEasyAccess
                 HttpUtils.GetSpreadsheetIdFromUri(uri),
                 HttpUtils.GetGidFromUri(uri)
             );
+        }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось создать SheetModel", e);
+            }
         }
 
         /// <summary>
@@ -144,11 +172,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="spreadsheetId">Id таблицы</param>
         /// <param name="gid">Id листа</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public SheetModel GetSheetWithHead(string spreadsheetId, int gid)
         {
+            try
+            {
             CheckPrincipal();
             CheckSheetAttribute(gid);
 
@@ -159,6 +187,11 @@ namespace SynSys.GSpreadsheetEasyAccess
             ValidateData(data);
 
             return CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
+        }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось создать SheetModel", e);
+            }
         }
 
         /// <summary>
@@ -172,11 +205,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="spreadsheetId">Id таблицы</param>
         /// <param name="sheetName">Имя листа</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public SheetModel GetSheetWithHead(string spreadsheetId, string sheetName)
         {
+            try
+            {
             CheckPrincipal();
             CheckSheetAttribute(sheetName);
 
@@ -187,6 +220,11 @@ namespace SynSys.GSpreadsheetEasyAccess
             ValidateData(data);
 
             return CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
+        }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось создать SheetModel", e);
+            }
         }
 
         /// <summary>
@@ -200,11 +238,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="uri"></param>
         /// <param name="keyName"></param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public SheetModel GetSheetWithHeadAndKey(string uri, string keyName)
         {
+            try
+            {
             CheckPrincipal();
             CheckUri(uri);
 
@@ -213,6 +251,11 @@ namespace SynSys.GSpreadsheetEasyAccess
                 HttpUtils.GetGidFromUri(uri),
                 keyName
             );
+        }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось создать SheetModel", e);
+            }
         }
 
         /// <summary>
@@ -227,11 +270,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="gid"></param>
         /// <param name="keyName"></param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, int gid, string keyName)
         {
+            try
+            {
             CheckPrincipal();
             CheckSheetAttribute(gid);
 
@@ -242,6 +285,11 @@ namespace SynSys.GSpreadsheetEasyAccess
             ValidateData(data, keyName);
 
             return CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
+        }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось создать SheetModel", e);
+            }
         }
 
         /// <summary>
@@ -256,11 +304,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="sheetName"></param>
         /// <param name="keyName"></param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetName, string keyName)
         {
+            try
+            {
             CheckPrincipal();
             CheckSheetAttribute(sheetName);
 
@@ -272,6 +320,11 @@ namespace SynSys.GSpreadsheetEasyAccess
 
             return CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
         }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось создать SheetModel", e);
+            }
+        }
 
         /// <summary>
         /// Обновленние листа гугл таблицы на основе изменённого экземпляра типа SheetModel.
@@ -282,11 +335,11 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Все эти действия просходят на основе запросов в google.
         /// </remarks>
         /// <param name="sheetModel">Модель листа гугл таблицы</param>
-        /// <exception cref="InvalidOperationException">
-        /// Если principal null или ServiceAccount
-        /// </exception>
+        /// <exception cref="GCPApplicationException"></exception>
         public void UpdateSheet(SheetModel sheetModel)
         {
+            try
+            {
             CheckPrincipalForUpdateSheet();
 
             CreateAppendRequest(sheetModel)?.Execute();
@@ -296,6 +349,11 @@ namespace SynSys.GSpreadsheetEasyAccess
             sheetModel.ClearDeletedRows();
             sheetModel.RenumberRows();
             sheetModel.ResetRowStatuses();
+        }
+            catch(Exception e)
+            {
+                throw new GCPApplicationException("Не удалось обновить данные на google spreadsheet", e);
+            }
         }
 
 
