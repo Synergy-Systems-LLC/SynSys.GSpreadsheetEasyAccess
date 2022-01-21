@@ -423,57 +423,51 @@ namespace SynSys.GSpreadsheetEasyAccess
             return sheetModel;
         }
 
-        /// <exception cref="ArgumentException">
+        /// <exception cref="InvalidSheetUriException">
         /// Если uri не корректный
         /// </exception>
         internal static void CheckUri(string uri)
         {
             if (string.IsNullOrWhiteSpace(uri))
             {
-                throw new ArgumentException("uri не может быть пустым", nameof(uri));
+                throw new InvalidSheetUriException("uri не может быть пустым");
             }
         }
 
-        /// <exception cref="ArgumentException">
+        /// <exception cref="InvalidSheetGidException">
         /// Если uri не корректный
         /// </exception>
         internal static void CheckGid(int gid)
         {
             if (gid < 0)
             {
-                throw new ArgumentException(
-                    $"gid листа не может быть отрицательным числом",
-                    nameof(gid)
-                );
+                throw new InvalidSheetGidException($"gid листа не может быть отрицательным числом");
             }
         }
 
-        /// <exception cref="ArgumentException">
+        /// <exception cref="InvalidSheetNameException">
         /// Если uri не корректный
         /// </exception>
         internal static void CheckName(string sheetName)
         {
             if (string.IsNullOrWhiteSpace(sheetName))
             {
-                throw new ArgumentException(
-                    $"Не существует листа с пустым именем",
-                    nameof(sheetName)
-                );
+                throw new InvalidSheetNameException($"Не существует листа с пустым именем");
             }
         }
 
-        /// <exception cref="ArgumentException">
+        /// <exception cref="EmptySheetException">
         /// Если uri не корректный
         /// </exception>
         internal static void ValidateData(IList<IList<object>> data)
         {
             if (data == null || data.Count == 0)
             {
-                throw new ArgumentException($"Лист не содержит данных", nameof(data));
+                throw new EmptySheetException($"Лист не содержит данных");
             }
         }
 
-        /// <exception cref="ArgumentException">
+        /// <exception cref="KeyNotFoundException">
         /// Если uri не корректный
         /// </exception>
         internal static void ValidateData(IList<IList<object>> data, string keyName)
@@ -482,7 +476,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
             if (!data[0].Contains(keyName))
             {
-                throw new ArgumentException($"Лист не содержит ключ {keyName}", nameof(keyName));
+                throw new KeyNotFoundException($"Лист не содержит ключ {keyName}");
             }
         }
 
