@@ -406,7 +406,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
         }
 
-        internal static SheetModel CreateSheetModel(Spreadsheet spreadsheet, Sheet sheet, SheetMode mode, string keyName, IList<IList<object>> data)
+        internal static SheetModel Create(Spreadsheet spreadsheet, Sheet sheet, SheetMode mode, string keyName, IList<IList<object>> data)
         {
             var sheetModel = new SheetModel()
             {
@@ -437,7 +437,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <exception cref="ArgumentException">
         /// Если uri не корректный
         /// </exception>
-        internal static void CheckSheetAttribute(int gid)
+        internal static void CheckGid(int gid)
         {
             if (gid < 0)
             {
@@ -451,7 +451,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <exception cref="ArgumentException">
         /// Если uri не корректный
         /// </exception>
-        internal static void CheckSheetAttribute(string sheetName)
+        internal static void CheckName(string sheetName)
         {
             if (string.IsNullOrWhiteSpace(sheetName))
             {

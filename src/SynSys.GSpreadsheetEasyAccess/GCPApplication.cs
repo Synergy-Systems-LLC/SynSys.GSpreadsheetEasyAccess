@@ -84,7 +84,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckSheetAttribute(gid);
+                SheetModel.CheckGid(gid);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
@@ -92,7 +92,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
                 SheetModel.ValidateData(data);
 
-                return SheetModel.CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
+                return SheetModel.Create(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
             }
             catch(Exception e)
             {
@@ -116,7 +116,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             try 
             {
                 CheckPrincipal();
-                SheetModel.CheckSheetAttribute(sheetName);
+                SheetModel.CheckName(sheetName);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
@@ -124,7 +124,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
                 SheetModel.ValidateData(data);
 
-                return SheetModel.CreateSheetModel(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
+                return SheetModel.Create(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
             }
             catch(Exception e)
             {
@@ -178,7 +178,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckSheetAttribute(gid);
+                SheetModel.CheckGid(gid);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
@@ -186,7 +186,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
                 SheetModel.ValidateData(data);
 
-                return SheetModel.CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
+                return SheetModel.Create(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
             }
             catch(Exception e)
             {
@@ -211,7 +211,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckSheetAttribute(sheetName);
+                SheetModel.CheckName(sheetName);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
@@ -219,7 +219,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
                 SheetModel.ValidateData(data);
 
-                return SheetModel.CreateSheetModel(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
+                return SheetModel.Create(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
             }
             catch(Exception e)
             {
@@ -276,7 +276,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckSheetAttribute(gid);
+                SheetModel.CheckGid(gid);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
@@ -284,7 +284,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
                 SheetModel.ValidateData(data, keyName);
 
-                return SheetModel.CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
+                return SheetModel.Create(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
             }
             catch(Exception e)
             {
@@ -310,7 +310,7 @@ namespace SynSys.GSpreadsheetEasyAccess
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckSheetAttribute(sheetName);
+                SheetModel.CheckName(sheetName);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
@@ -318,7 +318,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
                 SheetModel.ValidateData(data, keyName);
 
-                return SheetModel.CreateSheetModel(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
+                return SheetModel.Create(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
             }
             catch(Exception e)
             {
