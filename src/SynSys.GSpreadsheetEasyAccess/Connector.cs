@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +12,6 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
-using SynSys.GSpreadsheetEasyAccess.Authentication;
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
@@ -49,19 +48,20 @@ namespace SynSys.GSpreadsheetEasyAccess
     public class Connector
     {
         private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
-        private SheetsService sheetsService;
-        private Principal _principal;
+        private SheetsService _sheetsService;
  
         /// <summary>
         /// Имя приложения, которое будет использоваться в заголовке User-Agent.<br/>
         /// Значение по умолчанию <c>string.Empty</c>. 
         /// </summary>
         public string ApplicationName { get; set; } = string.Empty;
+
         /// <summary>
         /// Время на попытку подключения к приложению на Google Cloud Platform в секундах.<br/>
         /// Значение по умолчанию <c>15</c>. 
         /// </summary>
         public byte CancellationSeconds { get; set; } = 15;
+
         /// <summary>
         /// В зависимости от состояния подключения меняется его статус.<br/>
         /// Значение по умолчанию <c>NotConnected</c>
@@ -70,6 +70,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// Статус текущего подключения.
         /// </value>
         public ConnectStatus Status { get; private set; } = ConnectStatus.NotConnected;
+
         /// <summary>
         /// Исключение возникшее во время подключения к приложению на Google Cloud Platform.
         /// Значение по умолчанию <c>new Exception()</c>.
@@ -96,7 +97,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             try
             {
-                sheetsService = GetService(credentials);
+                _sheetsService = GetService(credentials);
                 Status = ConnectStatus.Connected;
             }
             catch (AggregateException ax)
@@ -117,17 +118,6 @@ namespace SynSys.GSpreadsheetEasyAccess
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Для получения доступа к сервису гугл таблиц необходимо пройти аутентификацию.
-        /// Необходимо указать кто аутентифицируется.
-        /// </summary>
-        /// <param name="principal"></param>
-        public void AuthenticateAs(Principal principal)
-        {
-            _principal = principal;
-            sheetsService = principal.GetSheetsService();
         }
 
         /// <summary>
@@ -404,13 +394,6 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// </exception>
         public void UpdateSheet(SheetModel sheetModel)
         {
-            if (_principal is ServiceAccount)
-            {
-                throw new InvalidOperationException(
-                    $"Используя {nameof(ServiceAccount)} нельзя обновлять листы гугл таблиц."
-                );
-            }
-
             CreateAppendRequest(sheetModel)?.Execute();
             CreateUpdateRequest(sheetModel)?.Execute();
             CreateDeleteRequest(sheetModel)?.Execute();
@@ -521,7 +504,7 @@ namespace SynSys.GSpreadsheetEasyAccess
 
             try
             {
-                spreadsheet = sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
+                spreadsheet = _sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
                 return true;
             }
             catch (GoogleApiException e)
@@ -645,7 +628,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <returns></returns>
         private IList<IList<object>> GetData(SheetModel sheet)
         {
-            return sheetsService
+            return _sheetsService
                 .Spreadsheets
                 .Values
                 .Get(sheet.SpreadsheetId, sheet.Title)
@@ -673,7 +656,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                     .ToString()
             };
 
-            return sheetsService
+            return _sheetsService
                 .Spreadsheets
                 .Values
                 .BatchUpdate(requestBody, sheet.SpreadsheetId);
@@ -706,7 +689,7 @@ namespace SynSys.GSpreadsheetEasyAccess
                 }
 
                 return new SpreadsheetsResource.BatchUpdateRequest(
-                    sheetsService,
+                    _sheetsService,
                     requestBody,
                     sheet.SpreadsheetId
                 );
@@ -749,7 +732,7 @@ namespace SynSys.GSpreadsheetEasyAccess
         {
             if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToAppend).Count <= 0) return null;
  
-            var request = sheetsService
+            var request = _sheetsService
                 .Spreadsheets
                 .Values
                 .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
