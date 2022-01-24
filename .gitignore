@@ -87,6 +87,7 @@ __pycache__/
 
 # Any files
 *.ini
+*.user
 
 # example files
 examples/SimpleSheetConsoleApp/Resources/credentials.json
