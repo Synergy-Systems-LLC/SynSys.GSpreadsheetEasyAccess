@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SynSys.GSpreadsheetEasyAccess
+namespace SynSys.GSpreadsheetEasyAccess.Application
 {
     /// <summary>
     /// Класс представляет приложение на Google Cloud Platform у которого есть доступ
@@ -50,12 +50,12 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="uri">Полный uri адрес листа</param>
         /// <returns></returns>
         /// <exception cref="GCPApplicationException"></exception>
-        public SheetModel GetSheet(string uri)
+        public Data.SheetModel GetSheet(string uri)
         {
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckUri(uri);
+                Data.SheetModel.CheckUri(uri);
 
                 return GetSheet(
                     HttpUtils.GetSpreadsheetIdFromUri(uri),
@@ -79,20 +79,20 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="gid">Id листа</param>
         /// <returns></returns>
         /// <exception cref="GCPApplicationException"></exception>
-        public SheetModel GetSheet(string spreadsheetId, int gid)
+        public Data.SheetModel GetSheet(string spreadsheetId, int gid)
         {
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckGid(gid);
+                Data.SheetModel.CheckGid(gid);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
                 IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
 
-                SheetModel.ValidateData(data);
+                Data.SheetModel.ValidateData(data);
 
-                return SheetModel.Create(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
+                return Data.SheetModel.Create(spreadsheet, sheet, Data.SheetMode.Simple, string.Empty, data);
             }
             catch(Exception e)
             {
@@ -111,20 +111,20 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="sheetName">Имя листа</param>
         /// <returns></returns>
         /// <exception cref="GCPApplicationException"></exception>
-        public SheetModel GetSheet(string spreadsheetId, string sheetName)
+        public Data.SheetModel GetSheet(string spreadsheetId, string sheetName)
         {
             try 
             {
                 CheckPrincipal();
-                SheetModel.CheckName(sheetName);
+                Data.SheetModel.CheckName(sheetName);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
                 IList<IList<object>> data = GetData(spreadsheetId, sheetName);
 
-                SheetModel.ValidateData(data);
+                Data.SheetModel.ValidateData(data);
 
-                return SheetModel.Create(spreadsheet, sheet, SheetMode.Simple, string.Empty, data);
+                return Data.SheetModel.Create(spreadsheet, sheet, Data.SheetMode.Simple, string.Empty, data);
             }
             catch(Exception e)
             {
@@ -143,12 +143,12 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="uri">Полный uri адрес листа</param>
         /// <returns></returns>
         /// <exception cref="GCPApplicationException"></exception>
-        public SheetModel GetSheetWithHead(string uri)
+        public Data.SheetModel GetSheetWithHead(string uri)
         {
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckUri(uri);
+                Data.SheetModel.CheckUri(uri);
 
                 return GetSheetWithHead(
                     HttpUtils.GetSpreadsheetIdFromUri(uri),
@@ -173,20 +173,20 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="gid">Id листа</param>
         /// <returns></returns>
         /// <exception cref="GCPApplicationException"></exception>
-        public SheetModel GetSheetWithHead(string spreadsheetId, int gid)
+        public Data.SheetModel GetSheetWithHead(string spreadsheetId, int gid)
         {
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckGid(gid);
+                Data.SheetModel.CheckGid(gid);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
                 IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
 
-                SheetModel.ValidateData(data);
+                Data.SheetModel.ValidateData(data);
 
-                return SheetModel.Create(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
+                return Data.SheetModel.Create(spreadsheet, sheet, Data.SheetMode.Head, string.Empty, data);
             }
             catch(Exception e)
             {
@@ -206,20 +206,20 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="sheetName">Имя листа</param>
         /// <returns></returns>
         /// <exception cref="GCPApplicationException"></exception>
-        public SheetModel GetSheetWithHead(string spreadsheetId, string sheetName)
+        public Data.SheetModel GetSheetWithHead(string spreadsheetId, string sheetName)
         {
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckName(sheetName);
+                Data.SheetModel.CheckName(sheetName);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
                 IList<IList<object>> data = GetData(spreadsheetId, sheetName);
 
-                SheetModel.ValidateData(data);
+                Data.SheetModel.ValidateData(data);
 
-                return SheetModel.Create(spreadsheet, sheet, SheetMode.Head, string.Empty, data);
+                return Data.SheetModel.Create(spreadsheet, sheet, Data.SheetMode.Head, string.Empty, data);
             }
             catch(Exception e)
             {
@@ -239,12 +239,12 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="keyName"></param>
         /// <returns></returns>
         /// <exception cref="GCPApplicationException"></exception>
-        public SheetModel GetSheetWithHeadAndKey(string uri, string keyName)
+        public Data.SheetModel GetSheetWithHeadAndKey(string uri, string keyName)
         {
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckUri(uri);
+                Data.SheetModel.CheckUri(uri);
 
                 return GetSheetWithHeadAndKey(
                     HttpUtils.GetSpreadsheetIdFromUri(uri),
@@ -271,20 +271,20 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="keyName"></param>
         /// <returns></returns>
         /// <exception cref="GCPApplicationException"></exception>
-        public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, int gid, string keyName)
+        public Data.SheetModel GetSheetWithHeadAndKey(string spreadsheetId, int gid, string keyName)
         {
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckGid(gid);
+                Data.SheetModel.CheckGid(gid);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
                 IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
 
-                SheetModel.ValidateData(data, keyName);
+                Data.SheetModel.ValidateData(data, keyName);
 
-                return SheetModel.Create(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
+                return Data.SheetModel.Create(spreadsheet, sheet, Data.SheetMode.HeadAndKey, keyName, data);
             }
             catch(Exception e)
             {
@@ -305,20 +305,20 @@ namespace SynSys.GSpreadsheetEasyAccess
         /// <param name="keyName"></param>
         /// <returns></returns>
         /// <exception cref="GCPApplicationException"></exception>
-        public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetName, string keyName)
+        public Data.SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetName, string keyName)
         {
             try
             {
                 CheckPrincipal();
-                SheetModel.CheckName(sheetName);
+                Data.SheetModel.CheckName(sheetName);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
                 Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
                 IList<IList<object>> data = GetData(spreadsheetId, sheetName);
 
-                SheetModel.ValidateData(data, keyName);
+                Data.SheetModel.ValidateData(data, keyName);
 
-                return SheetModel.Create(spreadsheet, sheet, SheetMode.HeadAndKey, keyName, data);
+                return Data.SheetModel.Create(spreadsheet, sheet, Data.SheetMode.HeadAndKey, keyName, data);
             }
             catch(Exception e)
             {

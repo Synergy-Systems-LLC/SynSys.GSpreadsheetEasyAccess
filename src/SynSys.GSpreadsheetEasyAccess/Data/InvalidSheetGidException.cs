@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace SynSys.GSpreadsheetEasyAccess
+namespace SynSys.GSpreadsheetEasyAccess.Data
 {
     [Serializable]
     internal class InvalidSheetGidException : Exception
