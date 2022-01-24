@@ -8,6 +8,15 @@ namespace SynSys.GSpreadsheetEasyAccess.Authentication
     /// </summary>
     public abstract class Principal
     {
+        /// <summary>
+        /// Вернёт объект представляющий сервис таблиц.<br/>
+        /// Это 
+        /// <a href="https://developers.google.com/resources/api-libraries/documentation/sheets/v4/csharp/latest/classGoogle_1_1Apis_1_1Sheets_1_1v4_1_1SheetsService.html">
+        /// объект библиотеки Google.Apis.Sheets.v4
+        /// </a>,
+        /// через который происходит работа с таблицами Google.
+        /// </summary>
+        /// <returns></returns>
         public abstract SheetsService GetSheetsService();
     }
 }
