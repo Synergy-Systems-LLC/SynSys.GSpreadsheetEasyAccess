@@ -2,6 +2,10 @@
 
 namespace SynSys.GSpreadsheetEasyAccess.Authentication
 {
+    /// <summary>
+    /// Представляет исключение возникшее во время аутентификации
+    /// </summary>
+    [Serializable]
     public class AuthenticationException : Exception
     {
         /// <summary>

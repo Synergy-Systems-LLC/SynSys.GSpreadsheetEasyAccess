@@ -1,17 +1,26 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
+    /// <summary>
+    /// Представляет исключение возникшее из-за некорректных данных в листе гугл таблицы
+    /// </summary>
     [Serializable]
-    internal class EmptySheetException : Exception
+    public class EmptySheetException : Exception
     {
+        /// <summary>
+        /// Инициализирует новый инстанс EmptySheetException
+        /// </summary>
         public EmptySheetException() { }
 
+        /// <summary>
+        /// Инициализирует новый инстанс EmptySheetException с сообщением об ошибке
+        /// </summary>
         public EmptySheetException(string message) : base(message) { }
 
+        /// <summary>
+        /// Инициализирует новый инстанс EmptySheetException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// </summary>
         public EmptySheetException(string message, Exception innerException) : base(message, innerException) { }
-
-        protected EmptySheetException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }
