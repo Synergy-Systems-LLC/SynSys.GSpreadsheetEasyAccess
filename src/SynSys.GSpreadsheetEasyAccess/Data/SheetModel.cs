@@ -368,7 +368,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// чтобы после обновления данных в гугл таблице можно было пользоваться
         /// тем же инстансем типа Sheet.
         /// </summary>
-        protected void ClearDeletedRows()
+        internal void ClearDeletedRows()
         {
             var rowsToDelete = Rows.FindAll(row => row.Status == RowStatus.ToDelete);
 
