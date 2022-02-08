@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace SynSys.GSpreadsheetEasyAccess.Authentication
+namespace SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions
 {
     [Serializable]
     internal class UserCanceledAuthenticationException : Exception

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SynSys.GSpreadsheetEasyAccess.Application
+namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
 {
     /// <summary>
     /// Представляет исключение возникшее в классе GCPApplication

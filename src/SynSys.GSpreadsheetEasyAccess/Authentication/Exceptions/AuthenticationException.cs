@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SynSys.GSpreadsheetEasyAccess.Authentication
+namespace SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions
 {
     /// <summary>
     /// Представляет исключение возникшее во время аутентификации

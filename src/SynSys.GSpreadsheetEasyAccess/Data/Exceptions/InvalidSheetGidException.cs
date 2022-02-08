@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SynSys.GSpreadsheetEasyAccess.Data
+namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
 {
     /// <summary>
     /// Представляет исключение возникшее из-за некорректного id листа гугл таблицы

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace SynSys.GSpreadsheetEasyAccess.Application
+namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
 {
     [Serializable]
     internal class SheetNotFoundException : Exception
