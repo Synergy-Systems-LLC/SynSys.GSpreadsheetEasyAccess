@@ -87,7 +87,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 Data.SheetModel.CheckGid(gid);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
+            Sheet sheet = GetGoogleSheet(spreadsheet, gid);
                 IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
 
                 Data.SheetModel.ValidateData(data);
@@ -119,7 +119,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 Data.SheetModel.CheckName(sheetName);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
+            Sheet sheet = GetGoogleSheet(spreadsheet, sheetName);
                 IList<IList<object>> data = GetData(spreadsheetId, sheetName);
 
                 Data.SheetModel.ValidateData(data);
@@ -181,7 +181,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 Data.SheetModel.CheckGid(gid);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
+            Sheet sheet = GetGoogleSheet(spreadsheet, gid);
                 IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
 
                 Data.SheetModel.ValidateData(data);
@@ -214,7 +214,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 Data.SheetModel.CheckName(sheetName);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
+            Sheet sheet = GetGoogleSheet(spreadsheet, sheetName);
                 IList<IList<object>> data = GetData(spreadsheetId, sheetName);
 
                 Data.SheetModel.ValidateData(data);
@@ -279,7 +279,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 Data.SheetModel.CheckGid(gid);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
+            Sheet sheet = GetGoogleSheet(spreadsheet, gid);
                 IList<IList<object>> data = GetData(spreadsheetId, sheet.Properties.Title);
 
                 Data.SheetModel.ValidateData(data, keyName);
@@ -313,7 +313,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 Data.SheetModel.CheckName(sheetName);
 
                 Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-                Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
+            Sheet sheet = GetGoogleSheet(spreadsheet, sheetName);
                 IList<IList<object>> data = GetData(spreadsheetId, sheetName);
 
                 Data.SheetModel.ValidateData(data, keyName);
@@ -391,6 +391,32 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         private Spreadsheet GetGoogleSpreadsheet(string spreadsheetId)
         {
             return _sheetsService.Spreadsheets.Get(spreadsheetId).Execute();
+        }
+
+        /// <exception cref="SheetNotFoundException"></exception>
+        private Sheet GetGoogleSheet(Spreadsheet spreadsheet, int gid)
+        {
+            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.SheetId == gid);
+
+            if (sheet == null)
+            {
+                throw new SheetNotFoundException("");
+            }
+
+            return sheet;
+        }
+
+        /// <exception cref="SheetNotFoundException"></exception>
+        private Sheet GetGoogleSheet(Spreadsheet spreadsheet, string sheetName)
+        {
+            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
+
+            if (sheet == null)
+            {
+                throw new SheetNotFoundException("");
+            }
+
+            return sheet;
         }
 
         private IList<IList<object>> GetData(string spreadsheetId, string sheetName)
