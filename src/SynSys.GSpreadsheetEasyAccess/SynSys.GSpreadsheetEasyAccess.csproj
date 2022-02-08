@@ -70,6 +70,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\InvalidApiKeyException.cs" />
+    <Compile Include="Application\SpreadsheetNotFoundException.cs" />
+    <Compile Include="Application\UserAccessDeniedException.cs" />
+    <Compile Include="Authentication\AuthenticationTimedOutException.cs" />
+    <Compile Include="Authentication\OAuthSheetsScopeException.cs" />
+    <Compile Include="Authentication\UserCanceledAuthenticationException.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="HttpUtils.cs" />
     <Compile Include="JsonSerialization.cs" />
