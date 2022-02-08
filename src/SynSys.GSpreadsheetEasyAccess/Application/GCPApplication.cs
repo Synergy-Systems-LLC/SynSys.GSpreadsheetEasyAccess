@@ -1,4 +1,4 @@
-﻿using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using System;
@@ -405,14 +405,20 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         #endregion
 
         #region UpdateSheetModel
-        private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(SheetModel sheet)
+        private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(Data.SheetModel sheet)
         {
-            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToChange).Count <= 0) return null;
+            if (sheet.Rows.FindAll(row => row.Status == Data.RowStatus.ToChange).Count <= 0)
+            {
+                return null;
+            }
  
             var requestBody = new BatchUpdateValuesRequest
             {
                 Data = sheet.GetChangeValueRange(),
-                ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum
+                ValueInputOption = SpreadsheetsResource
+                    .ValuesResource
+                    .AppendRequest
+                    .ValueInputOptionEnum
                     .RAW
                     .ToString()
             };
@@ -423,16 +429,19 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 .BatchUpdate(requestBody, sheet.SpreadsheetId);
         }
 
-        private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(SheetModel sheet)
+        private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(Data.SheetModel sheet)
         {
-            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToDelete).Count > 0)
+            if (sheet.Rows.FindAll(row => row.Status == Data.RowStatus.ToDelete).Count <= 0)
             {
+                return null;
+            }
+
                 var requestBody = new BatchUpdateSpreadsheetRequest
                 {
                     Requests = new List<Request>()
                 };
 
-                foreach (List<Row> groupRows in sheet.GetDeleteRows())
+            foreach (List<Data.Row> groupRows in sheet.GetDeleteRows())
                 {
                     requestBody.Requests.Add(
                         CreateDeleteDimensionRequest(
@@ -448,9 +457,6 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                     requestBody,
                     sheet.SpreadsheetId
                 );
-            }
-
-            return null;
         }
 
         private Request CreateDeleteDimensionRequest(int gid, int startRow, int endRow)
@@ -470,16 +476,22 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
             };
         }
 
-        private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(SheetModel sheet)
+        private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(Data.SheetModel sheet)
         {
-            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToAppend).Count <= 0) return null;
+            if (sheet.Rows.FindAll(row => row.Status == Data.RowStatus.ToAppend).Count <= 0)
+            {
+                return null;
+            }
  
             var request = _sheetsService
                 .Spreadsheets
                 .Values
-                .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, $"{sheet.Title}!A:A");
+                .Append(sheet.GetAppendValueRange(), sheet.SpreadsheetId, sheet.Title);
 
-            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum
+            request.ValueInputOption = SpreadsheetsResource
+                .ValuesResource
+                .AppendRequest
+                .ValueInputOptionEnum
                 .USERENTERED;
 
             return request;
