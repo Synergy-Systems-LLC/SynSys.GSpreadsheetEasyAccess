@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
 {
@@ -16,11 +17,21 @@ namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
         /// <summary>
         /// Инициализирует новый инстанс EmptySheetException с сообщением об ошибке
         /// </summary>
+        /// <param name="message"></param>
         public EmptySheetException(string message) : base(message) { }
 
         /// <summary>
         /// Инициализирует новый инстанс EmptySheetException с сообщением об ошибке и ссылкой на причину текущего исключения
         /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
         public EmptySheetException(string message, Exception innerException) : base(message, innerException) { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected EmptySheetException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }
