@@ -95,8 +95,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         public List<Row> Rows { get; } = new List<Row>();
 
         /// <summary>
-        /// Показывает пустой ли лист.
+        /// Обозначает, что в листе нет строк.
         /// </summary>
+        /// <remarks>
+        /// Если в листе есть шапка, то она не учитывается.
+        /// </remarks>
         /// <returns></returns>
         [JsonIgnore]
         public bool IsEmpty { get => Rows.Count == 0; }
