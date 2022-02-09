@@ -1,4 +1,4 @@
-using Google.Apis.Sheets.v4.Data;
+﻿using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
@@ -457,9 +457,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
         }
 
-        /// <exception cref="EmptySheetException">
-        /// Если uri не корректный
-        /// </exception>
+        /// <exception cref="EmptySheetException"></exception>
         internal static void ValidateData(IList<IList<object>> data)
         {
             if (data == null || data.Count == 0)
@@ -468,9 +466,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
         }
 
-        /// <exception cref="KeyNotFoundException">
-        /// Если uri не корректный
-        /// </exception>
+        /// <exception cref="EmptySheetException"></exception>
+        /// <exception cref="KeyNotFoundException"></exception>
         internal static void ValidateData(IList<IList<object>> data, string keyName)
         {
             ValidateData(data);

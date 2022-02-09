@@ -77,7 +77,6 @@
     <Compile Include="Connector.cs" />
     <Compile Include="Row.cs" />
     <Compile Include="SheetModel.cs" />
-    <Compile Include="Application\Exceptions\GCPApplicationException.cs" />
     <Compile Include="Application\Exceptions\InvalidApiKeyException.cs" />
     <Compile Include="Application\Exceptions\SheetNotFoundException.cs" />
     <Compile Include="Application\Exceptions\SpreadsheetNotFoundException.cs" />
