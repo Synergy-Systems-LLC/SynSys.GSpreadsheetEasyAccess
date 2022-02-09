@@ -83,7 +83,6 @@
     <Compile Include="Application\Exceptions\UserAccessDeniedException.cs" />
     <Compile Include="Application\GCPApplication.cs" />
     <Compile Include="Application\HttpUtils.cs" />
-    <Compile Include="Authentication\Exceptions\AuthenticationException.cs" />
     <Compile Include="Authentication\Exceptions\AuthenticationTimedOutException.cs" />
     <Compile Include="Authentication\Exceptions\OAuthSheetsScopeException.cs" />
     <Compile Include="Authentication\Exceptions\UserCanceledAuthenticationException.cs" />
