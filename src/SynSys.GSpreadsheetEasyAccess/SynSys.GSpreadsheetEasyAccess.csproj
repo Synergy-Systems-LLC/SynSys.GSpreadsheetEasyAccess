@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="Data\Exceptions\SheetKeyNotFoundException.cs" />
     <Compile Include="Data\Exceptions\InvalidSheetHeadException.cs" />
+    <Compile Include="Data\SheetMode.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="HttpUtils.cs" />
     <Compile Include="JsonSerialization.cs" />
