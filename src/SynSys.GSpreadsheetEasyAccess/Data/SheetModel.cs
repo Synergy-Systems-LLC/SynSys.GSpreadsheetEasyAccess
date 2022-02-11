@@ -54,7 +54,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// соответствует параметр gid.
         /// </remarks>
         [JsonProperty]
-        public string Gid { get; internal set; } = string.Empty;
+        public int Gid { get; internal set; } = -1;
 
         /// <summary>
         /// Имя листа
