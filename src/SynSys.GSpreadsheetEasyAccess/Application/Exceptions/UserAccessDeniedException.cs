@@ -34,5 +34,10 @@ namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
         /// <param name="info"></param>
         /// <param name="context"></param>
         protected UserAccessDeniedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+        /// <summary>
+        /// Содержит операцию к которой нет доступа у пользователя
+        /// </summary>
+        public string Operation { get; internal set; }
     }
 }

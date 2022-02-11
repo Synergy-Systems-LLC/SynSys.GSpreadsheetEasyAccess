@@ -33,5 +33,25 @@ namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
         /// <param name="info"></param>
         /// <param name="context"></param>
         protected SheetNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+        /// <summary>
+        /// Имя таблицы в которой искали лист
+        /// </summary>
+        public string SpreadsheetName { get; internal set; }
+
+        /// <summary>
+        /// Id таблицы в которой искали лист
+        /// </summary>
+        public string SpreadsheetId { get; internal set; }
+
+        /// <summary>
+        /// Id листа по которому не удалось найти лист
+        /// </summary>
+        public string SheetGid { get; internal set; }
+
+        /// <summary>
+        /// Имя листа по которому не удалось найти лист
+        /// </summary>
+        public string SheetName { get; internal set; }
     }
 }

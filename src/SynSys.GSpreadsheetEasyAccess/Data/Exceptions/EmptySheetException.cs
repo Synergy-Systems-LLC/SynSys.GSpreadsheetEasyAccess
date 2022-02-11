@@ -33,5 +33,10 @@ namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
         /// <param name="info"></param>
         /// <param name="context"></param>
         protected EmptySheetException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+        /// <summary>
+        /// Лист, состояние которого вызвало исключение
+        /// </summary>
+        public SheetModel Sheet { get; set; }
     }
 }

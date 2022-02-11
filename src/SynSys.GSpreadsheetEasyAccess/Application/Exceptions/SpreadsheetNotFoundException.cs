@@ -33,5 +33,10 @@ namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
         /// <param name="info"></param>
         /// <param name="context"></param>
         protected SpreadsheetNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+        /// <summary>
+        /// Id таблицы вызвавший исключение
+        /// </summary>
+        public string SpreadsheetId { get; internal set; }
     }
 }
