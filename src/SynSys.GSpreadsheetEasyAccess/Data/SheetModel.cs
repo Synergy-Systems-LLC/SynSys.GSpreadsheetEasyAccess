@@ -502,7 +502,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <exception cref="EmptySheetException"></exception>
-        internal static void ValidateData(IList<IList<object>> data)
+        internal void ValidateData(IList<IList<object>> data)
         {
             if (data == null || data.Count == 0)
             {
@@ -511,8 +511,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <exception cref="EmptySheetException"></exception>
-        /// <exception cref="KeyNotFoundException"></exception>
-        internal static void ValidateData(IList<IList<object>> data, string keyName)
+        internal void ValidateData(IList<IList<object>> data, string keyName)
         {
             ValidateData(data);
 
