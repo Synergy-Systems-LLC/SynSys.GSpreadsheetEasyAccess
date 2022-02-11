@@ -1,4 +1,4 @@
-﻿using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
@@ -188,6 +188,47 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Проверка наличия требуемых столбцов в таблице.
+        /// </summary>
+        /// <remarks>
+        /// Данный метод выбросит исключение если в таблице нет хотя бы одного требуемого столбца.
+        /// Метод не осуществляет проверку для листов с SheetMode.Simple.
+        /// </remarks>
+        /// <param name="requiredHeaders"></param>
+        /// <exception cref="InvalidSheetHeadException"></exception>
+        public void CheckHead(IEnumerable<string> requiredHeaders)
+        {
+            if (Mode == SheetMode.Simple)
+            {
+                return;
+            }
+
+            var lostedHeaders = new List<string>();
+
+            foreach (string columnHeader in requiredHeaders)
+            {
+                if (!Head.Contains(columnHeader))
+                {
+                    lostedHeaders.Add(columnHeader);
+                }
+            }
+
+            if (lostedHeaders.Count > 0)
+            {
+                throw new InvalidSheetHeadException(
+                    $"В таблице \"{SpreadsheetTitle}\" " +
+                    $"в листе \"{Title}\" " +
+                    $"нет требуемых заголовков: " +
+                    $"{string.Join(", ", lostedHeaders)}."
+                )
+                {
+                    Sheet = this,
+                    LostedHeaders = lostedHeaders
+                };
+            }
         }
 
         /// <summary>
