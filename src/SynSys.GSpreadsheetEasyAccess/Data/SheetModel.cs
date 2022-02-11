@@ -506,18 +506,25 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         {
             if (data == null || data.Count == 0)
             {
-                throw new EmptySheetException($"Лист не содержит данных");
+                throw new EmptySheetException($"Лист не содержит данных")
+                {
+                    Sheet = this
+                };
             }
         }
 
         /// <exception cref="EmptySheetException"></exception>
+        /// <exception cref="SheetKeyNotFoundException"></exception>
         internal void ValidateData(IList<IList<object>> data, string keyName)
         {
             ValidateData(data);
 
             if (!data[0].Contains(keyName))
             {
-                throw new KeyNotFoundException($"Лист не содержит ключ {keyName}");
+                throw new SheetKeyNotFoundException($"Лист не содержит ключ {keyName}")
+                {
+                    Sheet = this
+                };
             }
         }
 
