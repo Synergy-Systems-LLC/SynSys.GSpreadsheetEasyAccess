@@ -1,11 +1,14 @@
 ﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
+using SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SynSys.GSpreadsheetEasyAccess.Authentication
 {
@@ -46,14 +49,40 @@ namespace SynSys.GSpreadsheetEasyAccess.Authentication
         /// через который происходит работа с таблицами Google.
         /// </summary>
         /// <returns></returns>
+        /// <exception cref="AuthenticationTimedOutException"></exception>
+        /// <exception cref="UserCanceledAuthenticationException"></exception>
         public override SheetsService GetSheetsService()
         {
-            return new SheetsService(
-                new BaseClientService.Initializer
+            try
+            {
+                return new SheetsService(
+                    new BaseClientService.Initializer
+                    {
+                        HttpClientInitializer = GetUserCredential(new MemoryStream(_credentials))
+                    }
+                );
+            }
+            catch(AggregateException ae)
+            {
+                var message = "Отмена аутентификации";
+
+                foreach (Exception e in ae.InnerExceptions)
                 {
-                    HttpClientInitializer = GetUserCredential(new MemoryStream(_credentials))
+                    if (e is TaskCanceledException)
+                    {
+                        throw new AuthenticationTimedOutException(message, e); 
+                    }
+
+                    var ex = e as TokenResponseException;
+
+                    if (ex != null && ex.Error.Error == "access_denied")
+                    {
+                        throw new UserCanceledAuthenticationException(message, ex);
+                    }
                 }
-            );
+
+                throw;
+            }
         }
 
 

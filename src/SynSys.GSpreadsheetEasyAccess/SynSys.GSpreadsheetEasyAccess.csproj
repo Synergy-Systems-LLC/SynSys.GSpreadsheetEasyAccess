@@ -70,6 +70,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Exceptions\SheetKeyNotFoundException.cs" />
+    <Compile Include="Data\Exceptions\InvalidSheetHeadException.cs" />
+    <Compile Include="Data\SheetMode.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="HttpUtils.cs" />
     <Compile Include="JsonSerialization.cs" />
@@ -77,19 +80,21 @@
     <Compile Include="Connector.cs" />
     <Compile Include="Row.cs" />
     <Compile Include="SheetModel.cs" />
+    <Compile Include="Application\Exceptions\InvalidApiKeyException.cs" />
+    <Compile Include="Application\Exceptions\SheetNotFoundException.cs" />
+    <Compile Include="Application\Exceptions\SpreadsheetNotFoundException.cs" />
+    <Compile Include="Application\Exceptions\UserAccessDeniedException.cs" />
     <Compile Include="Application\GCPApplication.cs" />
-    <Compile Include="Application\GCPApplicationException.cs" />
     <Compile Include="Application\HttpUtils.cs" />
-    <Compile Include="Authentication\AuthenticationException.cs" />
+    <Compile Include="Authentication\Exceptions\AuthenticationTimedOutException.cs" />
+    <Compile Include="Authentication\Exceptions\OAuthSheetsScopeException.cs" />
+    <Compile Include="Authentication\Exceptions\UserCanceledAuthenticationException.cs" />
     <Compile Include="Authentication\OAuthSheetsScope.cs" />
     <Compile Include="Authentication\Principal.cs" />
     <Compile Include="Authentication\ServiceAccount.cs" />
     <Compile Include="Authentication\UserAccount.cs" />
     <Compile Include="Data\Cell.cs" />
-    <Compile Include="Data\EmptySheetException.cs" />
-    <Compile Include="Data\InvalidSheetGidException.cs" />
-    <Compile Include="Data\InvalidSheetNameException.cs" />
-    <Compile Include="Data\InvalidSheetUriException.cs" />
+    <Compile Include="Data\Exceptions\EmptySheetException.cs" />
     <Compile Include="Data\JsonSerialization.cs" />
     <Compile Include="Data\Row.cs" />
     <Compile Include="Data\SheetModel.cs" />

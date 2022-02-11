@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
+using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,26 +9,6 @@ using System.Runtime.CompilerServices;
 [assembly:InternalsVisibleTo("SynSys.GSpreadsheetEasyAccess.Tests")]
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
-    /// <summary>
-    /// Перечисление для определённого заполнения листа.
-    /// Выбор режима влияет на состояние ячеек и строк листа.
-    /// </summary>
-    public enum SheetMode
-    {
-        /// <summary>
-        /// Таблица без шапки и ключа
-        /// </summary>
-        Simple,
-        /// <summary>
-        /// Таблица с шапкой в одну строку
-        /// </summary>
-        Head,
-        /// <summary>
-        /// Таблица с шапкой в одну строку и столбцом-ключём
-        /// </summary>
-        HeadAndKey
-    }
-
     /// <summary>
     /// Тип представляет один лист гугл таблицы.
     /// </summary>
@@ -53,7 +34,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// соответствует параметр gid.
         /// </remarks>
         [JsonProperty]
-        public string Gid { get; internal set; } = string.Empty;
+        public int Gid { get; internal set; } = -1;
 
         /// <summary>
         /// Имя листа
@@ -94,8 +75,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         public List<Row> Rows { get; } = new List<Row>();
 
         /// <summary>
-        /// Показывает пустой ли лист.
+        /// Обозначает, что в листе нет строк.
         /// </summary>
+        /// <remarks>
+        /// Если в листе есть шапка, то она не учитывается.
+        /// </remarks>
         /// <returns></returns>
         [JsonIgnore]
         public bool IsEmpty { get => Rows.Count == 0; }
@@ -184,6 +168,47 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Проверка наличия требуемых столбцов в таблице.
+        /// </summary>
+        /// <remarks>
+        /// Данный метод выбросит исключение если в таблице нет хотя бы одного требуемого столбца.
+        /// Метод не осуществляет проверку для листов с SheetMode.Simple.
+        /// </remarks>
+        /// <param name="requiredHeaders"></param>
+        /// <exception cref="InvalidSheetHeadException"></exception>
+        public void CheckHead(IEnumerable<string> requiredHeaders)
+        {
+            if (Mode == SheetMode.Simple)
+            {
+                return;
+            }
+
+            var lostedHeaders = new List<string>();
+
+            foreach (string columnHeader in requiredHeaders)
+            {
+                if (!Head.Contains(columnHeader))
+                {
+                    lostedHeaders.Add(columnHeader);
+                }
+            }
+
+            if (lostedHeaders.Count > 0)
+            {
+                throw new InvalidSheetHeadException(
+                    $"В таблице \"{SpreadsheetTitle}\" " +
+                    $"в листе \"{Title}\" " +
+                    $"нет требуемых заголовков: " +
+                    $"{string.Join(", ", lostedHeaders)}."
+                )
+                {
+                    Sheet = this,
+                    LostedHeaders = lostedHeaders
+                };
+            }
         }
 
         /// <summary>
@@ -367,7 +392,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// чтобы после обновления данных в гугл таблице можно было пользоваться
         /// тем же инстансем типа Sheet.
         /// </summary>
-        protected void ClearDeletedRows()
+        internal void ClearDeletedRows()
         {
             var rowsToDelete = Rows.FindAll(row => row.Status == RowStatus.ToDelete);
 
@@ -406,77 +431,30 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
         }
 
-        internal static SheetModel Create(Spreadsheet spreadsheet, Sheet sheet, SheetMode mode, string keyName, IList<IList<object>> data)
-        {
-            var sheetModel = new SheetModel()
-            {
-                SpreadsheetId = spreadsheet.SpreadsheetId,
-                SpreadsheetTitle = spreadsheet.Properties.Title,
-                Gid = sheet.Properties.SheetId.ToString(),
-                Title = sheet.Properties.Title,
-                Mode = mode,
-                KeyName = keyName
-            };
-
-            sheetModel.Fill(data);
-
-            return sheetModel;
-        }
-
-        /// <exception cref="InvalidSheetUriException">
-        /// Если uri не корректный
-        /// </exception>
-        internal static void CheckUri(string uri)
-        {
-            if (string.IsNullOrWhiteSpace(uri))
-            {
-                throw new InvalidSheetUriException("uri не может быть пустым");
-            }
-        }
-
-        /// <exception cref="InvalidSheetGidException">
-        /// Если uri не корректный
-        /// </exception>
-        internal static void CheckGid(int gid)
-        {
-            if (gid < 0)
-            {
-                throw new InvalidSheetGidException($"gid листа не может быть отрицательным числом");
-            }
-        }
-
-        /// <exception cref="InvalidSheetNameException">
-        /// Если uri не корректный
-        /// </exception>
-        internal static void CheckName(string sheetName)
-        {
-            if (string.IsNullOrWhiteSpace(sheetName))
-            {
-                throw new InvalidSheetNameException($"Не существует листа с пустым именем");
-            }
-        }
-
-        /// <exception cref="EmptySheetException">
-        /// Если uri не корректный
-        /// </exception>
-        internal static void ValidateData(IList<IList<object>> data)
+        /// <exception cref="EmptySheetException"></exception>
+        internal void ValidateData(IList<IList<object>> data)
         {
             if (data == null || data.Count == 0)
             {
-                throw new EmptySheetException($"Лист не содержит данных");
+                throw new EmptySheetException($"Лист не содержит данных")
+                {
+                    Sheet = this
+                };
             }
         }
 
-        /// <exception cref="KeyNotFoundException">
-        /// Если uri не корректный
-        /// </exception>
-        internal static void ValidateData(IList<IList<object>> data, string keyName)
+        /// <exception cref="EmptySheetException"></exception>
+        /// <exception cref="SheetKeyNotFoundException"></exception>
+        internal void ValidateData(IList<IList<object>> data, string keyName)
         {
             ValidateData(data);
 
             if (!data[0].Contains(keyName))
             {
-                throw new KeyNotFoundException($"Лист не содержит ключ {keyName}");
+                throw new SheetKeyNotFoundException($"Лист не содержит ключ {keyName}")
+                {
+                    Sheet = this
+                };
             }
         }
 
@@ -489,8 +467,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
         }
 
-        private void AddRow(
-            int number, int length, List<string> data, RowStatus status=RowStatus.ToAppend)
+        private void AddRow(int number, int length, List<string> data, RowStatus status=RowStatus.ToAppend)
         {
             var row = new Row(data, length, Head)
             {
@@ -521,8 +498,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
 
         private int FindFirstRowNumber()
         {
-            if (Mode == SheetMode.Head
-                || Mode == SheetMode.HeadAndKey)
+            if (Mode == SheetMode.Head || Mode == SheetMode.HeadAndKey)
             {
                 return 2;
             }
