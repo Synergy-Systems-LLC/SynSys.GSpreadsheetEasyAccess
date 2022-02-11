@@ -487,8 +487,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
         }
 
-        private void AddRow(
-            int number, int length, List<string> data, RowStatus status=RowStatus.ToAppend)
+        private void AddRow(int number, int length, List<string> data, RowStatus status=RowStatus.ToAppend)
         {
             var row = new Row(data, length, Head)
             {
@@ -519,8 +518,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
 
         private int FindFirstRowNumber()
         {
-            if (Mode == SheetMode.Head
-                || Mode == SheetMode.HeadAndKey)
+            if (Mode == SheetMode.Head || Mode == SheetMode.HeadAndKey)
             {
                 return 2;
             }
