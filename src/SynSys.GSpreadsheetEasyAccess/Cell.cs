@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Тип представляет ячейку строки.
     /// </summary>
+    [Obsolete("This class is deprecated in version 1.0.0.0 and may be removed in a future version. Please use the `SynSys.GSpreadsheetEasyAccess.Data.Cell` class.", false)]
     public class Cell
     {
         private string value;

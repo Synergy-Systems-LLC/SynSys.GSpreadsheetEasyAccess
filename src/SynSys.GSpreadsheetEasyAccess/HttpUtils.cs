@@ -1,10 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
     /// <summary>
     /// Класс функций для работы с uri и http статус кодами.
     /// </summary>
+    [Obsolete("This class is deprecated in version 1.0.0.0 and may be removed in a future version. Please use the `SynSys.GSpreadsheetEasyAccess.Application.HttpUtils` class.", false)]
     public static class HttpUtils
     {
         /// <summary>

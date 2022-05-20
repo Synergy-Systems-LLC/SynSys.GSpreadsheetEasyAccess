@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace SynSys.GSpreadsheetEasyAccess
@@ -8,6 +9,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// По данному статусу коннектор понимает как работать с конкретной строкой
     /// при отправке данных в google spreadsheet.
     /// </summary>
+    [Obsolete("This enum is deprecated in version 1.0.0.0 and may be removed in a future version. Please use the `SynSys.GSpreadsheetEasyAccess.Data.Row` enum.", false)]
     public enum RowStatus
     {
         /// <summary>
@@ -32,6 +34,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// <summary>
     /// Тип представляет одину строку данных листа google таблицы.
     /// </summary>
+    [Obsolete("This class is deprecated in version 1.0.0.0 and may be removed in a future version. Please use the `SynSys.GSpreadsheetEasyAccess.Data.Row` class.", false)]
     public class Row
     {
         /// <summary>

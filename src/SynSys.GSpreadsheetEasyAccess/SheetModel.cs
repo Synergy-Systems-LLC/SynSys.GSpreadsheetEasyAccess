@@ -12,6 +12,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// Перечисление для определённого заполнения листа.
     /// Выбор режима влияет на состояние ячеек и строк листа.
     /// </summary>
+    [Obsolete("This enum is deprecated in version 1.0.0.0 and may be removed in a future version. Please use the `SynSys.GSpreadsheetEasyAccess.Data.SheetMode` enum.", false)]
     public enum SheetMode
     {
         /// <summary>
@@ -31,6 +32,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// <summary>
     /// Тип представляет один лист гугл таблицы.
     /// </summary>
+    [Obsolete("This class is deprecated in version 1.0.0.0 and may be removed in a future version. Please use the `SynSys.GSpreadsheetEasyAccess.Data.SheetModel` class.", false)]
     public class SheetModel
     {
         /// <summary>

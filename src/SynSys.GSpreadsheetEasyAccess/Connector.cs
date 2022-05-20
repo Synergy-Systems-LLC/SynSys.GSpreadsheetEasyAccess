@@ -18,6 +18,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// <summary>
     /// Статусы подключения к Google Cloud Platform.
     /// </summary>
+    [Obsolete("This enum is deprecated in version 1.0.0.0 and may be removed in a future version without replacement.")]
     public enum ConnectStatus
     {
         /// <summary>
@@ -45,6 +46,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// После успешного подключения можно получать листы гугл таблиц по их id и gid.
     /// Коннектор так же позволяет обновлять данные в листах.
     /// </remarks>
+    [Obsolete("This class is deprecated in version 1.0.0.0 and may be removed in a future version. Please use the `SynSys.GSpreadsheetEasyAccess.Application.GCPApplication` class.", false)]
     public class Connector
     {
         private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };

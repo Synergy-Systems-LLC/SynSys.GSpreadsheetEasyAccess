@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace SynSys.GSpreadsheetEasyAccess
 {
@@ -6,6 +7,7 @@ namespace SynSys.GSpreadsheetEasyAccess
     /// Предоставляет методы для конвертации экземпляра SheetModel 
     /// в строковое представление JSON и обратно.
     /// </summary>
+    [Obsolete("This class is deprecated in version 1.0.0.0 and may be removed in a future version. Please use the `SynSys.GSpreadsheetEasyAccess.Data.JsonSerialization` class.", false)]
     public class JsonSerialization
     {
         /// <summary>
