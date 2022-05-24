@@ -24,6 +24,7 @@
   <ItemGroup>
     <Compile Include="change_sheet_with_head_and_key_example.py" />
     <Compile Include="get_simple_sheet_example.py" />
+    <Compile Include="utils.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="IronPython|2.7-64" />

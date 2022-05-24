@@ -11,29 +11,7 @@ sys.path.append(library_dir)
 import clr
 clr.AddReference('SynSys.GSpreadsheetEasyAccess.dll')
 from SynSys.GSpreadsheetEasyAccess import Application, Authentication, Data
-
-
-def read_apikey(path):
-    # type: (str) -> str
-    """Return the contents of a file"""
-    with open(path, 'r') as file:
-        return ''.join(file.readlines())
-
-
-def print_sheet(sheet, status):
-    # type: (str, str) -> None
-    print(
-        "\n"
-        "Status:           {}\n"
-        "Spreadsheet Name: {}\n"
-        "Sheet Name:       {}\n"
-        "Number of lines:  {}".format(status, sheet.SpreadsheetTitle, sheet.Title, sheet.Rows.Count)
-    )
-    for row in sheet.Rows:
-        print '|{:>3}'.format(row.Number),  # type: ignore
-        for cell in row.Cells:
-            print '|{:>7}'.format(cell.Value),  # type: ignore
-        print '| {}'.format(row.Status)  # type: ignore
+from utils import read_apikey, print_sheet
 
 
 # Initialization of the class representing the application on the Google Cloud Platform.
@@ -48,7 +26,10 @@ gcp_app.AuthenticateAs(
 )
 
 # This uri can be used by everyone because the table is open to everyone.
-uri = 'https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0'
+uri = (
+    'https://docs.google.com/spreadsheets/d/'
+    '12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0'
+)
 
 sheet = gcp_app.GetSheet(uri)  # type: Data.SheetModel
 print_sheet(sheet, 'Original sheet')
