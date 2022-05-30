@@ -2,14 +2,20 @@ import os
 current_dir = os.path.abspath(__file__)
 root_dir = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
 library_dir = os.path.join(root_dir, r'src\SynSys.GSpreadsheetEasyAccess\bin\Release')
+library_name = 'SynSys.GSpreadsheetEasyAccess.dll'
 if not os.path.exists(library_dir):
     raise Exception('Library path not found. Check this path "{}"'.format(library_dir))
+if not os.path.exists(os.path.join(library_dir, library_name)):
+    raise Exception(
+        'Library {} not found. Build project SynSys.GSpreadsheetEasyAccess and start script again.'
+        .format(library_name)
+    )
 
 import sys
 sys.path.append(library_dir)
 
 import clr
-clr.AddReference('SynSys.GSpreadsheetEasyAccess.dll')
+clr.AddReference(library_name)
 from SynSys.GSpreadsheetEasyAccess import Application, Authentication, Data
 from utils import read_apikey, print_sheet
 
