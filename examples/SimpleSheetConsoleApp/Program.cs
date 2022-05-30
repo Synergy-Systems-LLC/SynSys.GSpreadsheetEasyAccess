@@ -1,8 +1,8 @@
-﻿using SynSys.GSpreadsheetEasyAccess;
+﻿using SynSys.GSpreadsheetEasyAccess.Application;
+using SynSys.GSpreadsheetEasyAccess.Authentication;
+using SynSys.GSpreadsheetEasyAccess.Data;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace SimpleSheetConsoleApp
 {
@@ -10,178 +10,89 @@ namespace SimpleSheetConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Запуск {nameof(SimpleSheetConsoleApp)}\n");
+            Console.WriteLine($"Start {nameof(SimpleSheetConsoleApp)}\n");
 
-            // Инициализируем коннектор и настраиваем его если нужно.
-            var connector = new Connector()
-            {
-                // Установка данных свойств опциональна.
-                ApplicationName = "Get google sheet data",
-                CancellationSeconds = 20,
-            };
- 
-            // Попытка подключиться к приложению на Google Cloud Platform.
-            // Метод вернёт флаг подключения и у экземпляра коннектора будет возможность
-            // вызывать методы для получения листов гугл таблиц.
-            bool isConnectionSuccessful = connector.TryToCreateConnect(GetCredentialStream());
+            // Main class for interacting with Google Sheets API
+            var app = new GCPApplication();
 
-            if (!isConnectionSuccessful)
-            {
-                if (connector.Status == ConnectStatus.NotConnected)
-                {
-                    Console.WriteLine($"Подключение отсутствует.\nПричина: {connector.Exception}");
-                }
-                else if (connector.Status == ConnectStatus.AuthorizationTimedOut)
-                {
-                    Console.WriteLine("Время на подключение закончилось");
-                }
+            // To use the application you need to authorize the user.
+            app.AuthenticateAs(new ServiceAccount(Properties.Resources.apikey));
 
-                Console.ReadLine();
- 
-                return;
-            }
+            Console.WriteLine("Authorize completed");
 
-            Console.WriteLine("Подключились к Cloud App\n");
-
-            // Замените url адрес на свой для тестов.
-            // Если вы воспользовались данным uri адресом, то после успешного завершения работы программы,
-            // скопируйте содержимое из листа "Copy of TestSheet" в лист "TestSheet".
+            // This uri can be used by everyone because the table is open to everyone.
             const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
 
-            // Попытка получения листа по uri.
-            // Метод вернёт флаг получения листа и экземпляр типа SheetModel.
-            // Если данные из листа не были получены,
-            // то экземпляр SheetModel будет пустым со статусом в виде строки, говорящем о причине неудачи.
-            // В противном случае экземпляр листа будет заполнен данными.
-            // Эти данные можно менять и через конннектор обновлять в листе гугл таблицы.
-            //if (connector.TryToGetSimpleSheet(uri, out SheetModel sheet))
-            //if (connector.TryToGetSimpleSheet(HttpUtils.GetSpreadsheetIdFromUri(uri),
-            //                                  "TestSheet1",
-            //                                  out SheetModel sheet))
-            if (connector.TryToGetSimpleSheet(HttpUtils.GetSpreadsheetIdFromUri(uri),
-                                              HttpUtils.GetGidFromUri(uri),
-                                              out SheetModel sheet))
-            {
-                PrintSheet(sheet, "Первое получение данных");
-
-                ChangeSheet(sheet);
-                PrintSheet(sheet, "Изменённые данные до обновления в google");
-
-                // Метод для обновления данных в листе google таблицы на основе измененний
-                // экземпляра типа Sheet.
-                connector.UpdateSheet(sheet);
-                PrintSheet(sheet, "Данные после обновления в google");
-
-                // Метод вызывается второй раз чтобы показать,
-                // что с текущим экземпляром листа можно работать и после обновления.
-                // Его структура будет соответствовать google таблице.
-                ChangeSheet(sheet);
-                PrintSheet(sheet, "Изменённые данные до обновления в google");
-
-                connector.UpdateSheet(sheet);
-                PrintSheet(sheet, "Данные после обновления в google");
-            }
-            else
-            {
-                // По какой-то причине не получилось получить таблицу.
-                // Причина будет указана в sheet.Status.
-                Console.WriteLine(sheet.Status);
-            }
+            SheetModel sheet = app.GetSheet(uri);
+            PrintSheet(sheet, "Original sheet");
 
             Console.ReadLine();
         }
 
-        /// <summary>
-        /// Изменения данных в экземпляре типа Sheet.
-        /// Не важен порядок изменения экземпляра листа,
-        /// его обновленние будет происходить в определённом порядке в коннекторе.
-        /// </summary>
-        /// <param name="sheet"></param>
-        private static void ChangeSheet(SheetModel sheet)
-        {
-            AddRows(sheet);
-            ChangeRows(sheet);
-            DeleteRows(sheet);
-        }
 
-        private static void AddRows(SheetModel sheet)
-        {
-            // Добавления пустой строки.
-            sheet.AddRow();
-
-            // Добавления строки часть которой будет заполнена пустыми строками.
-            sheet.AddRow(new List<string>() { "123", "asd" });
-
-            // Добавления строки где часть данных не попадёт в строку, а именно "k" и "l".
-            // Потому что в "TestSheet" 10 столбцов.
-            sheet.AddRow(
-                new List<string>()
-                {
-                    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
-                }
-            );
-        }
-
-        private static void ChangeRows(SheetModel sheet)
-        {
-            // Пример не учитывает отсутствие нужных индексов
-            sheet.Rows[3].Cells[5].Value = "360";
-            sheet.Rows[4].Cells[5].Value = "460";
-            sheet.Rows[7].Cells[2].Value = "730";
-            sheet.Rows[6].Cells[2].Value = "630";
-            sheet.Rows[9].Cells[1].Value = "920";
-
-            // Пример того, что можно изменять добавленную строку
-            sheet.Rows.Last().Cells[0].Value = "change";
-            sheet.Rows.Last().Cells[1].Value = "added";
-            sheet.Rows.Last().Cells[2].Value = "line";
-        }
-
-        private static void DeleteRows(SheetModel sheet)
-        {
-            // Данный пример не учитывает отсутствие нужных индексов
-            sheet.DeleteRow(sheet.Rows[3]);
-
-            // Удаление добавленой строки со статусом RowStatus.ToAppend
-            sheet.DeleteRow(sheet.Rows[10]);
-        }
-
-        /// <summary>
-        /// Просто метод для отображения данных таблицы в консоли
-        /// </summary>
-        /// <param name="sheet"></param>
-        /// <param name="status"></param>
         private static void PrintSheet(SheetModel sheet, string status)
+        {
+            PrintDesctiption(sheet, status);
+            PrintHead(sheet.Head);
+            PrintBody(sheet.Rows);
+        }
+
+        private static void PrintDesctiption(SheetModel sheet, string status)
         {
             Console.WriteLine(
                 "\n" +
-               $"Статус листа:     {status}\n" +
-               $"Имя таблицы:      {sheet.SpreadsheetTitle}\n" +
-               $"Имя листа:        {sheet.Title}\n" +
-               $"Количество строк: {sheet.Rows.Count}"
+               $"Status:           {status}\n" +
+               $"Spreadsheet Name: {sheet.SpreadsheetTitle}\n" +
+               $"Sheet Name:       {sheet.Title}\n" +
+               $"Number of lines:  {sheet.Rows.Count}\n"
             );
+        }
 
-            foreach (var row in sheet.Rows)
+        private static void PrintHead(List<string> head)
+        {
+            Console.Write($"{"", 3}");
+
+            foreach (string title in head)
             {
-                Console.Write($"|{row.Number, 3}|");
+                string value = title;
+
+                if (string.IsNullOrWhiteSpace(title))
+                {
+                    value = "-";
+                }
+
+                Console.Write($"|{value,7}");
+            }
+
+            Console.Write($"| ");
+            Console.WriteLine();
+
+            Console.Write($"{"", 3}");
+            var delimiter = new String('-', 7);
+
+            foreach (string title in head)
+            {
+                Console.Write($"|{delimiter}");
+            }
+
+            Console.Write($"| ");
+            Console.WriteLine();
+        }
+
+        private static void PrintBody(List<Row> rows)
+        {
+            foreach (var row in rows)
+            {
+                Console.Write($"{row.Number,3}");
 
                 foreach (var cell in row.Cells)
                 {
-                    Console.Write($"|{cell.Value, 7}");
+                    Console.Write($"|{cell.Value,7}");
                 }
 
                 Console.Write($"| {row.Status}");
                 Console.WriteLine();
             }
-        }
-
-        /// <summary>
-        /// Получение полномочий для подключения к приложению на Google Cloud Platform.
-        /// </summary>
-        /// <returns></returns>
-        private static Stream GetCredentialStream()
-        {
-            return new MemoryStream(Properties.Resources.credentials);
         }
     }
 }
