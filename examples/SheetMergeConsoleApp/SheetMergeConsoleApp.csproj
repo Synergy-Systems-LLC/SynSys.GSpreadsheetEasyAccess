@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{473017DE-3C69-4CBB-978D-C661EB5E0ADA}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SheetMergeApp</RootNamespace>
-    <AssemblyName>SheetMergeApp</AssemblyName>
+    <RootNamespace>SheetMergeConsoleApp</RootNamespace>
+    <AssemblyName>SheetMergeConsoleApp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

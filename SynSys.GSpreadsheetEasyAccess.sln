@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6CF4E8AB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynSys.GSpreadsheetEasyAccess.Tests", "tests\SynSys.GSpreadsheetEasyAccess.Tests\SynSys.GSpreadsheetEasyAccess.Tests.csproj", "{6AE3FB11-1EC0-4E7A-811E-88A161CCDC9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheetMergeApp", "examples\SheetMergeApp\SheetMergeApp.csproj", "{473017DE-3C69-4CBB-978D-C661EB5E0ADA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheetMergeConsoleApp", "examples\SheetMergeConsoleApp\SheetMergeConsoleApp.csproj", "{473017DE-3C69-4CBB-978D-C661EB5E0ADA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
