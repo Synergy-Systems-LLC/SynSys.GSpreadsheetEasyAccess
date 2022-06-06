@@ -1,9 +1,10 @@
-﻿using Google;
+using Google;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using SynSys.GSpreadsheetEasyAccess.Application.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions;
+using SynSys.GSpreadsheetEasyAccess.Data;
 using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="UserAccessDeniedException"></exception>
         /// <exception cref="SpreadsheetNotFoundException"></exception>
         /// <exception cref="SheetNotFoundException"></exception>
-        public Data.SheetModel GetSheet(string uri)
+        public SheetModel GetSheet(string uri)
         {
             return GetSheet(
                 HttpUtils.GetSpreadsheetIdFromUri(uri),
@@ -77,11 +78,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="UserAccessDeniedException"></exception>
         /// <exception cref="SpreadsheetNotFoundException"></exception>
         /// <exception cref="SheetNotFoundException"></exception>
-        public Data.SheetModel GetSheet(string spreadsheetId, int gid)
+        public SheetModel GetSheet(string spreadsheetId, int gid)
         {
             CheckSheetService();
 
-            var sheetModel = new Data.SheetModel()
+            var sheetModel = new SheetModel()
             {
                 SpreadsheetId = spreadsheetId,
                 Gid = gid
@@ -93,7 +94,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
 
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
             sheetModel.Title = sheet.Properties.Title;
-            sheetModel.Mode = Data.SheetMode.Simple;
+            sheetModel.Mode = SheetMode.Simple;
             sheetModel.KeyName = string.Empty;
             sheetModel.Fill(data);
 
@@ -115,11 +116,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="UserAccessDeniedException"></exception>
         /// <exception cref="SpreadsheetNotFoundException"></exception>
         /// <exception cref="SheetNotFoundException"></exception>
-        public Data.SheetModel GetSheet(string spreadsheetId, string sheetName)
+        public SheetModel GetSheet(string spreadsheetId, string sheetName)
         {
             CheckSheetService();
 
-            var sheetModel = new Data.SheetModel()
+            var sheetModel = new SheetModel()
             {
                 SpreadsheetId = spreadsheetId,
                 Title = sheetName
@@ -131,7 +132,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
 
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
             sheetModel.Gid = sheet.Properties.SheetId.Value;
-            sheetModel.Mode = Data.SheetMode.Simple;
+            sheetModel.Mode = SheetMode.Simple;
             sheetModel.KeyName = string.Empty;
             sheetModel.Fill(data);
 
@@ -154,7 +155,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="SpreadsheetNotFoundException"></exception>
         /// <exception cref="SheetNotFoundException"></exception>
         /// <exception cref="EmptySheetException"></exception>
-        public Data.SheetModel GetSheetWithHead(string uri)
+        public SheetModel GetSheetWithHead(string uri)
         {
             return GetSheetWithHead(
                 HttpUtils.GetSpreadsheetIdFromUri(uri),
@@ -179,11 +180,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="SpreadsheetNotFoundException"></exception>
         /// <exception cref="SheetNotFoundException"></exception>
         /// <exception cref="EmptySheetException"></exception>
-        public Data.SheetModel GetSheetWithHead(string spreadsheetId, int gid)
+        public SheetModel GetSheetWithHead(string spreadsheetId, int gid)
         {
             CheckSheetService();
 
-            var sheetModel = new Data.SheetModel()
+            var sheetModel = new SheetModel()
             {
                 SpreadsheetId = spreadsheetId,
                 Gid = gid
@@ -195,7 +196,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
 
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
             sheetModel.Title = sheet.Properties.Title;
-            sheetModel.Mode = Data.SheetMode.Head;
+            sheetModel.Mode = SheetMode.Head;
             sheetModel.KeyName = string.Empty;
 
             sheetModel.ValidateData(data);
@@ -221,11 +222,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="SpreadsheetNotFoundException"></exception>
         /// <exception cref="SheetNotFoundException"></exception>
         /// <exception cref="EmptySheetException"></exception>
-        public Data.SheetModel GetSheetWithHead(string spreadsheetId, string sheetName)
+        public SheetModel GetSheetWithHead(string spreadsheetId, string sheetName)
         {
             CheckSheetService();
 
-            var sheetModel = new Data.SheetModel()
+            var sheetModel = new SheetModel()
             {
                 SpreadsheetId = spreadsheetId,
                 Title = sheetName
@@ -237,7 +238,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
 
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
             sheetModel.Gid = sheet.Properties.SheetId.Value;
-            sheetModel.Mode = Data.SheetMode.Head;
+            sheetModel.Mode = SheetMode.Head;
             sheetModel.KeyName = string.Empty;
 
             sheetModel.ValidateData(data);
@@ -264,7 +265,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="SheetKeyNotFoundException"></exception>
         /// <exception cref="EmptySheetException"></exception>
         /// <returns></returns>
-        public Data.SheetModel GetSheetWithHeadAndKey(string uri, string keyName)
+        public SheetModel GetSheetWithHeadAndKey(string uri, string keyName)
         {
             return GetSheetWithHeadAndKey(
                 HttpUtils.GetSpreadsheetIdFromUri(uri),
@@ -292,11 +293,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="SheetNotFoundException"></exception>
         /// <exception cref="SheetKeyNotFoundException"></exception>
         /// <exception cref="EmptySheetException"></exception>
-        public Data.SheetModel GetSheetWithHeadAndKey(string spreadsheetId, int gid, string keyName)
+        public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, int gid, string keyName)
         {
             CheckSheetService();
 
-            var sheetModel = new Data.SheetModel()
+            var sheetModel = new SheetModel()
             {
                 SpreadsheetId = spreadsheetId,
                 Gid = gid
@@ -308,7 +309,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
 
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
             sheetModel.Title = sheet.Properties.Title;
-            sheetModel.Mode = Data.SheetMode.HeadAndKey;
+            sheetModel.Mode = SheetMode.HeadAndKey;
             sheetModel.KeyName = keyName;
 
             sheetModel.ValidateData(data, keyName);
@@ -336,11 +337,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="SheetNotFoundException"></exception>
         /// <exception cref="SheetKeyNotFoundException"></exception>
         /// <exception cref="EmptySheetException"></exception>
-        public Data.SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetName, string keyName)
+        public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetName, string keyName)
         {
             CheckSheetService();
 
-            var sheetModel = new Data.SheetModel()
+            var sheetModel = new SheetModel()
             {
                 SpreadsheetId = spreadsheetId,
                 Title = sheetName
@@ -352,7 +353,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
 
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
             sheetModel.Gid = sheet.Properties.SheetId.Value;
-            sheetModel.Mode = Data.SheetMode.HeadAndKey;
+            sheetModel.Mode = SheetMode.HeadAndKey;
             sheetModel.KeyName = keyName;
 
             sheetModel.ValidateData(data, keyName);
@@ -373,7 +374,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
         /// <exception cref="OAuthSheetsScopeException"></exception>
-        public void UpdateSheet(Data.SheetModel sheetModel)
+        public void UpdateSheet(SheetModel sheetModel)
         {
             CheckSheetService();
             CheckPrincipal();
@@ -517,9 +518,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         #endregion
 
         #region UpdateSheetModel
-        private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(Data.SheetModel sheet)
+        private SpreadsheetsResource.ValuesResource.BatchUpdateRequest CreateUpdateRequest(SheetModel sheet)
         {
-            if (sheet.Rows.FindAll(row => row.Status == Data.RowStatus.ToChange).Count <= 0)
+            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToChange).Count <= 0)
             {
                 return null;
             }
@@ -541,9 +542,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 .BatchUpdate(requestBody, sheet.SpreadsheetId);
         }
 
-        private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(Data.SheetModel sheet)
+        private SpreadsheetsResource.BatchUpdateRequest CreateDeleteRequest(SheetModel sheet)
         {
-            if (sheet.Rows.FindAll(row => row.Status == Data.RowStatus.ToDelete).Count <= 0)
+            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToDelete).Count <= 0)
             {
                 return null;
             }
@@ -553,7 +554,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 Requests = new List<Request>()
             };
 
-            foreach (List<Data.Row> groupRows in sheet.GetDeleteRows())
+            foreach (List<Row> groupRows in sheet.GetDeleteRows())
             {
                 requestBody.Requests.Add(
                     CreateDeleteDimensionRequest(
@@ -588,9 +589,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
             };
         }
 
-        private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(Data.SheetModel sheet)
+        private SpreadsheetsResource.ValuesResource.AppendRequest CreateAppendRequest(SheetModel sheet)
         {
-            if (sheet.Rows.FindAll(row => row.Status == Data.RowStatus.ToAppend).Count <= 0)
+            if (sheet.Rows.FindAll(row => row.Status == RowStatus.ToAppend).Count <= 0)
             {
                 return null;
             }
