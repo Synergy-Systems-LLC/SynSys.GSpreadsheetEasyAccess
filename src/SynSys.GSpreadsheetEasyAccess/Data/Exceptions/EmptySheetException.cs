@@ -4,24 +4,24 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
 {
     /// <summary>
-    /// Представляет исключение возникшее из-за некорректных данных в листе гугл таблицы
+    /// Represents an exception thrown due to invalid data in a Google spreadsheet sheet.
     /// </summary>
     [Serializable]
     public class EmptySheetException : Exception
     {
         /// <summary>
-        /// Инициализирует новый инстанс EmptySheetException
+        /// Initializes a new EmptySheetException instance.
         /// </summary>
         public EmptySheetException() { }
 
         /// <summary>
-        /// Инициализирует новый инстанс EmptySheetException с сообщением об ошибке
+        /// Initializes a new EmptySheetException instance with a message about exception.
         /// </summary>
         /// <param name="message"></param>
         public EmptySheetException(string message) : base(message) { }
 
         /// <summary>
-        /// Инициализирует новый инстанс EmptySheetException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// Initializes a new EmptySheetException instance with an error message and a reference to the reason for the current exception.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -35,7 +35,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
         protected EmptySheetException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         /// <summary>
-        /// Лист, состояние которого вызвало исключение
+        /// The sheet whose state caused the exception
         /// </summary>
         public SheetModel Sheet { get; set; }
     }

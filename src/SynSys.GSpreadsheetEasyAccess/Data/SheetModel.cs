@@ -10,83 +10,75 @@ using System.Runtime.CompilerServices;
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
     /// <summary>
-    /// Тип представляет один лист гугл таблицы.
+    /// The type represents one Google spreadsheet sheet.
     /// </summary>
     public class SheetModel
     {
         /// <summary>
-        /// Имя листа
+        /// Sheet Name.
         /// </summary>
         [JsonProperty]
         public string Title { get; internal set; } = string.Empty;
 
         /// <summary>
-        /// Id google листа
+        /// Google spreadsheet Id.
         /// </summary>
         [JsonProperty]
         public string SpreadsheetId { get; internal set; } = string.Empty;
 
         /// <summary>
-        /// Id листа
+        /// Google spreadsheet sheet Id.
         /// </summary>
         /// <remarks>
-        /// Свойство имеет такое название потому что в uri листа ему
-        /// соответствует параметр gid.
+        /// The property has such a name because it correnponce
+        /// to the gid parameter in the sheet uri.
         /// </remarks>
         [JsonProperty]
         public int Gid { get; internal set; } = -1;
 
         /// <summary>
-        /// Имя листа
+        /// Spreadsheet name.
         /// </summary>
         [JsonProperty]
         public string SpreadsheetTitle { get; internal set; } = string.Empty;
 
         /// <summary>
-        /// Текущий статус.<br/>
-        /// <c>Пример: Лист не содержит данных</c>
-        /// </summary>
-        [JsonProperty]
-        public string Status { get; internal set; } = string.Empty;
-
-        /// <summary>
-        /// Имя ключевого столбца, если он есть.
+        /// Key column name.
         /// </summary>
         [JsonProperty]
         public string KeyName { get; internal set; } = string.Empty;
 
         /// <summary>
-        /// Режим, по которому определяется работа с листом.
+        /// The mode by which work with the sheet is determined.
         /// </summary>
         [JsonProperty]
         public SheetMode Mode { get; internal set; }
 
         /// <summary>
-        /// Шапка (первая строка листа) если есть
+        /// First row of the sheet.
         /// </summary>
         [JsonProperty]
         public List<string> Head { get; internal set; } = new List<string>();
 
         /// <summary>
-        /// Все строки входящие в данный лист
-        /// за исключением шапки
+        /// All rows included in this sheet except for the head.
         /// </summary>
         [JsonProperty]
         public List<Row> Rows { get; } = new List<Row>();
 
         /// <summary>
-        /// Обозначает, что в листе нет строк.
+        /// Indicates that there are no rows in the sheet.
         /// </summary>
         /// <remarks>
-        /// Если в листе есть шапка, то она не учитывается.
+        /// If the sheet has a head, then it is not taken into account.
         /// </remarks>
         /// <returns></returns>
         [JsonIgnore]
         public bool IsEmpty { get => Rows.Count == 0; }
 
         /// <summary>
-        /// Добавляет пустую строку в конец листа.
-        /// Размер строки будет равен максимальному для данного листа.
+        /// Adds an empty row to the end of the sheet.
+        /// The row size will be equal to the maximum for this sheet
         /// </summary>
         public void AddRow()
         {
@@ -94,23 +86,25 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Добавляет строку в конец листа.
-        /// Размер строки будет равен максимальному для данной листа
-        /// и если данных будет больше чем этот размер, то часть данных не попадёт в лист.
-        /// если данных будет меньше, то строка дозаполнится пустыми значениями.
+        /// Adds row to the end of the sheet.
         /// </summary>
-        /// <param name="data">Данные для составленния строки</param>
+        /// <remarks>
+        /// The row size will be equal to the maximum for this sheet and if the data is larger than
+        /// this size, then part of the data will not be included into the sheet.<br/>
+        /// If there is less data, then the remaining cells will be filled with empty values.
+        /// </remarks>
+        /// <param name="data">Data to compose a row.</param>
         public void AddRow(List<string> data)
         {
             AddRow(FindNextRowNumber(), Head.Count, data);
         }
 
         /// <summary>
-        /// Метод удаляет строку только если у неё был статус RowStatus.ToAppend.<br/>
-        /// В противном случае метод не удаляет строку, а назначает ей статус на удаление RowStatus.ToDelete.<br/>
-        /// Данный статус будет учитываться при удалении строк из листа в google.
+        /// The method deletes the row only if it had a RowStatus.ToAppend status.<br/>
+        /// Otherwise, the method does not delete the row, but assigns the RowStatus.ToDelete status.<br/>
+        /// This status will be taken into account when deleting rows from a Google spreadsheet sheet.
         /// </summary>
-        /// <param name="row">Удаляемая строка</param>
+        /// <param name="row">Row to delete</param>
         public void DeleteRow(Row row)
         {
             if (row.Status == RowStatus.ToAppend)
@@ -127,8 +121,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Назначение всем строкам статус на удаление и 
-        /// физическое удаление ещё не добавленных строк.
+        /// Assigning a deletion status to all rows
+        /// and physical deletion of rows that have not yet been added.
         /// </summary>
         public void Clean()
         {
@@ -145,11 +139,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Проверка наличия требуемых столбцов в таблице.
+        /// Check if the required columns exist in the spreadsheet.
         /// </summary>
         /// <remarks>
-        /// Данный метод выбросит исключение если в таблице нет хотя бы одного требуемого столбца.
-        /// Метод не осуществляет проверку для листов с SheetMode.Simple.
+        /// This method will throw an exception if the spreadsheet does not contain at least one required column.
+        /// The method does not check for sheets with SheetMode.Simple.
         /// </remarks>
         /// <param name="requiredHeaders"></param>
         /// <exception cref="InvalidSheetHeadException"></exception>
@@ -173,9 +167,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             if (lostedHeaders.Count > 0)
             {
                 throw new InvalidSheetHeadException(
-                    $"В таблице \"{SpreadsheetTitle}\" " +
-                    $"в листе \"{Title}\" " +
-                    $"нет требуемых заголовков: " +
+                    $"in spreadsheet \"{SpreadsheetTitle}\" " +
+                    $"in sheet\"{Title}\" " +
+                    $"no required headers: " +
                     $"{string.Join(", ", lostedHeaders)}."
                 )
                 {
@@ -186,17 +180,18 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Слияние с другой версией этого же листа.<br/>
-        /// Лист считается таким же если у него совпадают все основные характеристики 
-        /// кроме списка строк.<br/>
-        /// Перед слиянием выполняется сравнение строк. После сравнения происходят изменения строк
-        /// если нужно.<br/>
-        /// У строк меняются значения ячеек и статусы, добавляются недостающие строки.<br/>
+        /// Merge with another version of the same sheet.
         /// </summary>
-        /// <param name="otherSheet"></param>
+        /// <remarks>
+        /// Sheet is considered the same if it has the same basic characteristics
+        /// except for the list of rows.<br/>
+        /// Row comparison is performed before merging. Row changes occur after comparison
+        /// if needed.<br/>
+        /// Cell values ​​and statuses are changed for rows, missing rows are added.<br/>
+        /// </remarks>
+        /// <param name="otherSheet">Same SheetModel</param>
         /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="ArgumentException">
-        /// </exception>
+        /// <exception cref="ArgumentException"/>
         public void Merge(SheetModel otherSheet)
         {
             if (otherSheet == null)
@@ -232,22 +227,22 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
                 MergeRows(currentRow, otherRow);
             }
 
-            // Эти строки надо удалять потому что им нельзя дать статус RowStatus.ToDelete.
-            // А данный статус им нельзя давать потому что их и так не было в гугл таблице.
+            // These rows should be deleted because they cannot be given RowStatus.ToDelete status.
+            // they cannot be given this status because they were not already in the Google spreadsheet sheet.
             DeleteRows(rowsWithToAppendStatus);
         }
 
 
         /// <summary>
-        /// Инициализирует пустой экземпеляр листа готовый для заполнения.
-        /// Экземпляр листа нельзя создавать вне библиотеки.
+        /// Initializes an empty sheet instance ready to be filled in.
+        /// A sheet instance cannot be created outside the library.
         /// </summary>
         internal SheetModel() { }
 
         /// <summary>
-        /// Заполнение листа с созданием строк и ячеек.
+        /// Filling the sheet with the creation of rows and cells.
         /// </summary>
-        /// <param name="data">Данные для формирования листа</param>
+        /// <param name="data">Data for sheet formation.</param>
         internal void Fill(IList<IList<object>> data)
         {
             IEnumerable<int> rowIndexes = Enumerable.Range(0, data.Count);
@@ -274,7 +269,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Получение ValueRange для добавления строк в google spreadsheet.
+        /// Getting ValueRange for adding rows in Google spreadsheet sheet.
         /// </summary>
         /// <returns></returns>
         internal ValueRange GetAppendValueRange()
@@ -286,7 +281,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Получение ValueRange из строк со статусом ToChange.
+        /// Getting ValueRange from rows with ToChange status.
         /// </summary>
         /// <returns></returns>
         internal IList<ValueRange> GetChangeValueRange()
@@ -325,9 +320,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Получение групп строк для удаления.
+        /// Getting row groups to delete.
         /// </summary>
-        /// <returns></returns>
         internal List<List<Row>> GetDeleteRows()
         {
             var deleteGroups = new List<List<Row>>()
@@ -336,8 +330,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             };
 
             var rowsToDelete = Rows.FindAll(row => row.Status == RowStatus.ToDelete);
-            // Данный список нужно зеркалить потому что удаление строк должно происходить с конца листа.
-            // В противном случае собьются индексы для последующих удалений.
+            // This list must be mirrored because the deletion of rows should occur from the end of the sheet.
+            // Otherwise, indexes for subsequent deletions will fail.
             rowsToDelete.Reverse();
             var previousRow = rowsToDelete.First();
             rowsToDelete.Remove(previousRow);
@@ -346,7 +340,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
 
             foreach (var currentRow in rowsToDelete)
             {
-                if (previousRow.Number - currentRow.Number == 1) // Потому что нумерация от большего к меньшему
+                if (previousRow.Number - currentRow.Number == 1) // Because numbering from largest to smallest
                 {
                     deleteGroups.Last().Add(currentRow);
                 }
@@ -362,9 +356,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Удаление строк со статусом ToDelete
-        /// чтобы после обновления данных в гугл таблице можно было пользоваться
-        /// тем же инстансем типа Sheet.
+        /// Deleting rows with ToDelete status 
+        /// so that after updating the data in the Google spreadsheet sheet, 
+        /// you can use the same instance.
         /// </summary>
         internal void ClearDeletedRows()
         {
@@ -377,9 +371,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
  
         /// <summary>
-        /// Перенумерация всех строк.<br/>
-        /// Используется при удалении некоторых строк из листа, при этом не ясно какие именно строки
-        /// были удалены.
+        /// Renumbering all rows.<br/>
+        /// Used when deleting some rows from a SheetModel without discerning which rows were deleted.
         /// </summary>
         internal void RenumberRows()
         {
@@ -393,9 +386,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Сброс статуса всех строк на Original
-        /// чтобы после обновления данных в гугл таблице можно было пользоваться
-        /// тем же инстансем SheetModel.
+        /// Reset the status of all rows to Original
+        /// so that after updating the data in the Google spreadsheet sheet,
+        /// you can use the same SheetModel instance.
         /// </summary>
         internal void ResetRowStatuses()
         {
@@ -410,7 +403,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         {
             if (data == null || data.Count == 0)
             {
-                throw new EmptySheetException($"Лист не содержит данных")
+                throw new EmptySheetException($"Sheet contains no data")
                 {
                     Sheet = this
                 };
@@ -425,7 +418,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
 
             if (!data[0].Contains(keyName))
             {
-                throw new SheetKeyNotFoundException($"Лист не содержит ключ {keyName}")
+                throw new SheetKeyNotFoundException($"Sheet does not contain the key {keyName}")
                 {
                     Sheet = this
                 };
@@ -458,10 +451,10 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Уменьшение всех строк начиная с заданной.<br/>
-        /// Используется при физическом удалении одной конкретной строки.
+        /// Reducing all row numbers starting from the given one.<br/>
+        /// Used when physically deleting one specific row.
         /// </summary>
-        /// <param name="startRowNumber">Номер строки с которой надо начать уменьшение</param>
+        /// <param name="startRowNumber">Row number from which to start the reduction</param>
         private void DecreaseAllFollowingRowNumbersByOne(int startRowNumber)
         {
             foreach (var row in Rows.FindAll(r => r.Number >= startRowNumber))
@@ -542,12 +535,6 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             if (SpreadsheetTitle != otherSheet.SpreadsheetTitle)
             {
                 failReason = nameof(otherSheet.SpreadsheetTitle);
-                return true;
-            }
-
-            if (Status != otherSheet.Status)
-            {
-                failReason = nameof(otherSheet.Status);
                 return true;
             }
 

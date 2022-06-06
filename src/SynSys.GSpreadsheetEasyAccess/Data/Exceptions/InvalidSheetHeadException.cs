@@ -5,24 +5,24 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
 {
     /// <summary>
-    /// Представляет исключение возникшее из-за отсутствия хотя бы одного требуемого столбца
+    /// Represents an exception thrown due to the absence of at least one required column.
     /// </summary>
     [Serializable]
     public class InvalidSheetHeadException : Exception
     {
         /// <summary>
-        /// Инициализирует новый инстанс InvalidSheetHeadException
+        /// Initializes a new InvalidSheetHeadException instance.
         /// </summary>
         public InvalidSheetHeadException() { }
 
         /// <summary>
-        /// Инициализирует новый инстанс InvalidSheetHeadException с сообщением об ошибке
+        /// Initializes a new InvalidSheetHeadException instance with a message about exception.
         /// </summary>
         /// <param name="message"></param>
         public InvalidSheetHeadException(string message) : base(message) { }
 
         /// <summary>
-        /// Инициализирует новый инстанс InvalidSheetHeadException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// Initializes a new InvalidSheetHeadException instance with an error message and a reference to the reason for the current exception.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -37,12 +37,12 @@ namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
         protected InvalidSheetHeadException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         /// <summary>
-        /// Лист, состояние которого вызвало исключение
+        /// The sheet whose state caused the exception.
         /// </summary>
         public SheetModel Sheet { get; internal set; }
 
         /// <summary>
-        /// Требуемые заголовки столбцов, которые не были найдены в листе
+        /// Required column headers that were not found in the sheet.
         /// </summary>
         public IEnumerable<string> LostedHeaders { get; internal set; }
     }

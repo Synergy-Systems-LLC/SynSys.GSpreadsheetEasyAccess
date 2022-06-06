@@ -3,15 +3,17 @@ using System.Text.RegularExpressions;
 namespace SynSys.GSpreadsheetEasyAccess.Application
 {
     /// <summary>
-    /// Класс функций для работы с uri и http статус кодами.
+    /// Provide static methods for parsing Google spreadsheets uri.
     /// </summary>
     public static class HttpUtils
     {
         /// <summary>
-        /// Получение идентификатора гугл таблицы.
+        /// Get the Google spreadsheet Id.
         /// </summary>
-        /// <param name="uri">Полный uri адрес листа гугл таблицы</param>
-        /// <returns></returns>
+        /// <param name="uri">Full Google spreadsheet sheet uri</param>
+        /// <returns>
+        /// String of 44 characters following d/
+        /// </returns>
         public static string GetSpreadsheetIdFromUri(string uri)
         {
             var match = Regex.Match(uri, @"(?s)(?<=d/).+?(?=/edit)");
@@ -19,11 +21,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение идентификатора листа гугл таблицы.
+        /// Get the Google spreadsheet sheet Id.
         /// </summary>
-        /// <param name="uri">Полный uri адрес листа гугл таблицы</param>
+        /// <param name="uri">Full Google spreadsheet sheet uri</param>
         /// <returns>
-        /// Возвращает -1 если в uri нет gid.
+        /// Returns -1 if there is no gid in uri.
         /// </returns>
         public static int GetGidFromUri(string uri)
         {

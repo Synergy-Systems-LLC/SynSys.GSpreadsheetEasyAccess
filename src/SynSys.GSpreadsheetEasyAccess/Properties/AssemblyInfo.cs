@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SynSys.GSpreadsheetEasyAccess")]
-[assembly: AssemblyDescription("Библиотека для подключения к google spreadsheet")]
+[assembly: AssemblyDescription("Library for connecting to an application on the Google Cloud Platform")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Synergy Systems")]
 [assembly: AssemblyProduct("SynSys.GSpreadsheetEasyAccess")]

@@ -4,24 +4,24 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions
 {
     /// <summary>
-    /// Представляет исключение возникшее из-за несоответствия областей действия приложения и отправляемых запросов
+    /// Represents an exception throwndue to a mismatch between the scopes of the application and the requests being sent
     /// </summary>
     [Serializable]
     public class OAuthSheetsScopeException : Exception
     {
         /// <summary>
-        /// Инициализирует новый инстанс OAuthSheetsScopeException
+        /// Initializes a new OAuthSheetsScopeException instance.
         /// </summary>
         public OAuthSheetsScopeException() { }
 
         /// <summary>
-        /// Инициализирует новый инстанс OAuthSheetsScopeException с сообщением об ошибке
+        /// Initializes a new OAuthSheetsScopeException instance with a message about exception.
         /// </summary>
         /// <param name="message"></param>
         public OAuthSheetsScopeException(string message) : base(message) { }
 
         /// <summary>
-        /// Инициализирует новый инстанс OAuthSheetsScopeException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// Initializes a new OAuthSheetsScopeException instance with an error message and a reference to the reason for the current exception.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>

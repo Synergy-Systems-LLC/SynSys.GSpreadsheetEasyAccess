@@ -4,24 +4,24 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions
 {
     /// <summary>
-    /// Представляет исключение возникшее из-за того что пользовать отменил процесс аутентификации
+    /// Represents an exception thrown because the user canceled the authentication process.
     /// </summary>
     [Serializable]
     public class UserCanceledAuthenticationException : Exception
     {
         /// <summary>
-        /// Инициализирует новый инстанс UserCanceledAuthenticationException
+        /// Initializes a new UserCanceledAuthenticationException instance.
         /// </summary>
         public UserCanceledAuthenticationException() { }
 
         /// <summary>
-        /// Инициализирует новый инстанс UserCanceledAuthenticationException с сообщением об ошибке
+        /// Initializes a new UserCanceledAuthenticationException instance with a message about exception.
         /// </summary>
         /// <param name="message"></param>
         public UserCanceledAuthenticationException(string message) : base(message) { }
 
         /// <summary>
-        /// Инициализирует новый инстанс UserCanceledAuthenticationException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// Initializes a new UserCanceledAuthenticationException instance with an error message and a reference to the reason for the current exception.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>

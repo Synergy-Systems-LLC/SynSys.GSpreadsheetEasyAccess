@@ -1,27 +1,27 @@
-﻿using System;
+using System;
 using System.Runtime.Serialization;
 
 namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
 {
     /// <summary>
-    /// Представляет исключение возникшее из-за невалидного api key приложения на Google Cloud Platform
+    /// Represents an exception throwndue to an invalid API key of the application on the Google Cloud Platform.
     /// </summary>
     [Serializable]
     public class InvalidApiKeyException : Exception
     {
         /// <summary>
-        /// Инициализирует новый инстанс InvalidApiKeyException
+        /// Initializes a new InvalidApiKeyException instance.
         /// </summary>
         public InvalidApiKeyException() { }
 
         /// <summary>
-        /// Инициализирует новый инстанс InvalidApiKeyException с сообщением об ошибке
+        /// Initializes a new InvalidApiKeyException instance with a message about exception.
         /// </summary>
         /// <param name="message"></param>
         public InvalidApiKeyException(string message) : base(message) { }
 
         /// <summary>
-        /// Инициализирует новый инстанс InvalidApiKeyException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// Initializes a new InvalidApiKeyException instance with an error message and a reference to the reason for the current exception.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>

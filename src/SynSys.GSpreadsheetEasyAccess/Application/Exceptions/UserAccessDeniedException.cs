@@ -4,25 +4,25 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
 {
     /// <summary>
-    /// Представляет исключение возникшее из-за того что данному пользователю закрыт доступ 
-    /// к каким либо действиям с google таблицами
+    /// Represents an exception thrownbecause the given user has been denied access
+    /// to any actions with Google spreadsheet.
     /// </summary>
     [Serializable]
     public class UserAccessDeniedException : Exception
     {
         /// <summary>
-        /// Инициализирует новый инстанс UserAccessDeniedException
+        /// Initializes a new UserAccessDeniedException instance.
         /// </summary>
         public UserAccessDeniedException() { }
 
         /// <summary>
-        /// Инициализирует новый инстанс UserAccessDeniedException с сообщением об ошибке
+        /// Initializes a new UserAccessDeniedException instance with a message about exception.
         /// </summary>
         /// <param name="message"></param>
         public UserAccessDeniedException(string message) : base(message) { }
 
         /// <summary>
-        /// Инициализирует новый инстанс UserAccessDeniedException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// Initializes a new UserAccessDeniedException instance with an error message and a reference to the reason for the current exception.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -36,7 +36,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
         protected UserAccessDeniedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         /// <summary>
-        /// Содержит операцию к которой нет доступа у пользователя
+        /// Contains the name of the operation to which the user does not have access.
         /// </summary>
         public string Operation { get; internal set; }
     }

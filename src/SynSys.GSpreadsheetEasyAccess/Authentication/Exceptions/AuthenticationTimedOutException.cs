@@ -4,24 +4,24 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions
 {
     /// <summary>
-    /// Представляет исключение возникшее из-за вышедшего времени на аутентификацию
+    /// Represents an exception thrown due to authentication timeout.
     /// </summary>
     [Serializable]
     public class AuthenticationTimedOutException : Exception
     {
         /// <summary>
-        /// Инициализирует новый инстанс AuthenticationTimedOutException
+        /// Initializes a new AuthenticationTimedOutException instance.
         /// </summary>
         public AuthenticationTimedOutException() { }
 
         /// <summary>
-        /// Инициализирует новый инстанс AuthenticationTimedOutException с сообщением об ошибке
+        /// Initializes a new AuthenticationTimedOutException instance with a message about exception.
         /// </summary>
         /// <param name="message"></param>
         public AuthenticationTimedOutException(string message) : base(message) { }
 
         /// <summary>
-        /// Инициализирует новый инстанс AuthenticationTimedOutException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// Initializes a new AuthenticationTimedOutException instance with an error message and a reference to the reason for the current exception.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>

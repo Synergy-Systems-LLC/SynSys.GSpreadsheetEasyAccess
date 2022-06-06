@@ -14,13 +14,13 @@ using System.Net;
 namespace SynSys.GSpreadsheetEasyAccess.Application
 {
     /// <summary>
-    /// Класс представляет приложение на Google Cloud Platform у которого есть доступ
-    /// к сервису google таблиц 
+    /// Represents an application on the Google Cloud Platform that has access
+    /// to Google Sheets API.
     /// <a href="https://developers.google.com/sheets/api?hl=en_US">Google Sheets API</a>.
     /// </summary>
     /// <remarks>
-    /// Задача класса получать и обновлять данные из google таблиц.<br/>
-    /// Пользоваться методами можно только после успешной аутентификации.
+    /// The class serves to receive and update data from Google Sheets.<br/>
+    /// Methods can only be used after successful authentication.
     /// </remarks>
     public class GCPApplication
     {
@@ -28,8 +28,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         private Principal _principal;
 
         /// <summary>
-        /// Для получения доступа к сервису гугл таблиц необходимо пройти аутентификацию.
-        /// Необходимо указать кто аутентифицируется.
+        /// To gain access to the Google Sheets API, you must be authenticated.
+        /// It is necessary to specify who is authenticating.
         /// </summary>
         /// <param name="principal"></param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -42,14 +42,15 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
-        /// Лист представлен списком строк.<br/>
-        /// Шапка отсутствует.<br/>
-        /// В каждой строке одинаковое количество ячеек.<br/>
-        /// В каждой ячейке есть строковое значение.
+        /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
-        /// <param name="uri">Полный uri адрес листа</param>
-        /// <returns></returns>
+        /// <param name="uri">Full uri of sheet</param>
+        /// <returns>
+        /// SheetModel is a list of Rows.<br/>
+        /// Header is absent.<br/>
+        /// Each row has the same number of cells.<br/>
+        /// Each cell has a string value.
+        /// </returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="InvalidApiKeyException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
@@ -64,15 +65,16 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
-        /// Лист представлен списком строк.<br/>
-        /// Шапка отсутствует.<br/>
-        /// В каждой строке одинаковое количество ячеек.<br/>
-        /// В каждой ячейке есть строковое значение.
+        /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
-        /// <param name="spreadsheetId">Id таблицы</param>
-        /// <param name="gid">Id листа</param>
-        /// <returns></returns>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="gid"></param>
+        /// <returns>
+        /// SheetModel is a list of Rows.<br/>
+        /// Header is absent.<br/>
+        /// Each row has the same number of cells.<br/>
+        /// Each cell has a string value.
+        /// </returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="InvalidApiKeyException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
@@ -102,15 +104,16 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
-        /// Лист представлен списком строк.<br/>
-        /// Шапка отсутствует.<br/>
-        /// В каждой строке одинаковое количество ячеек.<br/>
-        /// В каждой ячейке есть строковое значение.
+        /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
-        /// <param name="spreadsheetId">Id таблицы</param>
-        /// <param name="sheetName">Имя листа</param>
-        /// <returns></returns>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="sheetName"></param>
+        /// <returns>
+        /// SheetModel is a list of Rows.<br/>
+        /// Header is absent.<br/>
+        /// Each row has the same number of cells.<br/>
+        /// Each cell has a string value.
+        /// </returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="InvalidApiKeyException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
@@ -140,15 +143,16 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
-        /// Лист представлен списком строк, без первой строки.<br/>
-        /// Первая строка уходит в шапку таблицы.<br/>
-        /// В каждой строке одинаковое количество ячеек.<br/>
-        /// В каждой ячейке есть строковое значение и наименование,
-        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
-        /// <param name="uri">Полный uri адрес листа</param>
-        /// <returns></returns>
+        /// <returns>
+        /// SheetModel is a list of Rows without first row.<br/>
+        /// First row is a header of sheet.<br/>
+        /// Each row has the same number of cells.<br/>
+        /// Each cell has a string value and title, 
+        /// which matches the column heading for the given cell.
+        /// </returns>
+        /// <param name="uri">Full sheet uri</param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="InvalidApiKeyException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
@@ -164,16 +168,17 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
-        /// Лист представлен списком строк, без первой строки.<br/>
-        /// Первая строка уходит в шапку таблицы.<br/>
-        /// В каждой строке одинаковое количество ячеек.<br/>
-        /// В каждой ячейке есть строковое значение и наименование,
-        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
-        /// <param name="spreadsheetId">Id таблицы</param>
-        /// <param name="gid">Id листа</param>
-        /// <returns></returns>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="gid"></param>
+        /// <returns>
+        /// SheetModel is a list of Rows without first row.<br/>
+        /// First row is a header of sheet.<br/>
+        /// Each row has the same number of cells.<br/>
+        /// Each cell has a string value and title, 
+        /// which matches the column heading for the given cell.
+        /// </returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="InvalidApiKeyException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
@@ -206,16 +211,17 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
-        /// Лист представлен списком строк, без первой строки.<br/>
-        /// Первая строка уходит в шапку таблицы.<br/>
-        /// В каждой строке одинаковое количество ячеек.<br/>
-        /// В каждой ячейке есть строковое значение и наименование,
-        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
-        /// <param name="spreadsheetId">Id таблицы</param>
-        /// <param name="sheetName">Имя листа</param>
-        /// <returns></returns>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="sheetName"></param>
+        /// <returns>
+        /// SheetModel is a list of Rows without first row.<br/>
+        /// First row is a header of sheet.<br/>
+        /// Each row has the same number of cells.<br/>
+        /// Each cell has a string value and title, 
+        /// which matches the column heading for the given cell.
+        /// </returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="InvalidApiKeyException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
@@ -248,15 +254,17 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
-        /// Лист представлен списком строк, без первой строки.<br/>
-        /// Первая строка уходит в шапку таблицы.<br/>
-        /// В каждой строке одинаковое количество ячеек и есть ключевая ячейка.<br/>
-        /// В каждой ячейке есть строковое значение и наименование,
-        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
         /// <param name="uri"></param>
         /// <param name="keyName"></param>
+        /// <returns>
+        /// SheetModel is a list of Rows without first row.<br/>
+        /// First row is a header of sheet.<br/>
+        /// Each row has the same number of cells and has key column.<br/>
+        /// Each cell has a string value and title, 
+        /// which matches the column heading for the given cell.
+        /// </returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="InvalidApiKeyException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
@@ -264,7 +272,6 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="SheetNotFoundException"></exception>
         /// <exception cref="SheetKeyNotFoundException"></exception>
         /// <exception cref="EmptySheetException"></exception>
-        /// <returns></returns>
         public SheetModel GetSheetWithHeadAndKey(string uri, string keyName)
         {
             return GetSheetWithHeadAndKey(
@@ -275,17 +282,18 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
-        /// Лист представлен списком строк, без первой строки.<br/>
-        /// Первая строка уходит в шапку таблицы.<br/>
-        /// В каждой строке одинаковое количество ячеек и есть ключевая ячейка.<br/>
-        /// В каждой ячейке есть строковое значение и наименование,
-        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
         /// <param name="spreadsheetId"></param>
         /// <param name="gid"></param>
         /// <param name="keyName"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// SheetModel is a list of Rows without first row.<br/>
+        /// First row is a header of sheet.<br/>
+        /// Each row has the same number of cells and has key column.<br/>
+        /// Each cell has a string value and title, 
+        /// which matches the column heading for the given cell.
+        /// </returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="InvalidApiKeyException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
@@ -319,17 +327,18 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение данных из листа гугл таблицы в виде объекта типа SheetModel.<br/>
-        /// Лист представлен списком строк, без первой строки.<br/>
-        /// Первая строка уходит в шапку таблицы.<br/>
-        /// В каждой строке одинаковое количество ячеек и есть ключевая ячейка.<br/>
-        /// В каждой ячейке есть строковое значение и наименование,
-        /// которое совпадает с шапкой столбца для данной ячейки.
+        /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
         /// <param name="spreadsheetId"></param>
         /// <param name="sheetName"></param>
         /// <param name="keyName"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// SheetModel is a list of Rows without first row.<br/>
+        /// First row is a header of sheet.<br/>
+        /// Each row has the same number of cells and has key column.<br/>
+        /// Each cell has a string value and title, 
+        /// which matches the column heading for the given cell.
+        /// </returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="InvalidApiKeyException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
@@ -363,14 +372,14 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Обновленние листа гугл таблицы на основе изменённого экземпляра типа SheetModel.
+        /// Update the Google spreadsheet sheet based on the modified instance of the SheetModel type.
         /// </summary>
         /// <remarks>
-        /// Метод изменяет данные в ячейках,
-        /// добавляет строки в конец листа и удаляет выбраные строки.<br />
-        /// Все эти действия просходят на основе запросов в google.
+        /// The method changes the data in the cells,
+        /// adds rows to the end of the sheet and removes the selected rows.<br />
+        /// All these actions are based on requests to Google.
         /// </remarks>
-        /// <param name="sheetModel">Модель листа гугл таблицы</param>
+        /// <param name="sheetModel">Google spreadsheet sheet model</param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="UserAccessDeniedException"></exception>
         /// <exception cref="OAuthSheetsScopeException"></exception>
@@ -410,7 +419,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
             if (_sheetsService == null)
             {
                 throw new InvalidOperationException(
-                    $"Необходимо аутентифицироваться перед использованием класса {nameof(GCPApplication)}."
+                    $"Need to authenticate before using this method."
                 );
             }
         }
@@ -421,9 +430,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
             if (_principal is ServiceAccount)
             {
                 throw new UserAccessDeniedException(
-                    $"Нельзя изменять листы googl таблиц, используя {nameof(ServiceAccount)}.")
+                    $"Can't modify Google spreadsheets using {nameof(ServiceAccount)}.")
                 {
-                    Operation = "Обновление листа"
+                    Operation = "Sheet update"
                 };
             }
         }
@@ -441,16 +450,16 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
             }
             catch (GoogleApiException e) when (e.HttpStatusCode == HttpStatusCode.BadRequest)
             {
-                // Спорное и не явное решение,
-                // но пока что данное состояние было только из-за невалидного api key.
-                // Возможно следует найти уточняющее состояние ошибки.
-                throw new InvalidApiKeyException($"Не удалось получить таблицу с id: {spreadsheetId}", e);
+                // Controversial and implicit decision,
+                // but so far this state only appeared due to an invalid API key.
+                // Maybe look for a clarifying error state.
+                throw new InvalidApiKeyException($"Failed to get spreadsheet with id: {spreadsheetId}", e);
             }
             catch (GoogleApiException e) when (e.HttpStatusCode == HttpStatusCode.Forbidden && e.Error.Message.Contains("does not have permission"))
             {
                 throw new UserAccessDeniedException(e.Error.Message, e)
                 {
-                    Operation = $"Получение таблицы с id: {spreadsheetId}"
+                    Operation = $"Recieving spreadsheet with id: {spreadsheetId}"
                 };
             }
             catch (GoogleApiException e) when (e.HttpStatusCode == HttpStatusCode.NotFound)
@@ -470,9 +479,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
             if (sheet == null)
             {
                 throw new SheetNotFoundException(
-                    $"В таблице {spreadsheet.Properties.Title} " +
-                    $"с id: {spreadsheet.SpreadsheetId} " +
-                    $"нет листа с gid: {gid}"
+                    $"Spreadsheet {spreadsheet.Properties.Title} " +
+                    $"with id: {spreadsheet.SpreadsheetId} " +
+                    $"not found sheet with gid: {gid}"
                 )
                 {
                     SpreadsheetName = spreadsheet.Properties.Title,
@@ -492,9 +501,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
             if (sheet == null)
             {
                 throw new SheetNotFoundException(
-                    $"В таблице {spreadsheet.Properties.Title} " +
-                    $"с id: {spreadsheet.SpreadsheetId} " +
-                    $"нет листа с именем: {sheetName}"
+                    $"Spreadsheet {spreadsheet.Properties.Title} " +
+                    $"with id: {spreadsheet.SpreadsheetId} " +
+                    $"not found sheet with name: {sheetName}"
                 )
                 {
                     SpreadsheetName = spreadsheet.Properties.Title,

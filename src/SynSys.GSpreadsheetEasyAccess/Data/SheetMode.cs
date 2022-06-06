@@ -1,21 +1,21 @@
 ﻿namespace SynSys.GSpreadsheetEasyAccess.Data
 {
     /// <summary>
-    /// Перечисление для определённого заполнения листа.
-    /// Выбор режима влияет на состояние ячеек и строк листа.
+    /// An enumeration for a specific sheet filling.
+    /// The choice of mode affects the state of the cells and rows of the sheet.
     /// </summary>
     public enum SheetMode
     {
         /// <summary>
-        /// Таблица без шапки и ключа
+        /// Spreadsheet without head and key.
         /// </summary>
         Simple,
         /// <summary>
-        /// Таблица с шапкой в одну строку
+        /// Spreadsheet with head in one row.
         /// </summary>
         Head,
         /// <summary>
-        /// Таблица с шапкой в одну строку и столбцом-ключём
+        /// Spreadsheet with head in one row and and key column.
         /// </summary>
         HeadAndKey
     }

@@ -3,15 +3,15 @@
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
     /// <summary>
-    /// Тип представляет ячейку строки.
+    /// Represents a cell of the row.
     /// </summary>
     public class Cell
     {
         private string value;
 
         /// <summary>
-        /// Если строка, в которой находится данная ячейка имеет статус Original, то
-        /// при изменении значения ячейки, изменится статус строки на ToChange.
+        /// If the row in which this cell is located has the Original status, 
+        /// then the row status will change to ToChange while the cell value changes.
         /// </summary>
         [JsonProperty]
         public string Value 
@@ -25,13 +25,13 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Название столбца в котором находится ячейка.
+        /// The name of the column in which the cell is located.
         /// </summary>
         [JsonProperty]
         public string Title { get; }
 
         /// <summary>
-        /// Ссылка на строку в которой эта ячейка располагается.
+        /// Link to the row in which this cell is located.
         /// </summary>
         [JsonProperty]
         public Row Host { get; set; }
@@ -41,8 +41,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         internal Cell() { }
 
         /// <summary>
-        /// Инициализирует ячейку данных таблицы со значением
-        /// и ссылкой на строку в которой находится
+        /// Initializes a table data cell with a value
+        /// and a link to the row in which it is located.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="title"></param>
@@ -57,20 +57,20 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
 
         private void ChangeHostStatus()
         {
-            // Эта проверка нужна для случая, когда происходит десериализация листа.
-            // В этот момент Host не определён, так как располагается после свойства Value.
-            // Если переместить свойство Host до Value, то каждый раз при десериализации
-            // у всех строк со статусом RowStatus.Original статус будет меняться на RowStatus.ToChange.
-            // Это не происходит при обычной работе, потому что Value назначается через конструктор
-            // Cell, а десериализация происходит при передаче значения свойству.
+            // This check is needed when the sheet is being deserialized.
+            // At this moment Host is undefined, as it is located after the property Value.
+            // If you move the property Host to Value, then every time you deserialize it
+            // the status of all rows with the RowStatus.Original status will change to RowStatus.ToChange.
+            // This doesn't happen in normal operation because Value is assigned via the Cell constructor
+            // and deserialization happens when the value is passed to the property.
             if (Host == null)
             {
                 return;
             }
 
-            // Эта проверка нужна для того, чтобы не менять RowStatus.ToAppend.
-            // Потому что не важно сколько раз изменятся значение в добавлямой строке,
-            // она всё равно будет добавляться в таблицу и статус RowStatus.ToChange будет не корректным.
+            // This check is needed in order not to change RowStatus.ToAppend.
+            // Because no matter how many times the value in the added line changes,
+            // it will still be added to the table and the RowStatus.ToChange status will not be correct.
             if (Host.Status == RowStatus.Original)
             {
                 Host.Status = RowStatus.ToChange;

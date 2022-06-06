@@ -1,4 +1,4 @@
-﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 namespace SynSys.GSpreadsheetEasyAccess.Authentication
 {
     /// <summary>
-    /// Учетные записи пользователей управляются как учетные записи Google, 
-    /// они представляют разработчика, администратора или любого другого человека, который взаимодействует с Google Cloud.<br/>
-    /// Они предназначены для сценариев, в которых вашему приложению требуется доступ к ресурсам от имени пользователя-человека.<br/>
-    /// Дополнительную информацию см. в разделе
-    /// <a href="https://cloud.google.com/docs/authentication/end-user">Аутентификация в качестве конечного пользователя</a>.
+    /// User accounts are managed as Google accounts,
+    /// they represent a developer, administrator, or any other person who interacts with Google Cloud.<br/>
+    /// These are for scenarios where your application needs to access resources as a human user.<br/>
+    /// For more information, see
+    /// <a href="https://cloud.google.com/docs/authentication/end-user">Authenticate as an end user</a>.
     /// </summary>
     public class UserAccount : Principal
     {
@@ -25,7 +25,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Authentication
         private OAuthSheetsScope _scope;
 
         /// <summary>
-        /// Аутентификации в качестве пользователя-человека.
+        /// Authenticate as a human user.
         /// </summary>
         /// <returns></returns>
         public UserAccount(byte[] credentials, OAuthSheetsScope scope)
@@ -35,20 +35,21 @@ namespace SynSys.GSpreadsheetEasyAccess.Authentication
         }
 
         /// <summary>
-        /// Время на попытку подключения к приложению на Google Cloud Platform в секундах.<br/>
-        /// Значение по умолчанию <c>15</c>. 
+        /// Time to try to connect to the application on the Google Cloud Platform in seconds.<br/>
+        /// The default value is <c>30</c>.
         /// </summary>
-        public byte CancellationSeconds { get; set; } = 15;
+        public byte CancellationSeconds { get; set; } = 30;
 
         /// <summary>
-        /// Вернёт объект представляющий сервис таблиц.<br/>
-        /// Это 
-        /// <a href="https://developers.google.com/resources/api-libraries/documentation/sheets/v4/csharp/latest/classGoogle_1_1Apis_1_1Sheets_1_1v4_1_1SheetsService.html">
-        /// объект библиотеки Google.Apis.Sheets.v4
-        /// </a>,
-        /// через который происходит работа с таблицами Google.
+        /// Return an object representing Google Sheets service.<br/>
         /// </summary>
-        /// <returns></returns>
+        /// <remarks>
+        /// It
+        /// <a href="https://developers.google.com/resources/api-libraries/documentation/sheets/v4/csharp/latest/classGoogle_1_1Apis_1_1Sheets_1_1v4_1_1SheetsService.html">
+        /// Google.Apis.Sheets.v4 library object
+        /// </a>,
+        /// through which work with Google Sheets API takes place.
+        /// </remarks>
         /// <exception cref="AuthenticationTimedOutException"></exception>
         /// <exception cref="UserCanceledAuthenticationException"></exception>
         public override SheetsService GetSheetsService()
@@ -64,7 +65,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Authentication
             }
             catch(AggregateException ae)
             {
-                var message = "Отмена аутентификации";
+                var message = "Cancel Authentication";
 
                 foreach (Exception e in ae.InnerExceptions)
                 {
