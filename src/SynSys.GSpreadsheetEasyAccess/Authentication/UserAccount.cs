@@ -90,7 +90,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Authentication
         private UserCredential GetUserCredential(Stream credentials)
         {
             return GoogleWebAuthorizationBroker.AuthorizeAsync(
-                GoogleClientSecrets.Load(credentials).Secrets,
+                GoogleClientSecrets.FromStream(credentials).Secrets,
                 _scope.Value,
                 "user",
                 GenerateCancellationToken(),
