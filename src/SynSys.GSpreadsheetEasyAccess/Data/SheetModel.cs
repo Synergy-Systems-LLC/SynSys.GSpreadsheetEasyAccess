@@ -1,4 +1,4 @@
-using Google.Apis.Sheets.v4.Data;
+﻿using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
     /// <summary>
-    /// The type represents one Google spreadsheet sheet.
+    /// Represents one Google spreadsheet sheet.
     /// </summary>
     public class SheetModel
     {

@@ -1,10 +1,10 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
     /// <summary>
-    /// The type represents one row of one Google spreadsheet sheet.
+    /// Represents one row of one Google spreadsheet sheet.
     /// </summary>
     public class Row
     {
