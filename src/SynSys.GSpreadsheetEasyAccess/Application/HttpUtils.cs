@@ -38,5 +38,35 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
 
             return int.Parse(match.Value);
         }
+
+        /// <summary>
+        /// Checking that given uri not belongs to Google spreadsheet sheet.
+        /// </summary>
+        /// <param name="uri">Full uri Google spreadsheet sheet.</param>
+        public static bool IsNotCorrectUri(string uri)
+        {
+            return string.IsNullOrEmpty(uri)
+                || NotExistsSpreadsheet(uri)
+                || NotExistsId(uri)
+                || NotExistsGid(uri);
+        }
+
+
+        private static bool NotExistsSpreadsheet(string url)
+        {
+            return !url.Contains("spreadsheets");
+        }
+
+        private static bool NotExistsId(string url)
+        {
+            var match = Regex.Match(url, @"(?s)(?<=d/).+?(?=/edit)");
+            return !match.Success;
+        }
+
+        private static bool NotExistsGid(string url)
+        {
+            var match = Regex.Match(url, @"(?s)(?<=gid=)\d+");
+            return !match.Success;
+        }
     }
 }
