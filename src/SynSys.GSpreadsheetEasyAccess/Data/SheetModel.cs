@@ -1,4 +1,4 @@
-﻿using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
@@ -94,7 +94,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// If there is less data, then the remaining cells will be filled with empty values.
         /// </remarks>
         /// <param name="data">Data to compose a row.</param>
-        public void AddRow(List<string> data)
+        public void AddRow(IList<string> data)
         {
             AddRow(FindNextRowNumber(), Head.Count, data);
         }
@@ -434,7 +434,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
         }
 
-        private void AddRow(int number, int length, List<string> data, RowStatus status=RowStatus.ToAppend)
+        private void AddRow(int number, int length, IList<string> data, RowStatus status=RowStatus.ToAppend)
         {
             var row = new Row(data, length, Head)
             {
