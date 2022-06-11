@@ -1,6 +1,9 @@
 ﻿using SynSys.GSpreadsheetEasyAccess.Application;
+using SynSys.GSpreadsheetEasyAccess.Application.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
+using SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Data;
+using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,37 +16,119 @@ namespace SheetWithHeadAndKeyConsoleApp
         {
             Console.WriteLine($"Start {nameof(SheetWithHeadAndKeyConsoleApp)}\n");
 
-            // Main class for interacting with Google Sheets API
-            var app = new GCPApplication();
+            try
+            {
+                // Main class for interacting with Google Sheets API
+                var app = new GCPApplication();
 
-            // To use the application you need to authorize the user
-            app.AuthenticateAs(new UserAccount(Properties.Resources.credentials, OAuthSheetsScope.FullAccess));
+                // To use the application you need to authorize the user
+                app.AuthenticateAs(new UserAccount(Properties.Resources.credentials, OAuthSheetsScope.FullAccess));
 
-            Console.WriteLine("Authorize completed");
+                Console.WriteLine("Authorize completed");
 
-            // For tests, you need to change the given uri to your own.
-            // Don't forget change keyName on GetSheetWithHeadAndKey and ChangeSheet method
-            const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
+                // For tests, you need to change the given uri to your own.
+                // Don't forget change keyName on GetSheetWithHeadAndKey and ChangeSheet method
+                const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
 
-            SheetModel sheet = app.GetSheetWithHeadAndKey(uri, "Head 1");
-            PrintSheet(sheet, "Original sheet");
+                SheetModel sheet = app.GetSheetWithHeadAndKey(uri, "Head 1");
+                PrintSheet(sheet, "Original sheet");
 
-            ChangeSheet(sheet);
-            PrintSheet(sheet, "Changed sheet before updating to google");
+                ChangeSheet(sheet);
+                PrintSheet(sheet, "Changed sheet before updating to google");
 
-            // In order for the data in the google spreadsheet sheet to be updated,
-            // you need to pass the changed instance of the SheetModel to the UpdateSheet method
-            app.UpdateSheet(sheet);
-            PrintSheet(sheet, "Sheet after update in google");
+                // In order for the data in the google spreadsheet sheet to be updated,
+                // you need to pass the changed instance of the SheetModel to the UpdateSheet method
+                app.UpdateSheet(sheet);
+                PrintSheet(sheet, "Sheet after update in google");
 
-            // The function is called a second time to show
-            // that the current instance of the sheet can still be used after the update.
-            // Its structure will match the google spreadsheet.
-            ChangeSheet(sheet);
-            PrintSheet(sheet, "Changed sheet before updating to google");
+                // The function is called a second time to show
+                // that the current instance of the sheet can still be used after the update.
+                // Its structure will match the google spreadsheet.
+                ChangeSheet(sheet);
+                PrintSheet(sheet, "Changed sheet before updating to google");
 
-            app.UpdateSheet(sheet);
-            PrintSheet(sheet, "Sheet after update in google");
+                app.UpdateSheet(sheet);
+                PrintSheet(sheet, "Sheet after update in google");
+            }
+            #region User Exceptions
+            catch (AuthenticationTimedOutException)
+            {
+                Console.WriteLine(
+                    "Authentication is timed out.\n" +
+                    "Run the plugin again and authenticate in the browser."
+                );
+            }
+            catch (UserCanceledAuthenticationException)
+            {
+                Console.WriteLine(
+                    "You have canceled authentication.\n" +
+                    $"You need to be authenticated to use library {nameof(SynSys.GSpreadsheetEasyAccess)}."
+                );
+            }
+            catch (UserAccessDeniedException e)
+            {
+                Console.WriteLine(
+                    $"User is denied access to the operation: {e.Operation}\n" +
+                    $"Reason: {e.Message}\n" +
+                    "Check table access.\n" +
+                    "The table must be available to all users who have the link."
+                 );
+            }
+            #endregion
+            #region Sheets Exceptions
+            catch (SpreadsheetNotFoundException e)
+            {
+                Console.WriteLine(
+                    $"Failed to get spreadsheet with\n" +
+                    $"spreadsheet id: {e.SpreadsheetId}\n" +
+                    "Check if this table exists."
+                );
+            }
+            catch (SheetNotFoundException e)
+            {
+                Console.WriteLine(
+                    "Failed to get sheet with\n" +
+                    $"spreadsheet id: {e.SpreadsheetId}\n" +
+                    $"spreadsheet title: {e.SpreadsheetName}\n" +
+                    $"sheet id: {e.SheetGid}\n" +
+                    "Check if this sheet exists."
+                );
+            }
+            catch (SheetKeyNotFoundException e)
+            {
+                Console.WriteLine(
+                    $"Key column \"{e.Sheet.KeyName}\" require in the sheet\n" +
+                    $"spreadsheet: \"{e.Sheet.SpreadsheetTitle}\"\n" +
+                    $"sheet: \"{e.Sheet.Title}\"\n" +
+                    "for correct plugin operation\n"
+                );
+            }
+            catch (InvalidSheetHeadException e)
+            {
+                Console.WriteLine(
+                    $"Spreadsheet \"{e.Sheet.SpreadsheetTitle}\"\n" +
+                    $"sheet \"{e.Sheet.Title}\"\n" +
+                    "lacks required headers:\n" +
+                    $"{string.Join(";\n", e.LostedHeaders)}."
+                );
+            }
+            catch (EmptySheetException e)
+            {
+                Console.WriteLine(
+                    "For the plugin to work correctly sheet" +
+                    $"spreadsheet: \"{e.Sheet.SpreadsheetTitle}\"\n" +
+                    $"sheet: \"{e.Sheet.Title}\"\n" +
+                    "cannot be empty."
+                );
+            }
+            #endregion
+            catch (Exception e)
+            {
+                Console.WriteLine(
+                    "An unhandled exception occurred.\n" +
+                    $"{e}"
+                );
+            }
 
             Console.ReadLine();
         }
@@ -62,16 +147,11 @@ namespace SheetWithHeadAndKeyConsoleApp
             sheet.AddRow();
 
             // Add a row part of which will be filled with empty cells
-            sheet.AddRow(new List<string>() { "123", "asd" });
+            sheet.AddRow(new string[] { "123", "asd" });
 
             // Add a row where part of the data will not fall into the line, namely "k" and "l",
             // because test sheet has 10 columns.
-            sheet.AddRow(
-                new List<string>()
-                {
-                    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
-                }
-            );
+            sheet.AddRow(new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l" });
         }
 
         private static void ChangeRows(SheetModel sheet)

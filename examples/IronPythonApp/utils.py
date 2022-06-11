@@ -53,11 +53,11 @@ def add_rows(sheet):
     sheet.AddRow()
 
     # Add a row part of which will be filled with empty cells.
-    sheet.AddRow(List[str](["123", "asd"]))
+    sheet.AddRow(["123", "asd"])
 
     # Add a row where part of the data will not fall into the line, namely "k" and "l",
     # because test sheet has 10 columns.
-    sheet.AddRow(List[str](["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"]))
+    sheet.AddRow(["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"])
 
 
 def change_rows(sheet):

@@ -1,4 +1,5 @@
 ﻿using SynSys.GSpreadsheetEasyAccess.Application;
+using SynSys.GSpreadsheetEasyAccess.Application.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using SynSys.GSpreadsheetEasyAccess.Data;
 using System;
@@ -12,19 +13,66 @@ namespace SimpleSheetConsoleApp
         {
             Console.WriteLine($"Start {nameof(SimpleSheetConsoleApp)}\n");
 
-            // Main class for interacting with Google Sheets API
-            var app = new GCPApplication();
+            try
+            {
+                // Main class for interacting with Google Sheets API
+                var app = new GCPApplication();
 
-            // To use the application you need to authorize the user.
-            app.AuthenticateAs(new ServiceAccount(Properties.Resources.apikey));
+                // To use the application you need to authorize the user.
+                app.AuthenticateAs(new ServiceAccount(Properties.Resources.apikey));
 
-            Console.WriteLine("Authorize completed");
+                Console.WriteLine("Authenticate completed");
 
-            // This uri can be used by everyone because the table is open to everyone.
-            const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
+                // This uri can be used by everyone because the table is open to everyone.
+                const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
 
-            SheetModel sheet = app.GetSheet(uri);
-            PrintSheet(sheet, "Original sheet");
+                SheetModel sheet = app.GetSheet(uri);
+                PrintSheet(sheet, "Original sheet");
+            }
+            #region User Exceptions
+            catch (InvalidApiKeyException)
+            {
+                Console.WriteLine(
+                    "There was a problem with the google service api key. Check its validity"
+                );
+            }
+            catch (UserAccessDeniedException e)
+            {
+                Console.WriteLine(
+                    $"User is denied access to the operation: {e.Operation}\n" +
+                    $"Reason: {e.Message}\n" +
+                    "Check table access.\n" +
+                    "The table must be available to all users who have the link."
+                 );
+            }
+            #endregion
+            #region Sheets Exceptions
+            catch (SpreadsheetNotFoundException e)
+            {
+                Console.WriteLine(
+                    $"Failed to get spreadsheet with\n" +
+                    $"spreadsheet id: {e.SpreadsheetId}\n" +
+                    "Check if this table exists."
+                );
+            }
+            catch (SheetNotFoundException e)
+            {
+                Console.WriteLine(
+                    "Failed to get sheet with\n" +
+                    $"spreadsheet id: {e.SpreadsheetId}\n" +
+                    $"spreadsheet title: {e.SpreadsheetName}\n" +
+                    $"sheet id: {e.SheetGid}\n" +
+                    "Check if this sheet exists."
+                );
+            }
+            #endregion
+            catch (Exception e)
+            {
+                Console.WriteLine(
+                    "An unhandled exception occurred.\n" +
+                    $"{e}"
+                );
+            }
 
             Console.ReadLine();
         }
