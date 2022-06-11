@@ -1,4 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SynSys.GSpreadsheetEasyAccess.Data;
+using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +25,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
             {
                 Mode = SheetMode.HeadAndKey,
                 KeyName = "Head 1",
-                Gid = "0",
+                Gid = 0,
                 Title = "TestTitle",
                 SpreadsheetId = "0000000000",
                 SpreadsheetTitle = "TestSpreadsheetTitle"
@@ -79,55 +81,16 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
         }
 
         /// <summary>
-        /// Тест проверяет корректность определения отсутствия потерянных заголовков.
+        /// Тест проверяет корректность определения количества потеряных заголовков.
         /// </summary>
         [TestMethod]
         public void DoesNotContainsSomeHeaders_AllHeadersExists()
         {
             // arrage
-            string[] requiredHeaders = { "Head 1", "Head 2", "Head 3" };
-            var expectedLostedHeadersAmount = 0;
-
-            // act
-            bool result = sheet.DoesNotContainsSomeHeaders(
-                requiredHeaders, out List<string> lostedHeaders
-            );
+            string[] requiredHeaders = { "Head 1", "Head 2", "Head 3", "Head 4" };
 
             // assert
-            Assert.IsTrue(
-                !result
-                && lostedHeaders.Count == expectedLostedHeadersAmount,
-                $"\nresult: {result}" +
-                $"\nlostedHeaders: {string.Join(" ", lostedHeaders)}"
-            );
-        }
-
-        /// <summary>
-        /// Тест проверяет корректность определения количества потеряных заголовков 
-        /// и определения этих заголовков.
-        /// </summary>
-        [TestMethod]
-        public void DoesNotContainsSomeHeaders_OneHeaderNotExist()
-        {
-            // arrage
-            string[] requiredHeaders = { "Head 1", "Head 3", "Head 5" };
-            var expectedLostedHeadersAmount = 1;
-            var expectedHeader = "Head 5";
-
-            // act
-            bool result = sheet.DoesNotContainsSomeHeaders(
-                requiredHeaders, out List<string> lostedHeaders
-            );
-
-            // assert
-            Assert.IsTrue(
-                result
-                && lostedHeaders.Count == expectedLostedHeadersAmount
-                && lostedHeaders[0] == expectedHeader,
-                $"\result: {result}" +
-                $"\nlostedHeaders: {string.Join(" ", lostedHeaders)}" +
-                $"\nheaders: {string.Join(" ", sheet.Head)}\n"
-            );
+            Assert.ThrowsException<InvalidSheetHeadException>(() => sheet.CheckHead(requiredHeaders));
         }
 
         /// <summary>

@@ -4,56 +4,30 @@ using System.Collections.Generic;
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
     /// <summary>
-    /// Статусы строки. Нужны для определения состояния строки.<br/>
-    /// По данному статусу коннектор понимает как работать с конкретной строкой
-    /// при отправке данных в google spreadsheet.
-    /// </summary>
-    public enum RowStatus
-    {
-        /// <summary>
-        /// Оригинальная строка из google таблицы.<br/>
-        /// Назначается при загрузке из google spreadsheet.
-        /// </summary>
-        Original,
-        /// <summary>
-        /// Строка будет изменена.
-        /// </summary>
-        ToChange,
-        /// <summary>
-        /// Строка будет добавлена.
-        /// </summary>
-        ToAppend,
-        /// <summary>
-        /// Строка будет удалена.
-        /// </summary>
-        ToDelete,
-    }
-
-    /// <summary>
-    /// Тип представляет одину строку данных листа google таблицы.
+    /// Represents one row of one Google spreadsheet sheet.
     /// </summary>
     public class Row
     {
         /// <summary>
-        /// Номер, не индекс!
+        /// Number, not index!
         /// </summary>
         [JsonProperty]
         public int Number { get; internal set; }
 
         /// <summary>
-        /// Текущий статус.
+        /// Current status.
         /// </summary>
         [JsonProperty]
         public RowStatus Status { get; internal set; } = RowStatus.ToAppend;
 
         /// <summary>
-        /// Все ячейки этой строки.
+        /// All cells in this row.
         /// </summary>
         [JsonProperty]
         public List<Cell> Cells { get; internal set; } = new List<Cell>();
 
         /// <summary>
-        /// Ключевая ячейка.
+        /// Key cell.
         /// </summary>
         [JsonProperty]
         public Cell Key { get; internal set; }
@@ -63,15 +37,15 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         internal Row() { }
 
         /// <summary>
-        /// Иниализация и заполнение строки таблицы.
+        /// Initialization and filling of a spreadsheet row.
         /// </summary>
         /// <remarks>
-        /// Строка может быть пустой, при этом будет содержать список пустых ячеек.
+        /// The row can be empty, and it still will contain a list of empty cells.
         /// </remarks>
-        /// <param name="rowData">Данные для заполнения</param>
-        /// <param name="maxLength">Назначает максимальную длину строки</param>
+        /// <param name="rowData">Data to fill</param>
+        /// <param name="maxLength">Assigns the maximum length of a row</param>
         /// <param name="headOfSheet"></param>
-        internal Row(List<string> rowData, int maxLength, List<string> headOfSheet)
+        internal Row(IList<string> rowData, int maxLength, List<string> headOfSheet)
         {
             for (int cellIndex = 0; cellIndex < maxLength; cellIndex++)
             {
@@ -88,8 +62,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Преобразование строки из List&lt;Cell&gt; в List&lt;object&gt;.
-        /// Это нужно для подготовки данных к отправке в google таблицу.
+        /// Row conversion from List&lt;Cell&gt; to List&lt;object&gt;.
+        /// This is necessary to prepare data for sending to Google spreadsheet.
         /// </summary>
         /// <returns></returns>
         internal IList<object> GetData()

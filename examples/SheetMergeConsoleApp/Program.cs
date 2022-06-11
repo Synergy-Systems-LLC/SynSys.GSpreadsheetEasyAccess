@@ -1,17 +1,20 @@
-﻿using SynSys.GSpreadsheetEasyAccess.Application;
+﻿using Newtonsoft.Json;
+using SynSys.GSpreadsheetEasyAccess.Application;
 using SynSys.GSpreadsheetEasyAccess.Application.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
+using SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Data;
+using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
 using System.Collections.Generic;
 
-namespace SimpleSheetConsoleApp
+namespace SheetMergeConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Start {nameof(SimpleSheetConsoleApp)}\n");
+            Console.WriteLine($"Start {nameof(SheetMergeConsoleApp)}\n");
 
             try
             {
@@ -19,21 +22,45 @@ namespace SimpleSheetConsoleApp
                 var app = new GCPApplication();
 
                 // To use the application you need to authorize the user.
-                app.AuthenticateAs(new ServiceAccount(Properties.Resources.apikey));
+                app.AuthenticateAs(new UserAccount(Properties.Resources.credentials, OAuthSheetsScope.FullAccess));
 
-                Console.WriteLine("Authenticate completed");
+                Console.WriteLine("Authorize completed");
 
-                // This uri can be used by everyone because the table is open to everyone.
-                const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
+                // For tests, you need to change the given uri to your own.
+                // Don't forget change keyName on GetSheetWithHeadAndKey and ChangeSheet method
+                const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0";
 
-                SheetModel sheet = app.GetSheet(uri);
-                PrintSheet(sheet, "Original sheet");
+                SheetModel sheetForChange = app.GetSheetWithHeadAndKey(uri, "Head 1");
+
+                // Create a duplicate of the original sheet
+                SheetModel originalSheet = JsonSerialization.DeserializeSheet(
+                    JsonSerialization.SerializeSheet(sheetForChange, Formatting.None)
+                );
+                PrintSheet(originalSheet, "Original sheet");
+
+                // Add some changes
+                ChangeSheet(sheetForChange);
+
+                // Making changes to the original sheet by merging with its modified version
+                originalSheet.Merge(sheetForChange);
+                PrintSheet(originalSheet, "Merged sheet before updating to google");
+
+                app.UpdateSheet(originalSheet);
+                PrintSheet(originalSheet, "Sheet after update in google");
             }
             #region User Exceptions
-            catch (InvalidApiKeyException)
+            catch (AuthenticationTimedOutException)
             {
                 Console.WriteLine(
-                    "There was a problem with the google service api key. Check its validity"
+                    "Authentication is timed out.\n" +
+                    "Run the plugin again and authenticate in the browser."
+                );
+            }
+            catch (UserCanceledAuthenticationException)
+            {
+                Console.WriteLine(
+                    "You have canceled authentication.\n" +
+                    $"You need to be authenticated to use library {nameof(SynSys.GSpreadsheetEasyAccess)}."
                 );
             }
             catch (UserAccessDeniedException e)
@@ -65,6 +92,33 @@ namespace SimpleSheetConsoleApp
                     "Check if this sheet exists."
                 );
             }
+            catch (SheetKeyNotFoundException e)
+            {
+                Console.WriteLine(
+                    $"Key column \"{e.Sheet.KeyName}\" require in the sheet\n" +
+                    $"spreadsheet: \"{e.Sheet.SpreadsheetTitle}\"\n" +
+                    $"sheet: \"{e.Sheet.Title}\"\n" +
+                    "for correct plugin operation\n"
+                );
+            }
+            catch (InvalidSheetHeadException e)
+            {
+                Console.WriteLine(
+                    $"Spreadsheet \"{e.Sheet.SpreadsheetTitle}\"\n" +
+                    $"sheet \"{e.Sheet.Title}\"\n" +
+                    "lacks required headers:\n" +
+                    $"{string.Join(";\n", e.LostedHeaders)}."
+                );
+            }
+            catch (EmptySheetException e)
+            {
+                Console.WriteLine(
+                    "For the plugin to work correctly sheet" +
+                    $"spreadsheet: \"{e.Sheet.SpreadsheetTitle}\"\n" +
+                    $"sheet: \"{e.Sheet.Title}\"\n" +
+                    "cannot be empty."
+                );
+            }
             #endregion
             catch (Exception e)
             {
@@ -77,6 +131,13 @@ namespace SimpleSheetConsoleApp
             Console.ReadLine();
         }
 
+
+        private static void ChangeSheet(SheetModel sheet)
+        {
+            sheet.AddRow(new List<string>() { "a", "b", "c", "d", "e" });
+            sheet.DeleteRow(sheet.Rows[5]);
+            sheet.Rows[1].Cells[1].Value = "22222";
+        }
 
         private static void PrintSheet(SheetModel sheet, string status)
         {

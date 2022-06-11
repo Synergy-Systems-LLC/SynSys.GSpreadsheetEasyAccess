@@ -4,24 +4,24 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
 {
     /// <summary>
-    /// Представляет исключение возникшее из-за того что не получилось найти лист по текущему sheet id
+    /// Represents the exception thrownbecause the sheet could not be found by the current sheet Id.
     /// </summary>
     [Serializable]
     public class SheetNotFoundException : Exception
     {
         /// <summary>
-        /// Инициализирует новый инстанс SheetNotFoundException
+        /// Initializes a new SheetNotFoundException instance.
         /// </summary>
         public SheetNotFoundException() { }
 
         /// <summary>
-        /// Инициализирует новый инстанс SheetNotFoundException с сообщением об ошибке
+        /// Initializes a new SheetNotFoundException instance with an message about exception.
         /// </summary>
         /// <param name="message"></param>
         public SheetNotFoundException(string message) : base(message) { }
 
         /// <summary>
-        /// Инициализирует новый инстанс SheetNotFoundException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// Initializes a new SheetNotFoundException instance with an error message and a reference to the reason for the current exception.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -35,22 +35,22 @@ namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
         protected SheetNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         /// <summary>
-        /// Имя таблицы в которой искали лист
+        /// The name of the spreadsheet in which the sheet was searched.
         /// </summary>
         public string SpreadsheetName { get; internal set; }
 
         /// <summary>
-        /// Id таблицы в которой искали лист
+        /// Id of the Spreadsheet in which the sheet was searched.
         /// </summary>
         public string SpreadsheetId { get; internal set; }
 
         /// <summary>
-        /// Id листа по которому не удалось найти лист
+        /// Id of the sheet by which the sheet could not be found.
         /// </summary>
         public string SheetGid { get; internal set; }
 
         /// <summary>
-        /// Имя листа по которому не удалось найти лист
+        /// The name of the sheet by which the sheet could not be found.
         /// </summary>
         public string SheetName { get; internal set; }
     }

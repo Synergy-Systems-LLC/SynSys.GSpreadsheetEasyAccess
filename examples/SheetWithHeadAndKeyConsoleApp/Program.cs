@@ -1,7 +1,11 @@
-﻿using SynSys.GSpreadsheetEasyAccess;
+﻿using SynSys.GSpreadsheetEasyAccess.Application;
+using SynSys.GSpreadsheetEasyAccess.Application.Exceptions;
+using SynSys.GSpreadsheetEasyAccess.Authentication;
+using SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions;
+using SynSys.GSpreadsheetEasyAccess.Data;
+using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace SheetWithHeadAndKeyConsoleApp
@@ -10,95 +14,126 @@ namespace SheetWithHeadAndKeyConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Запуск {nameof(SheetWithHeadAndKeyConsoleApp)}\n");
+            Console.WriteLine($"Start {nameof(SheetWithHeadAndKeyConsoleApp)}\n");
 
-            // Инициализируем коннектор и настраиваем его если нужно.
-            var connector = new Connector()
+            try
             {
-                // Установка данных свойств опциональна.
-                ApplicationName = "Get google sheet data",
-                CancellationSeconds = 20,
-            };
- 
-            // Попытка подключиться к приложению на Google Cloud Platform.
-            // Метод вернёт флаг подключения и у экземпляра коннектора будет возможность
-            // вызывать методы для получения листов гугл таблиц.
-            bool isConnectionSuccessful = connector.TryToCreateConnect(GetCredentialStream());
+                // Main class for interacting with Google Sheets API
+                var app = new GCPApplication();
 
-            if (!isConnectionSuccessful)
-            {
-                if (connector.Status == ConnectStatus.NotConnected)
-                {
-                    Console.WriteLine($"Подключение отсутствует.\nПричина: {connector.Exception}");
-                }
-                else if (connector.Status == ConnectStatus.AuthorizationTimedOut)
-                {
-                    Console.WriteLine("Время на подключение закончилось");
-                }
+                // To use the application you need to authorize the user
+                app.AuthenticateAs(new UserAccount(Properties.Resources.credentials, OAuthSheetsScope.FullAccess));
 
-                Console.ReadLine();
- 
-                return;
-            }
+                Console.WriteLine("Authorize completed");
 
-            Console.WriteLine("Подключились к Cloud App\n");
+                // For tests, you need to change the given uri to your own.
+                // Don't forget change keyName on GetSheetWithHeadAndKey and ChangeSheet method
+                const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
 
-            // Замените url адрес на свой для тестов.
-            // Если вы воспользовались данным uri адресом, то после успешного завершения работы программы,
-            // скопируйте содержимое из листа "Copy of TestSheet" в лист "TestSheet".
-            const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
-
-            // Попытка получения листа по uri.
-            // Метод вернёт флаг получения листа и экземпляр типа SheetModel.
-            // Если данные из листа не были получены,
-            // то экземпляр SheetModel будет пустым со статусом в виде строки, говорящем о причине неудачи.
-            // В противном случае экземпляр листа будет заполнен данными.
-            // Эти данные можно менять и через конннектор обновлять в листе гугл таблицы.
-            //if (connector.TryToGetSheetWithHeadAndKey(uri, "Head 1", out SheetModel sheet))
-            //if (connector.TryToGetSheetWithHeadAndKey(HttpUtils.GetSpreadsheetIdFromUri(uri),
-            //                                          "TestSheet",
-            //                                          "Head 1",
-            //                                          out SheetModel sheet))
-            if (connector.TryToGetSheetWithHeadAndKey(HttpUtils.GetSpreadsheetIdFromUri(uri),
-                                                      HttpUtils.GetGidFromUri(uri),
-                                                      "Head 1",
-                                                      out SheetModel sheet))
-            {
-                PrintSheet(sheet, "Первое получение данных");
+                SheetModel sheet = app.GetSheetWithHeadAndKey(uri, "Head 1");
+                PrintSheet(sheet, "Original sheet");
 
                 ChangeSheet(sheet);
-                PrintSheet(sheet, "Изменённые данные до обновления в google");
+                PrintSheet(sheet, "Changed sheet before updating to google");
 
-                // Метод для обновления данных в листе google таблицы на основе измененний
-                // экземпляра типа Sheet.
-                connector.UpdateSheet(sheet);
-                PrintSheet(sheet, "Данные после обновления в google");
+                // In order for the data in the google spreadsheet sheet to be updated,
+                // you need to pass the changed instance of the SheetModel to the UpdateSheet method
+                app.UpdateSheet(sheet);
+                PrintSheet(sheet, "Sheet after update in google");
 
-                // Данный метод вызывается второй раз чтобы показать,
-                // что с текущим экземпляром листа можно работать и после обновления.
-                // Его структура будет соответствовать google таблице.
+                // The function is called a second time to show
+                // that the current instance of the sheet can still be used after the update.
+                // Its structure will match the google spreadsheet.
                 ChangeSheet(sheet);
-                PrintSheet(sheet, "Изменённые данные до обновления в google");
+                PrintSheet(sheet, "Changed sheet before updating to google");
 
-                connector.UpdateSheet(sheet);
-                PrintSheet(sheet, "Данные после обновления в google");
+                app.UpdateSheet(sheet);
+                PrintSheet(sheet, "Sheet after update in google");
             }
-            else
+            #region User Exceptions
+            catch (AuthenticationTimedOutException)
             {
-                // По какой-то причине не получилось получить таблицу.
-                // Причина будет указана в sheet.Status.
-                Console.WriteLine(sheet.Status);
+                Console.WriteLine(
+                    "Authentication is timed out.\n" +
+                    "Run the plugin again and authenticate in the browser."
+                );
+            }
+            catch (UserCanceledAuthenticationException)
+            {
+                Console.WriteLine(
+                    "You have canceled authentication.\n" +
+                    $"You need to be authenticated to use library {nameof(SynSys.GSpreadsheetEasyAccess)}."
+                );
+            }
+            catch (UserAccessDeniedException e)
+            {
+                Console.WriteLine(
+                    $"User is denied access to the operation: {e.Operation}\n" +
+                    $"Reason: {e.Message}\n" +
+                    "Check table access.\n" +
+                    "The table must be available to all users who have the link."
+                 );
+            }
+            #endregion
+            #region Sheets Exceptions
+            catch (SpreadsheetNotFoundException e)
+            {
+                Console.WriteLine(
+                    $"Failed to get spreadsheet with\n" +
+                    $"spreadsheet id: {e.SpreadsheetId}\n" +
+                    "Check if this table exists."
+                );
+            }
+            catch (SheetNotFoundException e)
+            {
+                Console.WriteLine(
+                    "Failed to get sheet with\n" +
+                    $"spreadsheet id: {e.SpreadsheetId}\n" +
+                    $"spreadsheet title: {e.SpreadsheetName}\n" +
+                    $"sheet id: {e.SheetGid}\n" +
+                    "Check if this sheet exists."
+                );
+            }
+            catch (SheetKeyNotFoundException e)
+            {
+                Console.WriteLine(
+                    $"Key column \"{e.Sheet.KeyName}\" require in the sheet\n" +
+                    $"spreadsheet: \"{e.Sheet.SpreadsheetTitle}\"\n" +
+                    $"sheet: \"{e.Sheet.Title}\"\n" +
+                    "for correct plugin operation\n"
+                );
+            }
+            catch (InvalidSheetHeadException e)
+            {
+                Console.WriteLine(
+                    $"Spreadsheet \"{e.Sheet.SpreadsheetTitle}\"\n" +
+                    $"sheet \"{e.Sheet.Title}\"\n" +
+                    "lacks required headers:\n" +
+                    $"{string.Join(";\n", e.LostedHeaders)}."
+                );
+            }
+            catch (EmptySheetException e)
+            {
+                Console.WriteLine(
+                    "For the plugin to work correctly sheet" +
+                    $"spreadsheet: \"{e.Sheet.SpreadsheetTitle}\"\n" +
+                    $"sheet: \"{e.Sheet.Title}\"\n" +
+                    "cannot be empty."
+                );
+            }
+            #endregion
+            catch (Exception e)
+            {
+                Console.WriteLine(
+                    "An unhandled exception occurred.\n" +
+                    $"{e}"
+                );
             }
 
             Console.ReadLine();
         }
 
-        /// <summary>
-        /// Изменения данных в экземпляре типа Sheet.
-        /// Не важен порядок изменения экземпляра листа,
-        /// его обновленние будет происходить в определённом порядке в коннекторе.
-        /// </summary>
-        /// <param name="sheet"></param>
+
         private static void ChangeSheet(SheetModel sheet)
         {
             AddRows(sheet);
@@ -108,26 +143,21 @@ namespace SheetWithHeadAndKeyConsoleApp
 
         private static void AddRows(SheetModel sheet)
         {
-            // Добавления пустой строки.
+            // Add empty row
             sheet.AddRow();
 
-            // Добавления строки часть которой будет заполнена пустыми строками.
-            sheet.AddRow(new List<string>() { "123", "asd" });
+            // Add a row part of which will be filled with empty cells
+            sheet.AddRow(new string[] { "123", "asd" });
 
-            // Добавления строки где часть данных не попадёт в строку, а именно "k" и "l".
-            // Потому что в "TestSheet" 10 столбцов.
-            sheet.AddRow(
-                new List<string>()
-                {
-                    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
-                }
-            );
+            // Add a row where part of the data will not fall into the line, namely "k" and "l",
+            // because test sheet has 10 columns.
+            sheet.AddRow(new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l" });
         }
 
         private static void ChangeRows(SheetModel sheet)
         {
-            // Данный пример не учитывает отсутствие ключа с нужным значением
-            // и ячейки с выбранными Title
+            // This example doesn't take into account the absence of a key with the desired value
+            // and a cell with the selected Title
             sheet.Rows.Find(row => row.Key.Value == "31")
                  .Cells.Find(cell => cell.Title == "Head 6")
                  .Value = "360";
@@ -138,7 +168,7 @@ namespace SheetWithHeadAndKeyConsoleApp
                  .Cells.Find(cell => cell.Title == "Head 2")
                  .Value = "520";
 
-            // Изменение добавленных строк со статусом RowStatus.ToAppend
+            // Change added rows with status RowStatus.ToAppend
             sheet.Rows.Last().Cells[0].Value = "change";
             sheet.Rows.Last().Cells[1].Value = "added";
             sheet.Rows.Last().Cells[2].Value = "line";
@@ -146,49 +176,77 @@ namespace SheetWithHeadAndKeyConsoleApp
 
         private static void DeleteRows(SheetModel sheet)
         {
-            // Данный пример не учитывает отсутствие нужных индексов
+            // This example doesn't take into account the lack of necessary indexes
             sheet.DeleteRow(sheet.Rows[3]);
 
-            // Удаление добавленой строки со статусом RowStatus.ToAppend
+            // Delete the added line with the status RowStatus.ToAppend.
+            // In this case, the line is immediately deleted without waiting for the sheet to be updated.
             sheet.DeleteRow(sheet.Rows[10]);
         }
 
-        /// <summary>
-        /// Просто метод для отображения данных таблицы в консоли
-        /// </summary>
-        /// <param name="sheet"></param>
-        /// <param name="status"></param>
         private static void PrintSheet(SheetModel sheet, string status)
+        {
+            PrintDesctiption(sheet, status);
+            PrintHead(sheet.Head);
+            PrintBody(sheet.Rows);
+        }
+
+        private static void PrintDesctiption(SheetModel sheet, string status)
         {
             Console.WriteLine(
                 "\n" +
-               $"Статус листа:     {status}\n" +
-               $"Имя таблицы:      {sheet.SpreadsheetTitle}\n" +
-               $"Имя листа:        {sheet.Title}\n" +
-               $"Количество строк: {sheet.Rows.Count}"
+               $"Status:           {status}\n" +
+               $"Spreadsheet Name: {sheet.SpreadsheetTitle}\n" +
+               $"Sheet Name:       {sheet.Title}\n" +
+               $"Number of lines:  {sheet.Rows.Count}\n"
             );
+        }
 
-            foreach (var row in sheet.Rows)
+        private static void PrintHead(List<string> head)
+        {
+            Console.Write($"{"", 3}");
+
+            foreach (string title in head)
             {
-                Console.Write($"|{row.Number, 3}|");
+                string value = title;
+
+                if (string.IsNullOrWhiteSpace(title))
+                {
+                    value = "-";
+                }
+
+                Console.Write($"|{value,7}");
+            }
+
+            Console.Write($"| ");
+            Console.WriteLine();
+
+            Console.Write($"{"", 3}");
+            var delimiter = new String('-', 7);
+
+            foreach (string title in head)
+            {
+                Console.Write($"|{delimiter}");
+            }
+
+            Console.Write($"| ");
+            Console.WriteLine();
+        }
+
+        private static void PrintBody(List<Row> rows)
+        {
+            foreach (var row in rows)
+            {
+                Console.Write($"{row.Number,3}");
 
                 foreach (var cell in row.Cells)
                 {
-                    Console.Write($"|{cell.Value, 7}");
+                    Console.Write($"|{cell.Value,7}");
                 }
 
                 Console.Write($"| {row.Status}");
                 Console.WriteLine();
             }
-        }
-
-        /// <summary>
-        /// Получение полномочий для подключения к приложению на Google Cloud Platform.
-        /// </summary>
-        /// <returns></returns>
-        private static Stream GetCredentialStream()
-        {
-            return new MemoryStream(Properties.Resources.credentials);
         }
     }
 }

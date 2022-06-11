@@ -4,24 +4,24 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
 {
     /// <summary>
-    /// Представляет исключение возникшее из-за того что не получилось найти таблицу по текущему spreadsheet id
+    /// Represents the exception thrownbecause the table could not be found by the current spreadsheet Id.
     /// </summary>
     [Serializable]
     public class SpreadsheetNotFoundException : Exception
     {
         /// <summary>
-        /// Инициализирует новый инстанс SpreadsheetNotFoundException
+        /// Initializes a new SpreadsheetNotFoundException instance.
         /// </summary>
         public SpreadsheetNotFoundException() { }
 
         /// <summary>
-        /// Инициализирует новый инстанс SpreadsheetNotFoundException с сообщением об ошибке
+        /// Initializes a new SpreadsheetNotFoundException instance with an message about exception.
         /// </summary>
         /// <param name="message"></param>
         public SpreadsheetNotFoundException(string message) : base(message) { }
 
         /// <summary>
-        /// Инициализирует новый инстанс SpreadsheetNotFoundException с сообщением об ошибке и ссылкой на причину текущего исключения
+        /// Initializes a new SpreadsheetNotFoundException instance with an error message and a reference to the reason for the current exception.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -35,7 +35,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
         protected SpreadsheetNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         /// <summary>
-        /// Id таблицы вызвавший исключение
+        /// Spreadsheet id that caused the exception.
         /// </summary>
         public string SpreadsheetId { get; internal set; }
     }

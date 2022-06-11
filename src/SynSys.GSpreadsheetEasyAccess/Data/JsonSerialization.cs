@@ -3,21 +3,20 @@
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
     /// <summary>
-    /// Предоставляет методы для конвертации экземпляра SheetModel 
-    /// в строковое представление JSON и обратно.
+    /// Provides methods for converting a SheetModel instance 
+    /// to and from a JSON string representation.
     /// </summary>
     public class JsonSerialization
     {
         /// <summary>
-        /// Сериализует экземпляр указаного листа в JSON с применением выбранного форматирования.
+        /// Serializes an instance of the specified sheet to JSON using the selected formatting.
         /// </summary>
         /// <param name="sheet"></param>
         /// <param name="formatting"></param>
-        /// <returns>Строковое представление объекта в формате JSON</returns>
+        /// <returns>The string representation of the object in the format JSON.</returns>
         public static string SerializeSheet(SheetModel sheet, Formatting formatting)
         {
-            // PreserveReferencesHandling.Objects - обязательное свойство так как в Cell есть
-            // ссылка на Row.
+            // PreserveReferencesHandling.Objects - required property since Cell has link to Row.
             return JsonConvert.SerializeObject(
                 sheet,
                 formatting,
@@ -29,10 +28,10 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
-        /// Десериализует JSON до экземпляра SheetModel.
+        /// Deserializes JSON to an instance SheetModel.
         /// </summary>
         /// <param name="jsonSheet"></param>
-        /// <returns>Десериализованный объект из строки JSON</returns>
+        /// <returns>Deserialized object from string JSON.</returns>
         public static SheetModel DeserializeSheet(string jsonSheet)
         {
             return JsonConvert.DeserializeObject<SheetModel>(jsonSheet);

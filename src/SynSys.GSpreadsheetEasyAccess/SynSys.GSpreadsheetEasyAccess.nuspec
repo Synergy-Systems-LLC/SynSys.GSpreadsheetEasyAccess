@@ -9,10 +9,9 @@
     <projectUrl>https://github.com/Synergy-Systems-LLC/SynSys.GSpreadsheetEasyAccess</projectUrl>
     <license type="expression">MIT</license>
     <description>
-      Объекты для:
-      - Подключение к приложению на Google Cloud Platform у которого обязательно должен быть
-        подключен сервис Google Sheets API;
-      - Получение и изменение данных в гугл таблицах.
+      Objects for:
+      - Connecting to an application on the Google Cloud Platform, which must have the Google Sheets API;
+      - Getting and changing data in Google Sheets.
     </description>
     <releaseNotes>" "</releaseNotes>
     <copyright>$copyright$</copyright>

@@ -1,17 +1,19 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace SynSys.GSpreadsheetEasyAccess.Application
 {
     /// <summary>
-    /// Класс функций для работы с uri и http статус кодами.
+    /// Provide static methods for parsing Google spreadsheets uri.
     /// </summary>
     public static class HttpUtils
     {
         /// <summary>
-        /// Получение идентификатора гугл таблицы.
+        /// Get the Google spreadsheet Id.
         /// </summary>
-        /// <param name="uri">Полный uri адрес листа гугл таблицы</param>
-        /// <returns></returns>
+        /// <param name="uri">Full Google spreadsheet sheet uri</param>
+        /// <returns>
+        /// String of 44 characters following d/
+        /// </returns>
         public static string GetSpreadsheetIdFromUri(string uri)
         {
             var match = Regex.Match(uri, @"(?s)(?<=d/).+?(?=/edit)");
@@ -19,11 +21,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Получение идентификатора листа гугл таблицы.
+        /// Get the Google spreadsheet sheet Id.
         /// </summary>
-        /// <param name="uri">Полный uri адрес листа гугл таблицы</param>
+        /// <param name="uri">Full Google spreadsheet sheet uri</param>
         /// <returns>
-        /// Возвращает -1 если в uri нет gid.
+        /// Returns -1 if there is no gid in uri.
         /// </returns>
         public static int GetGidFromUri(string uri)
         {
@@ -38,83 +40,21 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Проверка корректности полного uri листа гугл таблицы.
+        /// Checking that given uri not belongs to Google spreadsheet sheet.
         /// </summary>
-        /// <param name="uri">Полный uri адрес листа гугл таблицы</param>
-        /// <param name="status">Информация о том почему uri не корректный</param>
-        /// <returns></returns>
-        public static bool IsCorrectUri(string uri, out string status)
+        /// <param name="uri">Full uri Google spreadsheet sheet.</param>
+        public static bool IsNotCorrectUri(string uri)
         {
-            if (string.IsNullOrEmpty(uri))
-            {
-                status = "Url пустой";
-                return false;
-            }
-
-            if (NotExistsSpreadsheet(uri))
-            {
-                status = "Url адрес не принадлежит google spreadsheet";
-                return false;
-            }
-
-            if (NotExistsId(uri))
-            {
-                status = "В Url адресе некорректный spreadsheetId";
-                return false;
-            }
-
-            if (NotExistsGid(uri))
-            {
-                status = "В Url адресе некорректный gid листа или он отсутствует";
-                return false;
-            }
-
-            status = string.Empty;
-            return true;
-        }
-
-
-        internal static string GetHttpStatusCode(string errorMessage)
-        {
-            string pattern = @"\[(\d+)\]";
-            var rx = new Regex(pattern);
-
-            if (rx.IsMatch(errorMessage))
-            {
-                return rx.Match(errorMessage).Groups[1].Value;
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
-
-        internal static string GetMessageByCode(string httpCode)
-        {
-            switch (httpCode)
-            {
-                case "400":
-                    return "Неверный запрос. Url адрес не существует.";
-                case "401":
-                    return "Проблемы с авторизацией в google.";
-                case "403":
-                    return "Отказ в доступе. Обратитесь к владельцу таблицы google.";
-                case "404":
-                    return "Не найден запрашиваемый адреc. Возможно вы ошиблись в Id таблицы или Id её листа.";
-                default:
-                    return $"http status code - {httpCode}.";
-            }
+            return string.IsNullOrEmpty(uri)
+                || NotExistsSpreadsheet(uri)
+                || NotExistsId(uri)
+                || NotExistsGid(uri);
         }
 
 
         private static bool NotExistsSpreadsheet(string url)
         {
-            if (url.Contains("spreadsheets"))
-            {
-                return false;
-            }
-
-            return true;
+            return !url.Contains("spreadsheets");
         }
 
         private static bool NotExistsId(string url)

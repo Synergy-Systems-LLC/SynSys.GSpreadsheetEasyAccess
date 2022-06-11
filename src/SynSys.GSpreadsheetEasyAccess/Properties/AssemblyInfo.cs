@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SynSys.GSpreadsheetEasyAccess")]
-[assembly: AssemblyDescription("Библиотека для подключения к google spreadsheet")]
+[assembly: AssemblyDescription("Library for connecting to an application on the Google Cloud Platform")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Synergy Systems")]
 [assembly: AssemblyProduct("SynSys.GSpreadsheetEasyAccess")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.17.0.0")]
-[assembly: AssemblyFileVersion("0.17.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
