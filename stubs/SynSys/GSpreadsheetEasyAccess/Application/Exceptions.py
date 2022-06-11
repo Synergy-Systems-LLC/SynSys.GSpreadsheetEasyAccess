@@ -1,12 +1,12 @@
 class InvalidApiKeyException(Exception):
-    """Represents an exception throwndue to an invalid API key of the application
+    """Represents an exception thrown due to an invalid API key of the application
     on the Google Cloud Platform.
     """
     pass
 
 
 class SheetNotFoundException(Exception):
-    """Represents the exception thrownbecause the sheet could not be found
+    """Represents the exception thrown because the sheet could not be found
     by the current sheet Id.
     """
 
@@ -32,7 +32,7 @@ class SheetNotFoundException(Exception):
 
 
 class SpreadsheetNotFoundException(Exception):
-    """Represents the exception thrownbecause the table could not be found
+    """Represents the exception thrown because the table could not be found
     by the current spreadsheet id.
     """
 
