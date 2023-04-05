@@ -24,7 +24,8 @@ These aren't all the types represented in the library, they aren't important eno
 The main library type which allows you to:
 - Authenticate users;
 - Access an existing Google spreadsheet sheet;
-- Update a Google spreadsheet sheet.
+- Create sheet;
+- Update sheet.
 
 #### Principal
 The basic authentication type. There are other specific types that need to be used in your own code.
