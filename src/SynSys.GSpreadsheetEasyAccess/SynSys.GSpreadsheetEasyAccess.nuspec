@@ -9,8 +9,9 @@
     <projectUrl>https://github.com/Synergy-Systems-LLC/SynSys.GSpreadsheetEasyAccess</projectUrl>
     <license type="expression">MIT</license>
     <description>
-      Objects for:
-      - Connecting to an application on the Google Cloud Platform, which must have the Google Sheets API;
+      Objects are for:
+      - Connection to an application on the Google Cloud Platform, which must have the Google Sheets API;
+      - Creation sheets on Google spreadhseet;
       - Getting and changing data in Google Sheets.
     </description>
     <releaseNotes>" "</releaseNotes>
