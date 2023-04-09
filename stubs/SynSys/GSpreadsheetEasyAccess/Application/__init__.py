@@ -14,6 +14,14 @@ class GCPApplication(object):
         # type: (Principal) -> None
         """ To gain access to the Google Sheets API, you must be authenticated.
         It is necessary to specify who is authenticating.
+
+        Args:
+            principal (Principal):
+
+        Raises:
+            ArgumentNullException
+            AuthenticationTimedOutException
+            UserCanceledAuthenticationException
         """
         pass
 
@@ -91,17 +99,17 @@ class GCPApplication(object):
         """
         return SheetModel()
 
-    def GetSheet(uri):
-        # type: (str) -> SheetModel
+    def GetSheet(self, *args):
+        # type: (str | int) -> SheetModel
         """ Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
 
         Args:
             uri (str): Full uri of spreadsheet sheet.
         or Args:
-            spreadsheetId (str): Spreadhseet Id.
+            spreadsheetId (str): Spreadsheet Id.
             gid (int): Spreadsheet sheet Id.
         or Args:
-            spreadsheetId (str): Spreadhseet Id.
+            spreadsheetId (str): Spreadsheet Id.
             sheetName (str): Spreadsheet sheet name.
 
         Returns:
@@ -109,20 +117,27 @@ class GCPApplication(object):
             Header is absent.\n
             Each row has the same number of cells.\n
             Each cell has a string value.
+
+        Raises:
+            InvalidOperationException
+            InvalidApiKeyException
+            UserAccessDeniedException
+            SpreadsheetNotFoundException
+            SheetNotFoundException
         """
         return SheetModel()
 
-    def GetSheetWithHead(self, uri):
-        # type: (str) -> SheetModel
+    def GetSheetWithHead(self, *args):
+        # type: (str | int) -> SheetModel
         """ Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
 
         Args:
             uri (str): Full uri of spreadsheet sheet.
         or Args:
-            spreadsheetId (str): Spreadhseet Id.
+            spreadsheetId (str): Spreadsheet Id.
             gid (int): Spreadsheet sheet Id.
         or Args:
-            spreadsheetId (str): Spreadhseet Id.
+            spreadsheetId (str): Spreadsheet Id.
             sheetName (str): Spreadsheet sheet name.
 
         Returns:
@@ -131,22 +146,30 @@ class GCPApplication(object):
             Each row has the same number of cells.\n
             Each cell has a string value and title,
             which matches the column heading for the given cell.
+
+        Raises:
+            InvalidOperationException
+            InvalidApiKeyException
+            UserAccessDeniedException
+            SpreadsheetNotFoundException
+            SheetNotFoundException
+            EmptySheetException
         """
         return SheetModel()
 
-    def GetSheetWithHeadAndKey(self, uri, keyName):
-        # type: (str, str) -> SheetModel
+    def GetSheetWithHeadAndKey(self, *args):
+        # type: (str | int) -> SheetModel
         """ Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
 
         Args:
             uri (str): Full uri of spreadsheet sheet.
             keyName (str): sheet key column.
         or Args:
-            spreadsheetId (str): Spreadhseet Id.
+            spreadsheetId (str): Spreadsheet Id.
             gid (int): Spreadsheet sheet Id.
             keyName (str): sheet key column.
         or Args:
-            spreadsheetId (str): Spreadhseet Id.
+            spreadsheetId (str): Spreadsheet Id.
             sheetName (str): Spreadsheet sheet name.
             keyName (str): sheet key column.
 
@@ -156,6 +179,15 @@ class GCPApplication(object):
             Each row has the same number of cells and has key column.\n
             Each cell has a string value and title,
             which matches the column heading for the given cell.
+
+        Raises:
+            InvalidOperationException
+            InvalidApiKeyException
+            UserAccessDeniedException
+            SpreadsheetNotFoundException
+            SheetNotFoundException
+            SheetKeyNotFoundException
+            EmptySheetException
         """
         return SheetModel()
 
@@ -172,8 +204,13 @@ class GCPApplication(object):
 
         Returns:
             SheetModel: Updated instance of SheetModel.
+
+        Raises:
+            InvalidOperationException\n
+            UserAccessDeniedException\n
+            OAuthSheetsScopeException\n
         """
-        return SheetModel()
+        return None
 
     def IsSheetExists(self, spreadsheetId, sheetTitle):
         # type: (str, str) -> bool

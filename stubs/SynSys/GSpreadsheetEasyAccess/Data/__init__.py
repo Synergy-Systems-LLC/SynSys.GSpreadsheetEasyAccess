@@ -1,5 +1,82 @@
 from enum import Enum
-from System.Collections.Generic import List
+
+
+class Cell(object):
+    """Represents a cell of the row."""
+
+    @property
+    def Value(self):
+        return str()
+
+    @Value.setter
+    def Value(self, value):
+        # type: (str) -> None
+        """If the row in which this cell is located has the Original status,
+        then the row status will change to ToChange while the cell value changes.
+        """
+        pass
+
+    @property
+    def Title(self):
+        """The name of the column in which the cell is located."""
+        return str()
+
+    @property
+    def Host(self):
+        """Link to the row in which this cell is located."""
+        return Row()
+
+    @Host.setter
+    def Host(self, value):
+        # type: (Row) -> None
+        """Link to the row in which this cell is located."""
+        pass
+
+
+class RowStatus(Enum):
+    """Determines the state of the row.
+
+    The GCPApplication understands how to work with a specific row (based on this status)
+    when sending data to Google spreadsheet.
+    """
+
+    Original = 1
+    """Original row from Google spreadsheet.
+    Assigned when loading from Google spreadsheet.
+    """
+
+    ToChange = 2
+    """The row will be changed."""
+
+    ToAppend = 3
+    """The row will be added."""
+
+    ToDelete = 4
+    """The row will be deleted."""
+
+
+class Row(object):
+    """The type represents one row of one Google spreadsheet sheet."""
+
+    @property
+    def Number(self):
+        """Number, not index!"""
+        return int()
+
+    @property
+    def Status(self):
+        """Current status."""
+        return RowStatus
+
+    @property
+    def Cells(self):
+        """All cells in this row."""
+        return [Cell()]
+
+    @property
+    def Key(self):
+        """Key cell."""
+        return Cell()
 
 
 class SheetMode(Enum):
@@ -49,17 +126,17 @@ class SheetModel(object):
     @property
     def Mode(self):
         """The mode by which work with the sheet is determined."""
-        return SheetMode()
+        return SheetMode
 
     @property
     def Head(self):
         """First row of the sheet."""
-        return List[str]()
+        return [str()]
 
     @property
     def Rows(self):
         """All rows included in this sheet except for the head."""
-        return List[Row]()
+        return [Row()]
 
     @property
     def IsEmpty(self):
@@ -132,85 +209,6 @@ class SheetModel(object):
             ArgumentNullException
             ArgumentException: Raise if other sheet not same.
         """
-        pass
-
-
-class RowStatus(Enum):
-    """Determines the state of the row.
-
-    The GCPApplication understands how to work with a specific row (based on this status)
-    when sending data to Google spreadsheet.
-    """
-
-    Original = 1
-    """Original row from Google spreadsheet.
-    Assigned when loading from Google spreadsheet.
-    """
-
-    ToChange = 2
-    """The row will be changed."""
-
-    ToAppend = 3
-    """The row will be added."""
-
-    ToDelete = 4
-    """The row will be deleted."""
-
-
-class Row(object):
-    """The type represents one row of one Google spreadsheet sheet."""
-
-    @property
-    def Number(self):
-        """Number, not index!"""
-        return int()
-
-    @property
-    def Status(self):
-        # type: () -> RowStatus
-        """Current status."""
-        return int()
-
-    @property
-    def Cells(self):
-        """All cells in this row."""
-        return List[Cell]()
-
-    @property
-    def Key(self):
-        """Key cell."""
-        return Cell()
-
-
-class Cell(object):
-    """Represents a cell of the row."""
-
-    @property
-    def Value(self):
-        return str()
-
-    @Value.setter
-    def Value(self, value):
-        # type: (str) -> None
-        """If the row in which this cell is located has the Original status,
-        then the row status will change to ToChange while the cell value changes.
-        """
-        pass
-
-    @property
-    def Title(self):
-        """The name of the column in which the cell is located."""
-        return str()
-
-    @property
-    def Host(self):
-        """Link to the row in which this cell is located."""
-        return Row()
-
-    @Host.setter
-    def Host(self, value):
-        # type: (Row) -> None
-        """Link to the row in which this cell is located."""
         pass
 
 

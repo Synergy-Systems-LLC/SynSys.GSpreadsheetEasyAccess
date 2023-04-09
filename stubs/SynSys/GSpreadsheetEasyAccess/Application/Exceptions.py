@@ -52,6 +52,10 @@ class UserAccessDeniedException(Exception):
         """Contains the name of the operation to which the user does not have access."""
         return str()
 
+    @property
+    def Message(self):
+        return str()
+
 
 class SheetExistsException(Exception):
     """Represents an exception thrown due to the existence of a
