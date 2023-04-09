@@ -1,7 +1,9 @@
 ## What is GSpreadsheetEasyAccess?
+
 A Google libraries wrapper for an easy and efficient way of interacting with Google Sheets.
 
 ## Description
+
 Original libraries have a multitude of types but the
 [.NET example](https://developers.google.com/sheets/api/quickstart/dotnet#prerequisites)
 highlights the main ones, such as `GoogleWebAuthorizationBroker`, `SheetsService`, `Request`, `ValueRange`.
@@ -11,6 +13,7 @@ Original libraries lack the types and methods reflecting these concepts.
 We wanted to see them reflected in our library.
 
 ### Main types
+
 - `GCPApplication` - an application on the Google Cloud Platform connected to
 [Google Sheet API](https://developers.google.com/sheets/api?hl=en_US).  
 It can only be used after user authentication.
@@ -21,13 +24,16 @@ It can only be used after user authentication.
 These aren't all the types represented in the library, they aren't important enough to be worth mentioning.
 
 #### GCPApplication
+
 The main library type which allows you to:
+
 - Authenticate users;
 - Access an existing Google spreadsheet sheet;
 - Create sheet;
 - Update sheet.
 
 #### Principal
+
 The basic authentication type. There are other specific types that need to be used in your own code.
 
 - UserAccount.  
@@ -54,8 +60,10 @@ For additional information see
 [service account authentication](https://cloud.google.com/docs/authentication/api-keys).
 
 #### SheetModel
+
 A type the state of which should match the desired state of a Google spreadsheet sheet.
 This type allows you to:
+
 - Add new rows;
 - Delete rows;
 - Change cell values;
@@ -65,21 +73,25 @@ All changes reflected in the `SheetModel` instance show the `GCPApplication`
 what changes need to be made in a Google spreadsheet sheet.
 
 #### Exceptions
+
 Most methods throw exceptions. This is outlined in each method's documentation.
 Exception descriptions are outlined only in the corresponding exception's documentation.
 For example, the sheet header check method may throw `InvalidSheetHeadException` if the header lacks some column names.
 
 ## Examples
+
 This repository contains a folder named
 [examples](https://github.com/Synergy-Systems-LLC/SynSys.GSpreadsheetEasyAccess/tree/master/examples).  
-It contains examples of accessing and changing data in Google spreadsheets using both C# and IronPython. 
+It contains examples of accessing and changing data in Google spreadsheets using both C# and IronPython.
 
 ## Using library in your Applications
+
 C# developers only need to
 [download the library](https://www.nuget.org/packages/SynSys.GSpreadsheetEasyAccess)
 using NuGet Package Manager.
 
 IronPython developers need to:
+
 - Download the dll archive at
 [releases](https://github.com/Synergy-Systems-LLC/SynSys.GSpreadsheetEasyAccess/releases);
 - Place all the dll files in the project folder;
@@ -87,7 +99,8 @@ IronPython developers need to:
 [examples](https://github.com/Synergy-Systems-LLC/SynSys.GSpreadsheetEasyAccess/tree/master/examples/IronPythonApp).  
 
 ### IronPython Stubs
-In order to comfortly use the library with IronPython it's better to utilize
+
+In order to conveniently use the library with IronPython it's better to utilize
 [stubs](https://github.com/Synergy-Systems-LLC/SynSys.GSpreadsheetEasyAccess/tree/master/stubs).  
 They can be downloaded in
 [releases](https://github.com/Synergy-Systems-LLC/SynSys.GSpreadsheetEasyAccess/releases).  
@@ -95,17 +108,21 @@ If you don't know anything about stubs you can read about them
 [here](https://github.com/BIMOpenGroup/RevitAPIStubs).
 
 ## How can I make a contribution?
+
 All contributions are welcome! Send us your questions, suggestions and comments.
 
-Like most opensource projects this one uses the Forking Workflow system.
+Like most open source projects this one uses the Forking Workflow system.
 
 Summary:
+
 - Make a repository fork;
 - Make a branch from master;
 - Make a pull request from upstream/master.
 
 Branch naming rules:
+
 - Kebab-case style;
 - First word is a fix/feature/refactor or other task.  
+
 Next ones are either a short description or an issue number.  
 fix-iss57 / feature-iss14 / refactor-generator.
