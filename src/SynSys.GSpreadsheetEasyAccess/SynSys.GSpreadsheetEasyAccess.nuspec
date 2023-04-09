@@ -17,5 +17,8 @@
     <releaseNotes>" "</releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>Spreadsheet, Google Sheets API</tags>
+    <dependencies>
+      <dependency id="Google.Apis.Sheets.v4" version="1.57.0.2657" />
+    </dependencies>
   </metadata>
 </package>
