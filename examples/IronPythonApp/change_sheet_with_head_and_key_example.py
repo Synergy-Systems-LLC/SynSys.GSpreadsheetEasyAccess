@@ -43,7 +43,7 @@ try:
     )
 
     # For tests, you need to change the given uri to your own.
-    # Don't forget change change_cheet function.
+    # Don't forget change change_sheet function.
     uri = (
         'https://docs.google.com/spreadsheets/d/'
         '12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0'
@@ -83,7 +83,7 @@ except UserAccessDeniedException as e:
         "User is denied access to the operation: {}\n"
         "Reason: {}\n"
         "Check table access.\n"
-        "The table must be available to all users who have the link.".fromat(e.Operation, e.Message)
+        "The table must be available to all users who have the link.".format(e.Operation, e.Message)
     )
 except SpreadsheetNotFoundException as e:
     print(
@@ -110,10 +110,10 @@ except SheetKeyNotFoundException as e:
     )
 except InvalidSheetHeadException as e:
     print(
-        "Spreadsheet \"{e.Sheet.SpreadsheetTitle}\"\n"
-        "sheet \"{e.Sheet.Title}\"\n"
+        "Spreadsheet \"{}\"\n"
+        "sheet \"{}\"\n"
         "lacks required headers:\n"
-        "{}.".fromat(e.Sheet.SpreadsheetTitle, e.Sheet.Title, ";\n".join(e.LostedHeaders))
+        "{}.".format(e.Sheet.SpreadsheetTitle, e.Sheet.Title, ";\n".join(e.LostHeaders))
     )
 except EmptySheetException as e:
     print(

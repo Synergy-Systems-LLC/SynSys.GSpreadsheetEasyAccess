@@ -1,4 +1,4 @@
-﻿using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
@@ -30,7 +30,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// Google spreadsheet sheet Id.
         /// </summary>
         /// <remarks>
-        /// The property has such a name because it correnponce
+        /// The property has such a name because it correspondence
         /// to the gid parameter in the sheet uri.
         /// </remarks>
         [JsonProperty]
@@ -154,27 +154,27 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
                 return;
             }
 
-            var lostedHeaders = new List<string>();
+            var lostHeaders = new List<string>();
 
             foreach (string columnHeader in requiredHeaders)
             {
                 if (!Head.Contains(columnHeader))
                 {
-                    lostedHeaders.Add(columnHeader);
+                    lostHeaders.Add(columnHeader);
                 }
             }
 
-            if (lostedHeaders.Count > 0)
+            if (lostHeaders.Count > 0)
             {
                 throw new InvalidSheetHeadException(
                     $"in spreadsheet \"{SpreadsheetTitle}\" " +
                     $"in sheet\"{Title}\" " +
                     $"no required headers: " +
-                    $"{string.Join(", ", lostedHeaders)}."
+                    $"{string.Join(", ", lostHeaders)}."
                 )
                 {
                     Sheet = this,
-                    LostedHeaders = lostedHeaders
+                    LostedHeaders = lostHeaders
                 };
             }
         }

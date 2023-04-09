@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
 {
     /// <summary>
-    /// Represents an exception throwndue to an invalid API key of the application on the Google Cloud Platform.
+    /// Represents an exception thrown due to an invalid API key of the application on the Google Cloud Platform.
     /// </summary>
     [Serializable]
     public class InvalidApiKeyException : Exception

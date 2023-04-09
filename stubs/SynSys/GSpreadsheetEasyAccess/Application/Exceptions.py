@@ -43,7 +43,7 @@ class SpreadsheetNotFoundException(Exception):
 
 
 class UserAccessDeniedException(Exception):
-    """Represents an exception thrownbecause the given user has been denied access
+    """Represents an exception thrown due to given user has been denied access
     to any actions with Google spreadsheet.
     """
 
