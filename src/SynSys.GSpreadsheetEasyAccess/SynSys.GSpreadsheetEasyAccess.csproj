@@ -70,6 +70,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\Exceptions\CreatingSheetException.cs" />
+    <Compile Include="Application\Exceptions\SheetExistsException.cs" />
     <Compile Include="Data\Exceptions\SheetKeyNotFoundException.cs" />
     <Compile Include="Data\Exceptions\InvalidSheetHeadException.cs" />
     <Compile Include="Data\RowStatus.cs" />

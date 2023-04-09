@@ -42,6 +42,151 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
+        /// Creating Google spreadsheet sheet and get it's representation as an instance of the SheetModel type.
+        /// </summary>
+        /// <remarks>
+        /// After creating a sheet, you can immediately work with it.
+        /// </remarks>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="sheetTitle"></param>
+        /// <returns>
+        /// SheetModel is a list of Rows.<br/>
+        /// Header is absent.<br/>
+        /// Each row has the same number of cells.<br/>
+        /// Each cell has a string value.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="UserAccessDeniedException"/>
+        /// <exception cref="SpreadsheetNotFoundException"/>
+        /// <exception cref="SheetExistsException"/>
+        public SheetModel CreateSheet(string spreadsheetId, string sheetTitle)
+        {
+            CheckSheetService();
+            CheckPrincipal("Create sheet");
+
+            Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
+
+            if (IsSheetExists(spreadsheet, sheetTitle))
+            {
+                throw new SheetExistsException()
+                {
+                    SpreadsheetId = spreadsheetId,
+                    SpreadsheetTitle = spreadsheet.Properties.Title,
+                    SheetTitle = sheetTitle
+                };
+            }
+
+            try
+            {
+                CreateAddSheetRequest(spreadsheetId, sheetTitle).Execute();
+            }
+            catch (Exception e)
+            {
+                throw new CreatingSheetException("Couldn't add sheet to google spreadsheet", e)
+                {
+                    SpreadsheetId = spreadsheetId,
+                    SpreadsheetTitle = spreadsheet.Properties.Title,
+                    SheetTitle = sheetTitle,
+                };
+            }
+
+            var sheetModel = new SheetModel()
+            {
+                SpreadsheetTitle = spreadsheet.Properties.Title,
+                SpreadsheetId = spreadsheetId,
+                Title = sheetTitle,
+                Mode = SheetMode.Simple,
+                KeyName = string.Empty
+            };
+
+            return sheetModel;
+        }
+
+        /// <summary>
+        /// Creating Google spreadsheet sheet and get it's representation as an instance of the SheetModel type.
+        /// </summary>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="sheetTitle"></param>
+        /// <param name="head"></param>
+        /// <remarks>
+        /// After creating a sheet, you can immediately work with it.
+        /// </remarks>
+        /// <returns>
+        /// SheetModel is a list of Rows without first row.<br/>
+        /// First row is a header of sheet.<br/>
+        /// Each row has the same number of cells.<br/>
+        /// Each cell has a string value and title,
+        /// which matches the column heading for the given cell.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="UserAccessDeniedException"/>
+        /// <exception cref="SpreadsheetNotFoundException"/>
+        /// <exception cref="InvalidSheetHeadException"/>
+        /// <exception cref="SheetExistsException"/>
+        public SheetModel CreateSheetWithHead(string spreadsheetId, string sheetTitle, IEnumerable<string> head)
+        {
+            if (!head.Any())
+            {
+                throw new InvalidSheetHeadException();
+            }
+
+            var sheetModel = CreateSheet(spreadsheetId, sheetTitle);
+
+            sheetModel.Mode = SheetMode.Head;
+
+            AddHead(sheetModel, head);
+            UpdateSheet(sheetModel);
+
+            return sheetModel;
+        }
+
+        /// <summary>
+        /// Creating Google spreadsheet sheet and get it's representation as an instance of the SheetModel type.
+        /// </summary>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="sheetTitle"></param>
+        /// <param name="head"></param>
+        /// <param name="keyName"></param>
+        /// <remarks>
+        /// After creating a sheet, you can immediately work with it.
+        /// </remarks>
+        /// <returns>
+        /// SheetModel is a list of Rows without first row.<br/>
+        /// First row is a header of sheet.<br/>
+        /// Each row has the same number of cells and has key column.<br/>
+        /// Each cell has a string value and title,
+        /// which matches the column heading for the given cell.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="UserAccessDeniedException"/>
+        /// <exception cref="SpreadsheetNotFoundException"/>
+        /// <exception cref="InvalidSheetHeadException"/>
+        /// <exception cref="SheetKeyNotFoundException"/>
+        /// <exception cref="SheetExistsException"/>
+        public SheetModel CreateSheetWithHeadAndKey(string spreadsheetId, string sheetTitle, IEnumerable<string> head, string keyName)
+        {
+            if (!head.Any())
+            {
+                throw new InvalidSheetHeadException();
+            }
+
+            if (!head.Contains(keyName))
+            {
+                throw new SheetKeyNotFoundException();
+            }
+
+            var sheetModel = CreateSheet(spreadsheetId, sheetTitle);
+
+            sheetModel.Mode = SheetMode.HeadAndKey;
+            sheetModel.KeyName = keyName;
+
+            AddHead(sheetModel, head);
+            UpdateSheet(sheetModel);
+
+            return sheetModel;
+        }
+
+        /// <summary>
         /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
         /// <param name="uri">Full uri of sheet</param>
@@ -386,7 +531,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         public void UpdateSheet(SheetModel sheetModel)
         {
             CheckSheetService();
-            CheckPrincipal();
+            CheckPrincipal("Update sheet");
 
             try
             {
@@ -411,6 +556,48 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
             }
         }
 
+        /// <summary>
+        /// Check the presence of a sheet in the Google spreadsheet by name.
+        /// </summary>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="sheetTitle"></param>
+        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="InvalidApiKeyException"/>
+        /// <exception cref="UserAccessDeniedException"/>
+        /// <exception cref="SpreadsheetNotFoundException"/>
+        public bool IsSheetExists(string spreadsheetId, string sheetTitle)
+        {
+            try
+            {
+                return IsSheetExists(GetGoogleSpreadsheet(spreadsheetId), sheetTitle);
+            }
+            catch (SpreadsheetNotFoundException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Check the absence of a sheet in the Google spreadsheet by name.
+        /// </summary>
+        /// <param name="spreadsheetId"></param>
+        /// <param name="sheetTitle"></param>
+        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="InvalidApiKeyException"/>
+        /// <exception cref="UserAccessDeniedException"/>
+        public bool IsSheetNotExists(string spreadsheetId, string sheetTitle)
+        {
+            return !IsSheetExists(spreadsheetId, sheetTitle);
+        }
+
+
+        private bool IsSheetExists(Spreadsheet spreadsheet, string sheetTitle)
+        {
+            return spreadsheet
+                .Sheets
+                .Select(s => s.Properties.Title)
+                .Contains(sheetTitle);
+        }
 
         #region CheckFields
         /// <exception cref="InvalidOperationException"></exception>
@@ -425,14 +612,14 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <exception cref="UserAccessDeniedException"></exception>
-        private void CheckPrincipal()
+        private void CheckPrincipal(string operation)
         {
             if (_principal is ServiceAccount)
             {
                 throw new UserAccessDeniedException(
                     $"Can't modify Google spreadsheets using {nameof(ServiceAccount)}.")
                 {
-                    Operation = "Sheet update"
+                    Operation = operation
                 };
             }
         }
@@ -617,6 +804,54 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                 .USERENTERED;
 
             return request;
+        }
+
+        private SpreadsheetsResource.BatchUpdateRequest CreateAddSheetRequest(string spreadsheetId, string sheetTitle)
+        {
+            var batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest()
+            {
+                Requests = new List<Request>()
+                {
+                    new Request()
+                    {
+                        AddSheet = new AddSheetRequest()
+                        {
+                            Properties = new SheetProperties()
+                            {
+                                Title = sheetTitle,
+                            }
+                        }
+                    }
+                }
+            };
+
+            return _sheetsService.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, spreadsheetId);
+        }
+
+        private void AddHead(SheetModel sheet, IEnumerable<string> head)
+        {
+            sheet.Head = head.ToList();
+
+            var range = new ValueRange
+            {
+                Values = new List<IList<object>>()
+                {
+                    head.Cast<object>().ToList()
+                }
+            };
+
+            var request = _sheetsService
+                .Spreadsheets
+                .Values
+                .Append(range, sheet.SpreadsheetId, sheet.Title);
+
+            request.ValueInputOption = SpreadsheetsResource
+                .ValuesResource
+                .AppendRequest
+                .ValueInputOptionEnum
+                .USERENTERED;
+
+            request.Execute();
         }
         #endregion
     }

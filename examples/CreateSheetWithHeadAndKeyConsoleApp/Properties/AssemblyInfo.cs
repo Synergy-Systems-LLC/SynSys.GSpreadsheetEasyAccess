@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SynSys.GSpreadsheetEasyAccess")]
-[assembly: AssemblyDescription("Library for connecting to an application on the Google Cloud Platform")]
+[assembly: AssemblyTitle("CreateSheetWithHeadAndKeyConsoleApp")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Synergy Systems")]
-[assembly: AssemblyProduct("SynSys.GSpreadsheetEasyAccess")]
-[assembly: AssemblyCopyright("Synergy Systems")]
-[assembly: AssemblyTrademark("Synergy Systems")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("CreateSheetWithHeadAndKeyConsoleApp")]
+[assembly: AssemblyCopyright("Copyright ©  2023")]
+[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e01b1b92-3456-4222-9fa1-37ee2f311f7e")]
+[assembly: Guid("f201bd23-8f99-44f0-91a0-323fe9764b25")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

@@ -51,3 +51,42 @@ class UserAccessDeniedException(Exception):
     def Operation(self):
         """Contains the name of the operation to which the user does not have access."""
         return str()
+
+
+class SheetExistsException(Exception):
+    """Represents an exception thrown due to the existence of a
+    sheet with that title in this Google spreadsheet."""
+
+    @property
+    def SpreadsheetId(self):
+        """Id of the spreadsheet where the sheet exists."""
+        return str()
+
+    @property
+    def SpreadsheetTitle(self):
+        """Title of the spreadsheet where the sheet exists."""
+        return str()
+
+    @property
+    def SheetTitle(self):
+        """Title of the sheet that already exists in the Google table."""
+        return str()
+
+
+class CreatingSheetException(Exception):
+    """Represents an exception that occurred due to the inability to create a sheet."""
+
+    @property
+    def SpreadsheetId(self):
+        """Id of the spreadsheet where the sheet exists."""
+        return str()
+
+    @property
+    def SpreadsheetTitle(self):
+        """Title of the spreadsheet where the sheet exists."""
+        return str()
+
+    @property
+    def SheetTitle(self):
+        """Title of the sheet that already exists in the Google table."""
+        return str()
