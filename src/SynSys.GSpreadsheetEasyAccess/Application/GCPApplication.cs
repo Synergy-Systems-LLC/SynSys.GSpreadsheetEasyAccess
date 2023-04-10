@@ -252,7 +252,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
         /// <param name="spreadsheetId"></param>
-        /// <param name="sheetName"></param>
+        /// <param name="sheetTitle"></param>
         /// <returns>
         /// SheetModel is a list of Rows.<br/>
         /// Header is absent.<br/>
@@ -264,19 +264,19 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="UserAccessDeniedException"></exception>
         /// <exception cref="SpreadsheetNotFoundException"></exception>
         /// <exception cref="SheetNotFoundException"></exception>
-        public SheetModel GetSheet(string spreadsheetId, string sheetName)
+        public SheetModel GetSheet(string spreadsheetId, string sheetTitle)
         {
             CheckSheetService();
 
             var sheetModel = new SheetModel()
             {
                 SpreadsheetId = spreadsheetId,
-                Title = sheetName
+                Title = sheetTitle
             };
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-            Sheet sheet = GetGoogleSheet(spreadsheet, sheetName);
-            IList<IList<object>> data = GetData(spreadsheetId, sheetName);
+            Sheet sheet = GetGoogleSheet(spreadsheet, sheetTitle);
+            IList<IList<object>> data = GetData(spreadsheetId, sheetTitle);
 
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
             sheetModel.Gid = sheet.Properties.SheetId.Value;
@@ -359,7 +359,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
         /// <param name="spreadsheetId"></param>
-        /// <param name="sheetName"></param>
+        /// <param name="sheetTitle"></param>
         /// <returns>
         /// SheetModel is a list of Rows without first row.<br/>
         /// First row is a header of sheet.<br/>
@@ -373,19 +373,19 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="SpreadsheetNotFoundException"></exception>
         /// <exception cref="SheetNotFoundException"></exception>
         /// <exception cref="EmptySheetException"></exception>
-        public SheetModel GetSheetWithHead(string spreadsheetId, string sheetName)
+        public SheetModel GetSheetWithHead(string spreadsheetId, string sheetTitle)
         {
             CheckSheetService();
 
             var sheetModel = new SheetModel()
             {
                 SpreadsheetId = spreadsheetId,
-                Title = sheetName
+                Title = sheetTitle
             };
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-            Sheet sheet = GetGoogleSheet(spreadsheet, sheetName);
-            IList<IList<object>> data = GetData(spreadsheetId, sheetName);
+            Sheet sheet = GetGoogleSheet(spreadsheet, sheetTitle);
+            IList<IList<object>> data = GetData(spreadsheetId, sheetTitle);
 
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
             sheetModel.Gid = sheet.Properties.SheetId.Value;
@@ -475,7 +475,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// Receiving data from a Google spreadsheet sheet as an instance of the SheetModel type.
         /// </summary>
         /// <param name="spreadsheetId"></param>
-        /// <param name="sheetName"></param>
+        /// <param name="sheetTitle"></param>
         /// <param name="keyName"></param>
         /// <returns>
         /// SheetModel is a list of Rows without first row.<br/>
@@ -491,19 +491,19 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="SheetNotFoundException"></exception>
         /// <exception cref="SheetKeyNotFoundException"></exception>
         /// <exception cref="EmptySheetException"></exception>
-        public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetName, string keyName)
+        public SheetModel GetSheetWithHeadAndKey(string spreadsheetId, string sheetTitle, string keyName)
         {
             CheckSheetService();
 
             var sheetModel = new SheetModel()
             {
                 SpreadsheetId = spreadsheetId,
-                Title = sheetName
+                Title = sheetTitle
             };
 
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
-            Sheet sheet = GetGoogleSheet(spreadsheet, sheetName);
-            IList<IList<object>> data = GetData(spreadsheetId, sheetName);
+            Sheet sheet = GetGoogleSheet(spreadsheet, sheetTitle);
+            IList<IList<object>> data = GetData(spreadsheetId, sheetTitle);
 
             sheetModel.SpreadsheetTitle = spreadsheet.Properties.Title;
             sheetModel.Gid = sheet.Properties.SheetId.Value;
@@ -671,7 +671,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
                     $"not found sheet with gid: {gid}"
                 )
                 {
-                    SpreadsheetName = spreadsheet.Properties.Title,
+                    SpreadsheetTitle = spreadsheet.Properties.Title,
                     SpreadsheetId = spreadsheet.SpreadsheetId,
                     SheetGid = gid.ToString()
                 };
@@ -681,33 +681,33 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <exception cref="SheetNotFoundException"></exception>
-        private Sheet GetGoogleSheet(Spreadsheet spreadsheet, string sheetName)
+        private Sheet GetGoogleSheet(Spreadsheet spreadsheet, string sheetTitle)
         {
-            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetName);
+            Sheet sheet = spreadsheet.Sheets.ToList().Find(s => s.Properties.Title == sheetTitle);
 
             if (sheet == null)
             {
                 throw new SheetNotFoundException(
                     $"Spreadsheet {spreadsheet.Properties.Title} " +
                     $"with id: {spreadsheet.SpreadsheetId} " +
-                    $"not found sheet with name: {sheetName}"
+                    $"not found sheet with name: {sheetTitle}"
                 )
                 {
-                    SpreadsheetName = spreadsheet.Properties.Title,
+                    SpreadsheetTitle = spreadsheet.Properties.Title,
                     SpreadsheetId = spreadsheet.SpreadsheetId,
-                    SheetName = sheetName
+                    SheetTitle = sheetTitle
                 };
             }
 
             return sheet;
         }
 
-        private IList<IList<object>> GetData(string spreadsheetId, string sheetName)
+        private IList<IList<object>> GetData(string spreadsheetId, string sheetTitle)
         {
             return _sheetsService
                 .Spreadsheets
                 .Values
-                .Get(spreadsheetId, sheetName)
+                .Get(spreadsheetId, sheetTitle)
                 .Execute()
                 .Values ?? new List<IList<object>>();
         }
