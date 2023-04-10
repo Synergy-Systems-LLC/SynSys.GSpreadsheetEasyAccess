@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions
 {
     /// <summary>
-    /// Represents an exception throwndue to a mismatch between the scopes of the application and the requests being sent
+    /// Represents an exception thrown due to a mismatch between the scopes of the application and the requests being sent
     /// </summary>
     [Serializable]
     public class OAuthSheetsScopeException : Exception

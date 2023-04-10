@@ -1,5 +1,4 @@
 from System import Byte
-from System.Collections.Generic import List
 
 
 class OAuthSheetsScope(object):
@@ -10,17 +9,21 @@ class OAuthSheetsScope(object):
     [Google Sheets API v4](https://developers.google.com/identity/protocols/oauth2/scopes#sheets).
     """
 
+    @property
     @classmethod
     def ViewAccess(cls):
-        # type: (OAuthSheetsScope) -> OAuthSheetsScope
         """Access to view Google spreadsheet."""
-        pass
+        return OAuthSheetsScope()
 
+    @property
     @classmethod
     def FullAccess(cls):
-        # type: (OAuthSheetsScope) -> OAuthSheetsScope
         """Access to view, edit, create and delete Google spreadsheet."""
-        pass
+        return OAuthSheetsScope()
+
+
+class SheetsService(object):
+    pass
 
 
 class Principal(object):
@@ -29,13 +32,13 @@ class Principal(object):
     See [Authentication Overview](https://cloud.google.com/docs/authentication) for details.
     """
 
-    def GetSheetsService():
+    def GetSheetsService(self):
         """Return an object representing Google Sheets service.
 
         It [Google.Apis.Sheets.v4 library object](https://developers.google.com/resources/api-libraries/documentation/sheets/v4/csharp/latest/classGoogle_1_1Apis_1_1Sheets_1_1v4_1_1SheetsService.html)
         through which work with Google Sheets API takes place.
         """  # noqa
-        pass
+        return SheetsService()
 
 
 class ServiceAccount(Principal):
@@ -51,7 +54,7 @@ class ServiceAccount(Principal):
     """
 
     def __init__(self, apiKey):
-        # type: (str) -> ServiceAccount
+        # type: (str) -> None
         """Authenticate the application as a service account."""
         pass
 
@@ -66,7 +69,7 @@ class UserAccount(Principal):
     """
 
     def __init__(self, credentials, scope):
-        # type: (List[Byte], OAuthSheetsScope) -> ServiceAccount
+        # type: (list[Byte], OAuthSheetsScope) -> None
         """Authenticate as a human user."""
         pass
 

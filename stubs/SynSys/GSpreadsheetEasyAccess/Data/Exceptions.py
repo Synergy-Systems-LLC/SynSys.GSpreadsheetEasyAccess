@@ -26,7 +26,7 @@ class InvalidSheetHeadException(Exception):
     @property
     def LostedHeaders(self):
         """Required column headers that were not found in the sheet."""
-        return list(str())
+        return [str()]
 
 
 class SheetKeyNotFoundException(Exception):

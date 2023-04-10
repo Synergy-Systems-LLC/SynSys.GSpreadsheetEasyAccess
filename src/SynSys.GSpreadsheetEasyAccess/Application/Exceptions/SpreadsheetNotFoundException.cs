@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
 {
     /// <summary>
-    /// Represents the exception thrownbecause the table could not be found by the current spreadsheet Id.
+    /// Represents the exception thrown due to table could not be found by the current spreadsheet Id.
     /// </summary>
     [Serializable]
     public class SpreadsheetNotFoundException : Exception

@@ -21,7 +21,7 @@ from SynSys.GSpreadsheetEasyAccess.Application.Exceptions import (
     InvalidApiKeyException, UserAccessDeniedException,
     SpreadsheetNotFoundException, SheetNotFoundException
 )
-from utils import read_apikey, print_sheet
+from utils import read_api_key, print_sheet
 
 try:
     # Initialization of the class representing the application on the Google Cloud Platform.
@@ -31,7 +31,7 @@ try:
     # To get data, a service account is enough, but the spreadsheet must be open to everyone.
     gcp_app.AuthenticateAs(
         Authentication.ServiceAccount(
-            read_apikey(r'examples\IronPythonApp\apikey.txt')
+            read_api_key(r'examples\IronPythonApp\apikey.txt')
         )
     )
 
@@ -50,7 +50,7 @@ except UserAccessDeniedException as e:
         "User is denied access to the operation: {}\n"
         "Reason: {}\n"
         "Check table access.\n"
-        "The table must be available to all users who have the link.".fromat(e.Operation, e.Message)
+        "The table must be available to all users who have the link.".format(e.Operation, e.Message)
     )
 except SpreadsheetNotFoundException as e:
     print(

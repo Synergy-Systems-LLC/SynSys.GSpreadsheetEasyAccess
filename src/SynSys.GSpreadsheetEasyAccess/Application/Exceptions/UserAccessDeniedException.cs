@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
 {
     /// <summary>
-    /// Represents an exception thrownbecause the given user has been denied access
+    /// Represents an exception thrown due to the given user has been denied access
     /// to any actions with Google spreadsheet.
     /// </summary>
     [Serializable]

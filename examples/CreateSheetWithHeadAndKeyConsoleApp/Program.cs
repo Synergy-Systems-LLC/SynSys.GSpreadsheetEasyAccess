@@ -1,4 +1,4 @@
-﻿using SynSys.GSpreadsheetEasyAccess.Application;
+using SynSys.GSpreadsheetEasyAccess.Application;
 using SynSys.GSpreadsheetEasyAccess.Application.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions;
@@ -153,12 +153,12 @@ namespace CreateSheetWithHeadAndKeyConsoleApp
 
         private static void PrintSheet(SheetModel sheet, string status)
         {
-            PrintDesctiption(sheet, status);
+            PrintDescription(sheet, status);
             PrintHead(sheet.Head);
             PrintBody(sheet.Rows);
         }
 
-        private static void PrintDesctiption(SheetModel sheet, string status)
+        private static void PrintDescription(SheetModel sheet, string status)
         {
             Console.WriteLine(
                 "\n" +

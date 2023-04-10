@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions
 {
     /// <summary>
-    /// Represents an exception thrown because the user canceled the authentication process.
+    /// Represents an exception thrown due to the user canceled the authentication process.
     /// </summary>
     [Serializable]
     public class UserCanceledAuthenticationException : Exception

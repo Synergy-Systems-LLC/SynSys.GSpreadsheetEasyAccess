@@ -2,7 +2,7 @@ import System
 from System.Collections.Generic import List
 
 
-def read_apikey(path):
+def read_api_key(path):
     # type: (str) -> str
     """Return the contents of a file"""
     with open(path, 'r') as file:
@@ -13,7 +13,7 @@ def read_credentials(path):
     # type: (str) -> List[System.Byte]
     """Return the contents of a file"""
     with open(path, 'rb') as file:
-        return System.Text.Encoding.ASCII.GetBytes(''.join(file.readlines()))
+        return System.Text.Encoding.ASCII.GetBytes(''.join(file.readlines()))  # type: ignore
 
 
 def print_sheet(sheet, status):
@@ -24,7 +24,7 @@ def print_sheet(sheet, status):
         "Spreadsheet Name: {}\n"
         "Sheet Name:       {}\n"
         "Number of lines:  {}\n".format(
-            status, sheet.SpreadsheetTitle, sheet.Title, sheet.Rows.Count
+            status, sheet.SpreadsheetTitle, sheet.Title, sheet.Rows.Count  # type: ignore
         )
     )
     print ' {:>3}'.format(''),  # type: ignore
