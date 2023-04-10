@@ -37,7 +37,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
         /// <summary>
         /// The name of the spreadsheet in which the sheet was searched.
         /// </summary>
-        public string SpreadsheetName { get; internal set; }
+        public string SpreadsheetTitle { get; internal set; }
 
         /// <summary>
         /// Id of the Spreadsheet in which the sheet was searched.
@@ -50,8 +50,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Application.Exceptions
         public string SheetGid { get; internal set; }
 
         /// <summary>
-        /// The name of the sheet by which the sheet could not be found.
+        /// Title of the sheet by which the sheet could not be found.
         /// </summary>
-        public string SheetName { get; internal set; }
+        public string SheetTitle { get; internal set; }
     }
 }

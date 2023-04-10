@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SynSys.GSpreadsheetEasyAccess.Application;
 using SynSys.GSpreadsheetEasyAccess.Application.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
@@ -87,7 +87,7 @@ namespace SerializationSheetModelConsoleApp
                 Console.WriteLine(
                     "Failed to get sheet with\n" +
                     $"spreadsheet id: {e.SpreadsheetId}\n" +
-                    $"spreadsheet title: {e.SpreadsheetName}\n" +
+                    $"spreadsheet title: {e.SpreadsheetTitle}\n" +
                     $"sheet id: {e.SheetGid}\n" +
                     "Check if this sheet exists."
                 );
@@ -107,7 +107,7 @@ namespace SerializationSheetModelConsoleApp
                     $"Spreadsheet \"{e.Sheet.SpreadsheetTitle}\"\n" +
                     $"sheet \"{e.Sheet.Title}\"\n" +
                     "lacks required headers:\n" +
-                    $"{string.Join(";\n", e.LostedHeaders)}."
+                    $"{string.Join(";\n", e.LostHeaders)}."
                 );
             }
             catch (EmptySheetException e)
@@ -198,10 +198,10 @@ namespace SerializationSheetModelConsoleApp
         {
             Console.WriteLine(
                 "\n" +
-               $"Status:           {status}\n" +
-               $"Spreadsheet Name: {sheet.SpreadsheetTitle}\n" +
-               $"Sheet Name:       {sheet.Title}\n" +
-               $"Number of lines:  {sheet.Rows.Count}\n"
+               $"Status:            {status}\n" +
+               $"Spreadsheet Title: {sheet.SpreadsheetTitle}\n" +
+               $"Sheet Title:       {sheet.Title}\n" +
+               $"Number of lines:   {sheet.Rows.Count}\n"
             );
         }
 

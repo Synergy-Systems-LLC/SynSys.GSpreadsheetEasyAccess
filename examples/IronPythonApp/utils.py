@@ -1,5 +1,5 @@
 import System
-from System.Collections.Generic import List
+from SynSys.GSpreadsheetEasyAccess.Data import SheetModel
 
 
 def read_api_key(path):
@@ -10,20 +10,20 @@ def read_api_key(path):
 
 
 def read_credentials(path):
-    # type: (str) -> List[System.Byte]
+    # type: (str) -> list[System.Byte]
     """Return the contents of a file"""
     with open(path, 'rb') as file:
         return System.Text.Encoding.ASCII.GetBytes(''.join(file.readlines()))  # type: ignore
 
 
 def print_sheet(sheet, status):
-    # type: (str, str) -> None
+    # type: (SheetModel, str) -> None
     print(
         "\n"
-        "Status:           {}\n"
-        "Spreadsheet Name: {}\n"
-        "Sheet Name:       {}\n"
-        "Number of lines:  {}\n".format(
+        "Status:            {}\n"
+        "Spreadsheet Title: {}\n"
+        "Sheet Title:       {}\n"
+        "Number of lines:   {}\n".format(
             status, sheet.SpreadsheetTitle, sheet.Title, sheet.Rows.Count  # type: ignore
         )
     )

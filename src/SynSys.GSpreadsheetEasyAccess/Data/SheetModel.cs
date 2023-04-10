@@ -1,4 +1,4 @@
-using Google.Apis.Sheets.v4.Data;
+﻿using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
@@ -174,7 +174,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
                 )
                 {
                     Sheet = this,
-                    LostedHeaders = lostHeaders
+                    LostHeaders = lostHeaders
                 };
             }
         }

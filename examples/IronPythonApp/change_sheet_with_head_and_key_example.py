@@ -97,7 +97,7 @@ except SheetNotFoundException as e:
         "spreadsheet id: {}\n"
         "spreadsheet title: {}\n"
         "sheet id: {}\n"
-        "Check if this sheet exists.".format(e.SpreadsheetId, e.SpreadsheetName, e.SheetGid)
+        "Check if this sheet exists.".format(e.SpreadsheetId, e.SpreadsheetTitle, e.SheetGid)
     )
 except SheetKeyNotFoundException as e:
     print(

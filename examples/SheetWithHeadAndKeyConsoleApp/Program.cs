@@ -89,7 +89,7 @@ namespace SheetWithHeadAndKeyConsoleApp
                 Console.WriteLine(
                     "Failed to get sheet with\n" +
                     $"spreadsheet id: {e.SpreadsheetId}\n" +
-                    $"spreadsheet title: {e.SpreadsheetName}\n" +
+                    $"spreadsheet title: {e.SpreadsheetTitle}\n" +
                     $"sheet id: {e.SheetGid}\n" +
                     "Check if this sheet exists."
                 );
@@ -109,7 +109,7 @@ namespace SheetWithHeadAndKeyConsoleApp
                     $"Spreadsheet \"{e.Sheet.SpreadsheetTitle}\"\n" +
                     $"sheet \"{e.Sheet.Title}\"\n" +
                     "lacks required headers:\n" +
-                    $"{string.Join(";\n", e.LostedHeaders)}."
+                    $"{string.Join(";\n", e.LostHeaders)}."
                 );
             }
             catch (EmptySheetException e)

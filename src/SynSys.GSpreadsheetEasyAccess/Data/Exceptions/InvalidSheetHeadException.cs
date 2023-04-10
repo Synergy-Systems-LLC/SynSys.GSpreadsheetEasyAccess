@@ -39,11 +39,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
         /// <summary>
         /// The sheet whose state caused the exception.
         /// </summary>
-        public SheetModel Sheet { get; internal set; }
+        public SheetModel Sheet { get; set; }
 
         /// <summary>
         /// Required column headers that were not found in the sheet.
         /// </summary>
-        public IEnumerable<string> LostedHeaders { get; internal set; }
+        public IEnumerable<string> LostHeaders { get; set; }
     }
 }
