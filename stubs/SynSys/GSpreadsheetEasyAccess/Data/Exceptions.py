@@ -24,7 +24,7 @@ class InvalidSheetHeadException(Exception):
         return SheetModel()
 
     @property
-    def LostedHeaders(self):
+    def LostHeaders(self):
         """Required column headers that were not found in the sheet."""
         return [str()]
 

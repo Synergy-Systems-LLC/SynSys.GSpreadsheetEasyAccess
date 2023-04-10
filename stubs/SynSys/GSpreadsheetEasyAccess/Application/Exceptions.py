@@ -11,7 +11,7 @@ class SheetNotFoundException(Exception):
     """
 
     @property
-    def SpreadsheetName(self):
+    def SpreadsheetTitle(self):
         """The name of the spreadsheet in which the sheet was searched."""
         return str()
 
@@ -26,7 +26,7 @@ class SheetNotFoundException(Exception):
         return str()
 
     @property
-    def SheetName(self):
+    def SheetTitle(self):
         """The name of the sheet by which the sheet could not be found."""
         return str()
 

@@ -110,7 +110,7 @@ class GCPApplication(object):
             gid (int): Spreadsheet sheet Id.
         or Args:
             spreadsheetId (str): Spreadsheet Id.
-            sheetName (str): Spreadsheet sheet name.
+            sheetTitle (str): Spreadsheet sheet name.
 
         Returns:
             SheetModel is a list of Rows.\n
@@ -138,7 +138,7 @@ class GCPApplication(object):
             gid (int): Spreadsheet sheet Id.
         or Args:
             spreadsheetId (str): Spreadsheet Id.
-            sheetName (str): Spreadsheet sheet name.
+            sheetTitle (str): Spreadsheet sheet name.
 
         Returns:
             SheetModel is a list of Rows without first row.\n
@@ -170,7 +170,7 @@ class GCPApplication(object):
             keyName (str): sheet key column.
         or Args:
             spreadsheetId (str): Spreadsheet Id.
-            sheetName (str): Spreadsheet sheet name.
+            sheetTitle (str): Spreadsheet sheet name.
             keyName (str): sheet key column.
 
         Returns:
