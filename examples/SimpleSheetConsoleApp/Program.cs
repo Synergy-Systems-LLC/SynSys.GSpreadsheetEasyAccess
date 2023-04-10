@@ -60,7 +60,7 @@ namespace SimpleSheetConsoleApp
                 Console.WriteLine(
                     "Failed to get sheet with\n" +
                     $"spreadsheet id: {e.SpreadsheetId}\n" +
-                    $"spreadsheet title: {e.SpreadsheetName}\n" +
+                    $"spreadsheet title: {e.SpreadsheetTitle}\n" +
                     $"sheet id: {e.SheetGid}\n" +
                     "Check if this sheet exists."
                 );
