@@ -121,6 +121,26 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="row"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void UndoRowDeletion(Row row)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rowNumber"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void UndoRowDeletion(int rowNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Assigning a deletion status to all rows
         /// and physical deletion of rows that have not yet been added.
         /// </summary>
@@ -177,6 +197,118 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
                     LostHeaders = lostHeaders
                 };
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void AddColumn()
+        {
+            // TODO Тут надо учитывать модификатор листа
+            // Можно добавить столбец к простому листу или к листу с шапкой, это разные случаи.
+            // Можно добавить столбец с данными, а можно без.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columnTitle"></param>
+        /// <exception cref="InvalidOperationException"></exception>
+        public void DeleteColumn(string columnTitle)
+        {
+            // Тут нужно менять Head и все строки.
+            // Задача вроде бы не выглядит сложной.
+
+            // Нельзя просто так взять и удалить ячейки.
+            // Так как
+            // 1. Нужно каким-то образом обновить шапку
+            // 2. Нужно в Value Range добавить по одной ячейке из каждой строки
+            // Как в таком случае будет выглядеть запрос на удаление строк и столбцов не ясно.
+
+            // У меня два пути:
+
+            // 1. Для Google Создавать запрос на удаление столбца,
+            //    а после из SheetModel руками удалять из каждой строки ячейку.
+            // Плюсы:
+            //    Простой, понятный, логичный способ.
+            // Проблемы:
+            //    a. После ручного удаления ячеек, может получиться так, что строки SheetModel
+            //    станут со статусом ToChange и их придётся обновлять, хотя в Google они уже будут соответствовать.
+            //    Эту проблему можно обойти, если удаление ячеек, не будет менять статус строки.
+            //    b. Запрос на удаление будет формироваться в UpdateSheet,
+            //    следовательно до этого надо будет где-то указать какой или какие столбцы удалять.
+
+            // 2. Сначала руками переместить данные из ячеек в левую сторону.
+            //    Все строки поменяються на статус ToChange.
+            //    Сделать запрос на обновление листа.
+            //    Удалить последнюю ячейку каждой строки.
+            // Плюсы:
+            //    Не надо запоминать какие столбцы надо удалять, просто всегда удаляем последние пустые.
+            // Проблема:
+            //    Много неочевидных действий и так же присудствует ручное удаление ячеек,
+            //    только не в середине строки, а последние.
+            //    Как в таком случае обновлять данные шапки таблицы, она же не попадёт в метод UpdateSheet.
+
+            // ТАК СТОП! А если шапки у листа нет????
+            // тут либо Head либо первая строка должна быть.
+            // либо надо Head неревести из List<string> => Row, с одной стороны логично,
+            // но может быть погубно, потому что значения ячеек изменять можно, а столбцы нет.
+            if (!Head.Contains(columnTitle))
+            {
+                throw new InvalidOperationException(); // дописать
+            }
+
+            var index = Head.IndexOf(columnTitle);
+
+            DeleteColumn(index);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columnIndex"></param>
+        /// <exception cref="InvalidOperationException"></exception>
+        public void DeleteColumn(int columnIndex)
+        {
+            if (columnIndex < 0)
+            {
+                throw new InvalidOperationException(); // дописать
+            }
+
+            if (columnIndex >= Head.Count)
+            {
+                throw new InvalidOperationException(); // дописать
+            }
+
+            // НЕТ! СЕЙЧАС ЭТО НЕЛЬЗЯ ДЕЛАТЬ!
+            // суть библиотеки в том, что подобные методы должны ставить статусы,
+            // а физическое удаление должно происходить после успешного обновления google табилцы
+            Head.RemoveAt(columnIndex);
+
+            foreach (Row row in Rows)
+            {
+                row.RemoveCell(columnIndex);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columnTitle"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void UndoColumnDeletion(string columnTitle)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columnIndex"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void UndoColumnDeletion(int columnIndex)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -288,12 +420,16 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         {
             var valueRanges = new List<ValueRange>
             {
+                // я забыл зачем инициализировать пустой ValueRange
                 new ValueRange()
                 {
                     Values = new List<IList<object>>()
                 }
             };
 
+            // я не понимаю зачем все эти действия
+            // почему нельзя сразу начать с цикла?
+            // надо подумать о рефакторинге.
             var rowsToChange = Rows.FindAll(row => row.Status == RowStatus.ToChange);
             var previousRow = rowsToChange.First();
             rowsToChange.Remove(previousRow);
@@ -305,11 +441,13 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             {
                 if (currentRow.Number - previousRow.Number > 1)
                 {
-                    valueRanges.Add(new ValueRange()
-                    {
-                        Values = new List<IList<object>>(),
-                        Range = $"{Title}!A{currentRow.Number}"
-                    });
+                    valueRanges.Add(
+                        new ValueRange()
+                        {
+                            Values = new List<IList<object>>(),
+                            Range = $"{Title}!A{currentRow.Number}"
+                        }
+                    );
                 }
 
                 valueRanges.Last().Values.Add(currentRow.GetData());

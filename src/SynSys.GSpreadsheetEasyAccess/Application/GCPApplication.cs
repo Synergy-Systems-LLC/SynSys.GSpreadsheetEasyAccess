@@ -533,6 +533,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
             CheckSheetService();
             CheckPrincipal("Update sheet");
 
+            // Нужно понять поменялась ли шапка и нужно ли её обновлять.
+            // Скорей всего на должна учитываться в UpdateRequest.
             try
             {
                 CreateAppendRequest(sheetModel)?.Execute();
