@@ -31,16 +31,34 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// </summary>
         public bool IsKey { get; }
 
+        /// <summary>
+        /// Change column number.
+        /// </summary>
+        /// <remarks>
+        /// This method only changes the number and does not touch the title,
+        /// because the column name does not depend on its location.
+        /// </remarks>
+        /// <param name="newNumber">Not index</param>
         public override void ChangeNumber(int newNumber)
         {
             Number = newNumber;
         }
 
+        /// <summary>
+        /// Determines whether the specified object is equal to the current object.
+        /// </summary>
+        /// <param name="other">other UserColumn</param>
+        /// <returns></returns>
         public override bool Equals(AbstractColumn other)
         {
-            // В сравнении нет Number потому что главным определяющим параметром является заголовок.
-            // Столбец может находиться на любой позиции, но заголовок из-за этого меняться не будет.
-            return other is UserColumn && Title == other.Title;
+            if (other is UserColumn otherColumn)
+            {
+                // В сравнении нет Number потому что главным определяющим параметром является заголовок.
+                // Столбец может находиться на любой позиции, но заголовок из-за этого меняться не будет.
+                return Title == otherColumn.Title && IsKey == otherColumn.IsKey;
+            }
+
+            return false;
         }
 
         /// <summary>

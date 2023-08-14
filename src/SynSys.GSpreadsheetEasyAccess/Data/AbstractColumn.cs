@@ -26,13 +26,13 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         public RowStatus Status { get; internal set; } = RowStatus.Original;
 
         /// <summary>
-        /// 
+        /// Change column number.
         /// </summary>
         /// <param name="newNumber">Not index</param>
         public abstract void ChangeNumber(int newNumber);
 
         /// <summary>
-        /// 
+        /// Determines whether the specified object is equal to the current object.
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>

@@ -35,6 +35,11 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             Title = GenerateA1NotationTitle(newNumber);
         }
 
+        /// <summary>
+        /// Determines whether the specified object is equal to the current object.
+        /// </summary>
+        /// <param name="other">other NativeColumn</param>
+        /// <returns></returns>
         public override bool Equals(AbstractColumn other)
         {
             // В сравнении нет Title потому что главным определяющим параметром является номер.
