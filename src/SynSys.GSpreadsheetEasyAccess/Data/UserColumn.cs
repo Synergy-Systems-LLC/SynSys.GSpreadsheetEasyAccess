@@ -13,8 +13,6 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
     /// </remarks>
     public class UserColumn : AbstractColumn
     {
-        private bool _isKey;
-
         /// <summary>
         /// Initialization of a spreadsheet user column.
         /// </summary>
@@ -23,15 +21,27 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// <param name="isKey"></param>
         public UserColumn(int number, string title, bool isKey = false)
         {
-            _number = number;
-            _title = title;
-            _isKey = isKey;
+            Number = number;
+            Title = title;
+            IsKey = isKey;
         }
 
         /// <summary>
         /// Is the column considered a key.
         /// </summary>
-        public bool IsKey => _isKey;
+        public bool IsKey { get; }
+
+        public override void ChangeNumber(int newNumber)
+        {
+            Number = newNumber;
+        }
+
+        public override bool Equals(AbstractColumn other)
+        {
+            // В сравнении нет Number потому что главным определяющим параметром является заголовок.
+            // Столбец может находиться на любой позиции, но заголовок из-за этого меняться не будет.
+            return other is UserColumn && Title == other.Title;
+        }
 
         /// <summary>
         /// Change the column title depending of existing ones.
@@ -49,13 +59,13 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             if (existsColumns.Select(c => c.Title).Contains(newTitle))
             {
                 throw new ArgumentException(
-                    message: $"Cannot rename column \"{_title}\" " +
+                    message: $"Cannot rename column \"{Title}\" " +
                              $"due to column with same title \"{newTitle}\" exists",
                     paramName: nameof(newTitle)
                 );
             }
 
-            _title = newTitle;
+            Title = newTitle;
         }
     }
 }

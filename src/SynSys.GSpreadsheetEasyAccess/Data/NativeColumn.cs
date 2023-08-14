@@ -17,8 +17,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// <param name="number">Not index</param>
         public NativeColumn(int number)
         {
-            _number = number;
-            _title = GenerateA1NotationTitle(number);
+            Number = number;
+            Title = GenerateA1NotationTitle(number);
         }
 
         /// <summary>
@@ -28,11 +28,18 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// This method includes changes of two components of the column,
         /// because title cannot be changed without its number.
         /// </remarks>
-        /// <param name="number">Not index</param>
-        public void ChangeNumber(int number)
+        /// <param name="newNumber">Not index</param>
+        public override void ChangeNumber(int newNumber)
         {
-            _number = number;
-            _title = GenerateA1NotationTitle(number);
+            Number = newNumber;
+            Title = GenerateA1NotationTitle(newNumber);
+        }
+
+        public override bool Equals(AbstractColumn other)
+        {
+            // В сравнении нет Title потому что главным определяющим параметром является номер.
+            // Заголовок данного столбца подстраивается под номер при изменении.
+            return other is NativeColumn && Number == other.Number;
         }
 
         /// <summary>
@@ -50,7 +57,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             if (columnNumber < 1)
             {
                 throw new ArgumentException(
-                    message: $"Choosen column number \"{columnNumber}\" is less than one",
+                    message: $"Chosen column number \"{columnNumber}\" is less than one",
                     paramName: nameof(columnNumber)
                 );
             }

@@ -11,25 +11,14 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
     public abstract class AbstractColumn : IEquatable<AbstractColumn>
     {
         /// <summary>
-        /// 
-        /// </summary>
-        protected int _number;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected string _title;
-
-        /// <summary>
         /// Column number, not index.
         /// </summary>
-        public int Number => _number;
-
+        public int Number { get; protected set; }
 
         /// <summary>
         /// Title of column.
         /// </summary>
-        public string Title => _title;
+        public string Title { get; protected set; }
 
         /// <summary>
         /// Current status.
@@ -39,13 +28,14 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="newNumber">Not index</param>
+        public abstract void ChangeNumber(int newNumber);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(AbstractColumn other)
-        {
-            // В сравнении нет Number потому что главным определяющим параметром является заголовок.
-            // Столбец может находится на любой позиции, но имя из-за этого меняться не будет.
-            return _title == other.Title;
-        }
+        public abstract bool Equals(AbstractColumn other);
     }
 }
