@@ -5,7 +5,6 @@
     /// The GCPApplication understands how to work with a specific member (based on this status)
     /// when sending data to Google spreadsheet or working with model of sheet.
     /// </summary>
-    // TODO переименовать в ChangingStatus
     public enum ChangeStatus
     {
         /// <summary>
