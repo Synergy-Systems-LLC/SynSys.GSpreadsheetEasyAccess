@@ -42,7 +42,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         }
 
         /// <summary>
-        /// Creating Google spreadsheet sheet and get it's representation as an instance of the SheetModel type.
+        /// Creating Google spreadsheet sheet and get it's representation as an instance of the NativeSheet type.
         /// </summary>
         /// <remarks>
         /// After creating a sheet, you can immediately work with it.
@@ -50,60 +50,32 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <param name="spreadsheetId"></param>
         /// <param name="sheetTitle"></param>
         /// <returns>
-        /// SheetModel is a list of Rows.<br/>
-        /// Header is absent.<br/>
+        /// NativeSheet is a list of Rows.<br/>
+        /// The header is the same as in the Google table in A1 notation.<br/>
         /// Each row has the same number of cells.<br/>
-        /// Each cell has a string value.
+        /// Each cell has a string value and column with number and title.
         /// </returns>
         /// <exception cref="InvalidOperationException"/>
         /// <exception cref="UserAccessDeniedException"/>
         /// <exception cref="SpreadsheetNotFoundException"/>
         /// <exception cref="SheetExistsException"/>
-        public SheetModel CreateSheet(string spreadsheetId, string sheetTitle)
+        public NativeSheet CreateNativeSheet(string spreadsheetId, string sheetTitle)
         {
-            CheckSheetService();
-            CheckPrincipal("Create sheet");
-
             Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
+            CreateGoogleSheet(spreadsheet, spreadsheetId, sheetTitle);
 
-            if (IsSheetExists(spreadsheet, sheetTitle))
-            {
-                throw new SheetExistsException()
-                {
-                    SpreadsheetId = spreadsheetId,
-                    SpreadsheetTitle = spreadsheet.Properties.Title,
-                    SheetTitle = sheetTitle
-                };
-            }
-
-            try
-            {
-                CreateAddSheetRequest(spreadsheetId, sheetTitle).Execute();
-            }
-            catch (Exception e)
-            {
-                throw new CreatingSheetException("Couldn't add sheet to google spreadsheet", e)
-                {
-                    SpreadsheetId = spreadsheetId,
-                    SpreadsheetTitle = spreadsheet.Properties.Title,
-                    SheetTitle = sheetTitle,
-                };
-            }
-
-            var sheetModel = new SheetModel()
+            var sheetModel = new NativeSheet()
             {
                 SpreadsheetTitle = spreadsheet.Properties.Title,
                 SpreadsheetId = spreadsheetId,
                 Title = sheetTitle,
-                Mode = SheetMode.Simple,
-                KeyName = string.Empty
             };
 
             return sheetModel;
         }
 
         /// <summary>
-        /// Creating Google spreadsheet sheet and get it's representation as an instance of the SheetModel type.
+        /// Creating Google spreadsheet sheet and get it's representation as an instance of the UserSheet type.
         /// </summary>
         /// <param name="spreadsheetId"></param>
         /// <param name="sheetTitle"></param>
@@ -112,30 +84,34 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// After creating a sheet, you can immediately work with it.
         /// </remarks>
         /// <returns>
-        /// SheetModel is a list of Rows without first row.<br/>
+        /// UserSheet is a list of Rows without first row.<br/>
         /// First row is a header of sheet.<br/>
         /// Each row has the same number of cells.<br/>
-        /// Each cell has a string value and title,
-        /// which matches the column heading for the given cell.
+        /// Each cell has a string value and column with number and title.
         /// </returns>
         /// <exception cref="InvalidOperationException"/>
         /// <exception cref="UserAccessDeniedException"/>
         /// <exception cref="SpreadsheetNotFoundException"/>
         /// <exception cref="InvalidSheetHeadException"/>
         /// <exception cref="SheetExistsException"/>
-        public SheetModel CreateSheetWithHead(string spreadsheetId, string sheetTitle, IEnumerable<string> head)
+        public UserSheet CreateUserSheet(string spreadsheetId, string sheetTitle, IEnumerable<string> head)
         {
-            if (!head.Any())
+            if (head.Any() == false)
             {
-                throw new InvalidSheetHeadException();
+                throw new InvalidSheetHeadException("Cannot create a sheet with an empty header");
             }
 
-            var sheetModel = CreateSheet(spreadsheetId, sheetTitle);
+            Spreadsheet spreadsheet = GetGoogleSpreadsheet(spreadsheetId);
+            CreateGoogleSheet(spreadsheet, spreadsheetId, sheetTitle);
+            AddHeadForGoogleSheet(spreadsheetId, sheetTitle, head);
 
-            sheetModel.Mode = SheetMode.Head;
-
-            AddHead(sheetModel, head);
-            UpdateSheet(sheetModel);
+            var sheetModel = new UserSheet()
+            {
+                SpreadsheetTitle = spreadsheet.Properties.Title,
+                SpreadsheetId = spreadsheetId,
+                Title = sheetTitle,
+            };
+            sheetModel.CreateHead(head.ToList());
 
             return sheetModel;
         }
@@ -154,8 +130,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// SheetModel is a list of Rows without first row.<br/>
         /// First row is a header of sheet.<br/>
         /// Each row has the same number of cells and has key column.<br/>
-        /// Each cell has a string value and title,
-        /// which matches the column heading for the given cell.
+        /// Each cell has a string value and column with number and title.
         /// </returns>
         /// <exception cref="InvalidOperationException"/>
         /// <exception cref="UserAccessDeniedException"/>
@@ -163,25 +138,15 @@ namespace SynSys.GSpreadsheetEasyAccess.Application
         /// <exception cref="InvalidSheetHeadException"/>
         /// <exception cref="SheetKeyNotFoundException"/>
         /// <exception cref="SheetExistsException"/>
-        public SheetModel CreateSheetWithHeadAndKey(string spreadsheetId, string sheetTitle, IEnumerable<string> head, string keyName)
+        public UserSheet CreateUserSheet(string spreadsheetId, string sheetTitle, IEnumerable<string> head, string keyName)
         {
-            if (!head.Any())
+            if (head.Contains(keyName) == false)
             {
-                throw new InvalidSheetHeadException();
+                throw new SheetKeyNotFoundException("Cannot create a sheet with a key that is not in the headers");
             }
 
-            if (!head.Contains(keyName))
-            {
-                throw new SheetKeyNotFoundException();
-            }
-
-            var sheetModel = CreateSheet(spreadsheetId, sheetTitle);
-
-            sheetModel.Mode = SheetMode.HeadAndKey;
+            var sheetModel = CreateUserSheet(spreadsheetId, sheetTitle, head);
             sheetModel.KeyName = keyName;
-
-            AddHead(sheetModel, head);
-            UpdateSheet(sheetModel);
 
             return sheetModel;
         }
