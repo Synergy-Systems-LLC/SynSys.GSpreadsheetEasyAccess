@@ -12,8 +12,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
         {
             // arrange
             var spreadsheetId = "11Q_dOgIkMIX96q7e13RrmeionRXOW1mgzG98dxXOCFU";
-            var gid = "1108304943";
-            var uri = $"https://docs.google.com/d/{spreadsheetId}/edit#gid={gid}";
+            var gid = 1108304943;
+            var uri = $"https://docs.google.com/spreadsheets/d/{spreadsheetId}/edit#gid={gid}";
 
             // act
             var guri = new GoogleSheetUri(uri);
