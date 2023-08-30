@@ -8,10 +8,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>SimpleSheetConsoleApp</RootNamespace>
     <AssemblyName>SimpleSheetConsoleApp</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Resources\credentials.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -66,6 +68,10 @@
     <ProjectReference Include="..\..\src\SynSys.GSpreadsheetEasyAccess\SynSys.GSpreadsheetEasyAccess.csproj">
       <Project>{8ee7435f-f9b5-4434-981a-077c73b31351}</Project>
       <Name>SynSys.GSpreadsheetEasyAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Printing\Printing.csproj">
+      <Project>{8c998a13-f648-4392-a3e0-552297a8fac4}</Project>
+      <Name>Printing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

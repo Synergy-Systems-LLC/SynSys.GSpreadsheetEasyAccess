@@ -69,5 +69,15 @@ namespace SimpleSheetConsoleApp.Properties {
                 return ResourceManager.GetString("apikey", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] credentials {
+            get {
+                object obj = ResourceManager.GetObject("credentials", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

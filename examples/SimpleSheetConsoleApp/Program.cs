@@ -1,15 +1,15 @@
-﻿using SynSys.GSpreadsheetEasyAccess.Application;
+﻿using Printing;
+using SynSys.GSpreadsheetEasyAccess.Application;
 using SynSys.GSpreadsheetEasyAccess.Application.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using SynSys.GSpreadsheetEasyAccess.Data;
 using System;
-using System.Collections.Generic;
 
 namespace SimpleSheetConsoleApp
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.WriteLine($"Start {nameof(SimpleSheetConsoleApp)}\n");
 
@@ -18,16 +18,34 @@ namespace SimpleSheetConsoleApp
                 // Main class for interacting with Google Sheets API
                 var app = new GCPApplication();
 
-                // To use the application you need to authorize the user.
-                app.AuthenticateAs(new ServiceAccount(Properties.Resources.apikey));
+                //To use the application you need to authorize the user.
+                //app.AuthenticateAs(new ServiceAccount(Properties.Resources.apikey));
+                app.AuthenticateAs(new UserAccount(Properties.Resources.credentials, OAuthSheetsScope.FullAccess));
 
                 Console.WriteLine("Authenticate completed");
 
                 // This uri can be used by everyone because the table is open to everyone.
                 const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
 
-                SheetModel sheet = app.GetSheet(uri);
-                PrintSheet(sheet, "Original sheet");
+                NativeSheet sheet = app.GetNativeSheet(new GoogleSheetUri(uri));
+                Printer.PrintSheet(sheet, "Original sheet");
+
+                // After adding a column, the statuses of the rows do not change
+                sheet.AddColumn();
+                Printer.PrintSheet(sheet, "Sheet with new added column");
+
+                app.UpdateSheet(sheet);
+                Printer.PrintSheet(sheet, "Sheet after update in google");
+
+                // After inserting a column, the statuses of the rows do not change
+                sheet.InsertColumn(4);
+                sheet.InsertColumn(5);
+                sheet.InsertColumn(7);
+                sheet.AddColumn();
+                Printer.PrintSheet(sheet, "Sheet with new inserted column");
+
+                app.UpdateSheet(sheet);
+                Printer.PrintSheet(sheet, "Sheet after update in google");
             }
             #region User Exceptions
             catch (InvalidApiKeyException)
@@ -75,72 +93,6 @@ namespace SimpleSheetConsoleApp
             }
 
             Console.ReadLine();
-        }
-
-
-        private static void PrintSheet(SheetModel sheet, string status)
-        {
-            PrintDesctiption(sheet, status);
-            PrintHead(sheet.Head);
-            PrintBody(sheet.Rows);
-        }
-
-        private static void PrintDesctiption(SheetModel sheet, string status)
-        {
-            Console.WriteLine(
-                "\n" +
-               $"Status:           {status}\n" +
-               $"Spreadsheet Name: {sheet.SpreadsheetTitle}\n" +
-               $"Sheet Name:       {sheet.Title}\n" +
-               $"Number of lines:  {sheet.Rows.Count}\n"
-            );
-        }
-
-        private static void PrintHead(List<string> head)
-        {
-            Console.Write($"{"", 3}");
-
-            foreach (string title in head)
-            {
-                string value = title;
-
-                if (string.IsNullOrWhiteSpace(title))
-                {
-                    value = "-";
-                }
-
-                Console.Write($"|{value,7}");
-            }
-
-            Console.Write($"| ");
-            Console.WriteLine();
-
-            Console.Write($"{"", 3}");
-            var delimiter = new String('-', 7);
-
-            foreach (string title in head)
-            {
-                Console.Write($"|{delimiter}");
-            }
-
-            Console.Write($"| ");
-            Console.WriteLine();
-        }
-
-        private static void PrintBody(List<Row> rows)
-        {
-            foreach (var row in rows)
-            {
-                Console.Write($"{row.Number,3}");
-
-                foreach (var cell in row.Cells)
-                {
-                    Console.Write($"|{cell.Value,7}");
-                }
-
-                Console.Write($"| {row.Status}");
-                Console.WriteLine();
-            }
         }
     }
 }
