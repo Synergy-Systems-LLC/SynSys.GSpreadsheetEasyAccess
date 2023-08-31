@@ -15,8 +15,11 @@ namespace Printing
             _columnWith = 9;
 
             PrintDescription(sheet, status);
+            PrintSeparateRow(sheet.Head);
             PrintHead(sheet.Head);
+            PrintSeparateRow(sheet.Head);
             PrintBody(sheet.Rows);
+            PrintSeparateRow(sheet.Head);
         }
 
         private static void PrintDescription(AbstractSheet sheet, string status)
@@ -38,7 +41,6 @@ namespace Printing
             PrintColumnsNumbers(head);
             PrintSeparateRow(head);
             PrintColumnTitles(head);
-            PrintSeparateRow(head);
         }
 
         private static void PrintColumnsStatuses(List<AbstractColumn> head)
@@ -69,17 +71,19 @@ namespace Printing
 
         private static void PrintSeparateRow(List<AbstractColumn> head)
         {
+            const string lineCross = "+";
+            var delimiter = new string('-', _columnWith - 1);
+
             ColorizeText(ChangeStatus.Original);
             Console.Write("".PadRight(_firstColumnWith));
-            var delimiter = new string('-', _columnWith - 1);
 
             foreach (AbstractColumn column in head)
             {
                 ColorizeText(column.Status);
-                Console.Write($"|{delimiter}");
+                Console.Write($"{lineCross}{delimiter}");
             }
 
-            PrintRowEnding(ChangeStatus.Original, string.Empty);
+            PrintRowEnding(ChangeStatus.Original, string.Empty, lineCross);
         }
 
         private static void PrintColumnTitles(List<AbstractColumn> head)
@@ -118,10 +122,10 @@ namespace Printing
             }
         }
 
-        private static void PrintRowEnding(ChangeStatus changeStatus, string statusMessage)
+        private static void PrintRowEnding(ChangeStatus changeStatus, string statusMessage, string symbol = "|")
         {
             ColorizeText(changeStatus);
-            Console.Write($"| {statusMessage}");
+            Console.Write($"{symbol} {statusMessage}");
             Console.WriteLine();
         }
 
