@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SheetWithHeadAndKeyConsoleApp")]
+[assembly: AssemblyTitle("GetUserSheetConsoleApp")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Synergy Systems")]
-[assembly: AssemblyProduct("SheetWithHeadAndKeyConsoleApp")]
+[assembly: AssemblyProduct("GetUserSheetConsoleApp")]
 [assembly: AssemblyCopyright("Copyright © Synergy Systems 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

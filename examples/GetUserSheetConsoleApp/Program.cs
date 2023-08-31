@@ -8,13 +8,13 @@ using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
 using System.Linq;
 
-namespace SheetWithHeadAndKeyConsoleApp
+namespace GetUserSheetConsoleApp
 {
     internal static class Program
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine($"Start {nameof(SheetWithHeadAndKeyConsoleApp)}\n");
+            Console.WriteLine($"Start {nameof(GetUserSheetConsoleApp)}\n");
 
             try
             {
