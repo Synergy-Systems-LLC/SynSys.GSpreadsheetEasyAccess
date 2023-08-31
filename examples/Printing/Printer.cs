@@ -21,6 +21,7 @@ namespace Printing
 
         private static void PrintDescription(AbstractSheet sheet, string status)
         {
+            ColorizeText(ChangeStatus.Original);
             Console.WriteLine(
                 "\n" +
                $"Status:            {status}\n" +
@@ -110,7 +111,6 @@ namespace Printing
 
                 foreach (Cell cell in row.Cells)
                 {
-                    ColorizeText(cell.Column.Status);
                     Console.Write($"|{cell.Value}".PadRight(_columnWith));
                 }
 
