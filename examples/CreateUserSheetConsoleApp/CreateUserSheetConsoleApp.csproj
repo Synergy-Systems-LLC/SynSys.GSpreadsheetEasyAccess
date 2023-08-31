@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F201BD23-8F99-44F0-91A0-323FE9764B25}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CreateSheetWithHeadAndKeyConsoleApp</RootNamespace>
-    <AssemblyName>CreateSheetWithHeadAndKeyConsoleApp</AssemblyName>
+    <RootNamespace>CreateUserSheetConsoleApp</RootNamespace>
+    <AssemblyName>CreateUserSheetConsoleApp</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -59,6 +59,10 @@
     <ProjectReference Include="..\..\src\SynSys.GSpreadsheetEasyAccess\SynSys.GSpreadsheetEasyAccess.csproj">
       <Project>{8ee7435f-f9b5-4434-981a-077c73b31351}</Project>
       <Name>SynSys.GSpreadsheetEasyAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Printing\Printing.csproj">
+      <Project>{8c998a13-f648-4392-a3e0-552297a8fac4}</Project>
+      <Name>Printing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

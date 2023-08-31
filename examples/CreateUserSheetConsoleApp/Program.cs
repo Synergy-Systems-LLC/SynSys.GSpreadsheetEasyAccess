@@ -1,20 +1,20 @@
-﻿using SynSys.GSpreadsheetEasyAccess.Application;
+﻿using Printing;
+using SynSys.GSpreadsheetEasyAccess.Application;
 using SynSys.GSpreadsheetEasyAccess.Application.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Authentication;
 using SynSys.GSpreadsheetEasyAccess.Authentication.Exceptions;
 using SynSys.GSpreadsheetEasyAccess.Data;
 using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace CreateSheetWithHeadAndKeyConsoleApp
+namespace CreateUserSheetConsoleApp
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine($"Start {nameof(CreateSheetWithHeadAndKeyConsoleApp)}\n");
+            Console.WriteLine($"Start {nameof(CreateUserSheetConsoleApp)}\n");
 
             try
             {
@@ -29,23 +29,23 @@ namespace CreateSheetWithHeadAndKeyConsoleApp
 
                 // This uri can be used by everyone because the table is open to everyone.
                 const string uri = "https://docs.google.com/spreadsheets/d/12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0&fvid=545275384";
-                string[] head = { "title_1", "title_2", "title_3", "title_4" };
+                string[] head = { "Title 1", "Title 2", "Title 3", "Title 4" };
 
-                SheetModel sheet = app.CreateSheetWithHeadAndKey(
+                UserSheet sheet = app.CreateUserSheet(
                     HttpUtils.GetSpreadsheetIdFromUri(uri),
                     "New sheeeeeet123345345",
                     head,
                     head[1]
                 );
-                PrintSheet(sheet, "Original sheet");
+                Printer.PrintSheet(sheet, "Original sheet");
 
                 ChangeSheet(sheet);
-                PrintSheet(sheet, "Changed sheet before updating to google");
+                Printer.PrintSheet(sheet, "Changed sheet before updating to google");
 
                 // In order for the data in the google spreadsheet sheet to be updated,
                 // you need to pass the changed instance of the SheetModel to the UpdateSheet method
                 app.UpdateSheet(sheet);
-                PrintSheet(sheet, "Sheet after update in google");
+                Printer.PrintSheet(sheet, "Sheet after update in google");
             }
             #region User Exceptions
             catch (AuthenticationTimedOutException)
@@ -121,13 +121,13 @@ namespace CreateSheetWithHeadAndKeyConsoleApp
         }
 
 
-        private static void ChangeSheet(SheetModel sheet)
+        private static void ChangeSheet(AbstractSheet sheet)
         {
             AddRows(sheet);
             ChangeRows(sheet);
         }
 
-        private static void AddRows(SheetModel sheet)
+        private static void AddRows(AbstractSheet sheet)
         {
             // Add empty row
             sheet.AddRow();
@@ -140,7 +140,7 @@ namespace CreateSheetWithHeadAndKeyConsoleApp
             sheet.AddRow(new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l" });
         }
 
-        private static void ChangeRows(SheetModel sheet)
+        private static void ChangeRows(AbstractSheet sheet)
         {
             // This example doesn't take into account the absence of a key with the desired value
             // and a cell with the selected Title
@@ -149,71 +149,6 @@ namespace CreateSheetWithHeadAndKeyConsoleApp
             sheet.Rows.Last().Cells[0].Value = "change";
             sheet.Rows.Last().Cells[1].Value = "added";
             sheet.Rows.Last().Cells[2].Value = "line";
-        }
-
-        private static void PrintSheet(SheetModel sheet, string status)
-        {
-            PrintDescription(sheet, status);
-            PrintHead(sheet.Head);
-            PrintBody(sheet.Rows);
-        }
-
-        private static void PrintDescription(SheetModel sheet, string status)
-        {
-            Console.WriteLine(
-                "\n" +
-               $"Status:            {status}\n" +
-               $"Spreadsheet Title: {sheet.SpreadsheetTitle}\n" +
-               $"Sheet Title:       {sheet.Title}\n" +
-               $"Number of lines:   {sheet.Rows.Count}\n"
-            );
-        }
-
-        private static void PrintHead(List<string> head)
-        {
-            Console.Write($"{"", 3}");
-
-            foreach (string title in head)
-            {
-                string value = title;
-
-                if (string.IsNullOrWhiteSpace(title))
-                {
-                    value = "-";
-                }
-
-                Console.Write($"|{value,7}");
-            }
-
-            Console.Write($"| ");
-            Console.WriteLine();
-
-            Console.Write($"{"", 3}");
-            var delimiter = new String('-', 7);
-
-            foreach (string title in head)
-            {
-                Console.Write($"|{delimiter}");
-            }
-
-            Console.Write($"| ");
-            Console.WriteLine();
-        }
-
-        private static void PrintBody(List<Row> rows)
-        {
-            foreach (var row in rows)
-            {
-                Console.Write($"{row.Number,3}");
-
-                foreach (var cell in row.Cells)
-                {
-                    Console.Write($"|{cell.Value,7}");
-                }
-
-                Console.Write($"| {row.Status}");
-                Console.WriteLine();
-            }
         }
     }
 }
