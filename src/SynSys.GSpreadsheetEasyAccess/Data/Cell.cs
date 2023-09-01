@@ -71,9 +71,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             // This check is needed in order not to change RowStatus.ToAppend.
             // Because no matter how many times the value in the added line changes,
             // it will still be added to the table and the RowStatus.ToChange status will not be correct.
-            if (Host.Status == RowStatus.Original)
+            if (Host.Status == ChangeStatus.Original)
             {
-                Host.Status = RowStatus.ToChange;
+                Host.Status = ChangeStatus.ToChange;
             }
         }
     }

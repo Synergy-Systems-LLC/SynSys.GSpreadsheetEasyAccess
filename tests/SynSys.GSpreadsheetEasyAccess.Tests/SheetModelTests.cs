@@ -42,7 +42,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
         public void Clean_RowsStatus()
         {
             // arrange
-            var expectedRowStatus = RowStatus.ToDelete;
+            var expectedRowStatus = ChangeStatus.ToDelete;
 
             // Действия для наличия различных статусов с листе.
             sheet.Rows[0].Cells[0].Value = "1234";
@@ -66,7 +66,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
             sheet.AddRow();
             sheet.AddRow( new List<string>() { "12", "34", "56" });
 
-            var expectedRowsAmount = sheet.Rows.FindAll(r => r.Status != RowStatus.ToAppend).Count;
+            var expectedRowsAmount = sheet.Rows.FindAll(r => r.Status != ChangeStatus.ToAppend).Count;
 
             // act
             sheet.Clean();
@@ -109,7 +109,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
             var startIndex = 2;
             var count = sheet.Rows.Count - 1;
             var expectedRangeNumbers = Enumerable.Range(startIndex, count).ToList();
-            var appendRow = sheet.Rows.Find(r => r.Status == RowStatus.ToAppend);
+            var appendRow = sheet.Rows.Find(r => r.Status == ChangeStatus.ToAppend);
 
             // act
             sheet.DeleteRow(appendRow);
@@ -135,9 +135,9 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
             // arrage
             sheet.Rows[0].Cells[0].Value = "1234";
 
-            var originalRow = sheet.Rows.Find(r => r.Status == RowStatus.Original);
-            var changeRow = sheet.Rows.Find(r => r.Status == RowStatus.ToChange);
-            var expectedRowStatus = RowStatus.ToDelete;
+            var originalRow = sheet.Rows.Find(r => r.Status == ChangeStatus.Original);
+            var changeRow = sheet.Rows.Find(r => r.Status == ChangeStatus.ToChange);
+            var expectedRowStatus = ChangeStatus.ToDelete;
 
             // act
             sheet.DeleteRow(originalRow);

@@ -107,7 +107,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// <param name="row">Row to delete</param>
         public void DeleteRow(Row row)
         {
-            if (row.Status == RowStatus.ToAppend)
+            if (row.Status == ChangeStatus.ToAppend)
             {
                 int nextRowNumber = row.Number + 1;
 
@@ -116,28 +116,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
             else
             {
-                row.Status = RowStatus.ToDelete;
+                row.Status = ChangeStatus.ToDelete;
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="row"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        public void UndoRowDeletion(Row row)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="rowNumber"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        public void UndoRowDeletion(int rowNumber)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -148,13 +128,13 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         {
             for (int i = Rows.Count - 1; i >= 0; i--)
             {
-                if (Rows[i].Status == RowStatus.ToAppend)
+                if (Rows[i].Status == ChangeStatus.ToAppend)
                 {
                     Rows.RemoveAt(i);
                     continue;
                 }
 
-                Rows[i].Status = RowStatus.ToDelete;
+                Rows[i].Status = ChangeStatus.ToDelete;
             }
         }
 
@@ -738,13 +718,13 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
 
         private static void PrepareRowForDeletion(Row currentRow, List<Row> rowsWithToAppendStatus)
         {
-            if (currentRow.Status == RowStatus.ToAppend)
+            if (currentRow.Status == ChangeStatus.ToAppend)
             {
                 rowsWithToAppendStatus.Add(currentRow);
             }
             else
             {
-                currentRow.Status = RowStatus.ToDelete;
+                currentRow.Status = ChangeStatus.ToDelete;
             }
         }
 

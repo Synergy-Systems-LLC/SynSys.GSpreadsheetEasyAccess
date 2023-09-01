@@ -23,7 +23,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// <summary>
         /// Current status.
         /// </summary>
-        public RowStatus Status { get; internal set; } = RowStatus.Original;
+        public ChangeStatus Status { get; internal set; } = ChangeStatus.Original;
 
         /// <summary>
         /// Change column number.

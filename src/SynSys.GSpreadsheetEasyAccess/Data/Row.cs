@@ -18,7 +18,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// Current status.
         /// </summary>
         [JsonProperty]
-        public RowStatus Status { get; internal set; } = RowStatus.ToAppend;
+        public ChangeStatus Status { get; internal set; } = ChangeStatus.ToAppend;
 
         /// <summary>
         /// All cells in this row.
