@@ -10,11 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{41
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "IronPythonApp", "examples\IronPythonApp\IronPythonApp.pyproj", "{AA13417E-1AC7-493B-8F3C-7E265170235E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSheetConsoleApp", "examples\SimpleSheetConsoleApp\SimpleSheetConsoleApp.csproj", "{7329ED5A-BAE7-401D-8832-AFE7529FE5C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetNativeSheetConsoleApp", "examples\GetNativeSheetConsoleApp\GetNativeSheetConsoleApp.csproj", "{7329ED5A-BAE7-401D-8832-AFE7529FE5C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheetWithHeadAndKeyConsoleApp", "examples\SheetWithHeadAndKeyConsoleApp\SheetWithHeadAndKeyConsoleApp.csproj", "{012DF087-3069-48FC-BE50-F27E6B1E940C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetUserSheetConsoleApp", "examples\GetUserSheetConsoleApp\GetUserSheetConsoleApp.csproj", "{012DF087-3069-48FC-BE50-F27E6B1E940C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationSheetModelConsoleApp", "examples\SerializationSheetModelConsoleApp\SerializationSheetModelConsoleApp.csproj", "{14F235BC-153E-4981-AD58-20E3EDD2DFBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationUserSheetConsoleApp", "examples\SerializationUserSheetConsoleApp\SerializationUserSheetConsoleApp.csproj", "{14F235BC-153E-4981-AD58-20E3EDD2DFBF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{22895566-9C73-4BEF-9064-A0A5E55DFA0A}"
 	ProjectSection(SolutionItems) = preProject
@@ -25,9 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6CF4E8AB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynSys.GSpreadsheetEasyAccess.Tests", "tests\SynSys.GSpreadsheetEasyAccess.Tests\SynSys.GSpreadsheetEasyAccess.Tests.csproj", "{6AE3FB11-1EC0-4E7A-811E-88A161CCDC9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheetMergeConsoleApp", "examples\SheetMergeConsoleApp\SheetMergeConsoleApp.csproj", "{473017DE-3C69-4CBB-978D-C661EB5E0ADA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeUserSheetConsoleApp", "examples\MergeUserSheetConsoleApp\MergeUserSheetConsoleApp.csproj", "{473017DE-3C69-4CBB-978D-C661EB5E0ADA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateSheetWithHeadAndKeyConsoleApp", "examples\CreateSheetWithHeadAndKeyConsoleApp\CreateSheetWithHeadAndKeyConsoleApp.csproj", "{F201BD23-8F99-44F0-91A0-323FE9764B25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateUserSheetConsoleApp", "examples\CreateUserSheetConsoleApp\CreateUserSheetConsoleApp.csproj", "{F201BD23-8F99-44F0-91A0-323FE9764B25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Printing", "examples\Printing\Printing.csproj", "{8C998A13-F648-4392-A3E0-552297A8FAC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,10 @@ Global
 		{F201BD23-8F99-44F0-91A0-323FE9764B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F201BD23-8F99-44F0-91A0-323FE9764B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F201BD23-8F99-44F0-91A0-323FE9764B25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C998A13-F648-4392-A3E0-552297A8FAC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C998A13-F648-4392-A3E0-552297A8FAC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C998A13-F648-4392-A3E0-552297A8FAC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C998A13-F648-4392-A3E0-552297A8FAC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{6AE3FB11-1EC0-4E7A-811E-88A161CCDC9F} = {6CF4E8AB-0014-4FAC-B32B-1857FB68B54D}
 		{473017DE-3C69-4CBB-978D-C661EB5E0ADA} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
 		{F201BD23-8F99-44F0-91A0-323FE9764B25} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
+		{8C998A13-F648-4392-A3E0-552297A8FAC4} = {4100EF45-C65E-477F-9549-357E5E12DC5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E026FE4-8101-4170-9E61-F67A73511531}

@@ -51,10 +51,17 @@
   <ItemGroup>
     <Compile Include="Application\Exceptions\CreatingSheetException.cs" />
     <Compile Include="Application\Exceptions\SheetExistsException.cs" />
+    <Compile Include="Application\GoogleSheetUri.cs" />
+    <Compile Include="Data\AbstractColumn.cs" />
+    <Compile Include="Data\AbstractSheet.cs" />
+    <Compile Include="Data\NativeSheet.cs" />
+    <Compile Include="Data\UserColumn.cs" />
     <Compile Include="Data\Exceptions\SheetKeyNotFoundException.cs" />
     <Compile Include="Data\Exceptions\InvalidSheetHeadException.cs" />
-    <Compile Include="Data\RowStatus.cs" />
+    <Compile Include="Data\NativeColumn.cs" />
+    <Compile Include="Data\ChangeStatus.cs" />
     <Compile Include="Data\SheetMode.cs" />
+    <Compile Include="Data\UserSheet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Application\Exceptions\InvalidApiKeyException.cs" />
     <Compile Include="Application\Exceptions\SheetNotFoundException.cs" />
