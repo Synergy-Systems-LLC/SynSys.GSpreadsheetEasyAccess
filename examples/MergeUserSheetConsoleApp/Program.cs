@@ -9,13 +9,13 @@ using SynSys.GSpreadsheetEasyAccess.Data.Exceptions;
 using System;
 using System.Collections.Generic;
 
-namespace SheetMergeConsoleApp
+namespace MergeUserSheetConsoleApp
 {
     internal static class Program
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine($"Start {nameof(SheetMergeConsoleApp)}\n");
+            Console.WriteLine($"Start {nameof(MergeUserSheetConsoleApp)}\n");
 
             try
             {
