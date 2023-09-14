@@ -7,7 +7,7 @@
     <ProjectGuid>{14F235BC-153E-4981-AD58-20E3EDD2DFBF}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>SerializationSheetModelConsoleApp</RootNamespace>
-    <AssemblyName>SerializationSheetModelConsoleApp</AssemblyName>
+    <AssemblyName>SerializationUserSheetConsoleApp</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
