@@ -49,7 +49,7 @@ try:
         '12nBUl0szLwBJKfWbe6aA1bNGxNwUJzNwvXyRSPkS8io/edit#gid=0'
     )
 
-    sheet = gcp_app.GetSheetWithHeadAndKey(uri, 'Head 1')  # type: Data.SheetModel
+    sheet = gcp_app.GetSheetWithHeadAndKey(uri, 'Title 1')  # type: Data.SheetModel
     print_sheet(sheet, 'Original sheet')
 
     change_sheet(sheet)

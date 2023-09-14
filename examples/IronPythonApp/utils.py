@@ -64,13 +64,13 @@ def change_rows(sheet):
     # This example doesn't take into account the absence of a key with the desired value
     # and a cell with the selected Title
     sheet.Rows.Find(lambda row: row.Key.Value == "31") \
-        .Cells.Find(lambda cell: cell.Title == "Head 6") \
+        .Cells.Find(lambda cell: cell.Title == "Title 6") \
         .Value = "360"
     sheet.Rows.Find(lambda row: row.Key.Value == "61") \
-        .Cells.Find(lambda cell: cell.Title == "Head 3") \
+        .Cells.Find(lambda cell: cell.Title == "Title 3") \
         .Value = "630"
     sheet.Rows.Find(lambda row: row.Key.Value == "51") \
-        .Cells.Find(lambda cell: cell.Title == "Head 2") \
+        .Cells.Find(lambda cell: cell.Title == "Title 2") \
         .Value = "520"
 
     # Change added rows with status RowStatus.ToAppend
