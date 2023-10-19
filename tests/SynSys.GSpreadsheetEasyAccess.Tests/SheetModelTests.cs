@@ -16,7 +16,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
         {
             var data = new List<IList<object>>()
             {
-                new List<object>() { "Head 1", "Head 2", "Head 3" },
+                new List<object>() { "Title 1", "Title 2", "Title 3" },
                 new List<object>() { "qwer", "tyui", "op[]" },
                 new List<object>() { "asdf", "ghjk", "l;'" },
             };
@@ -24,7 +24,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
             sheet = new SheetModel
             {
                 Mode = SheetMode.HeadAndKey,
-                KeyName = "Head 1",
+                KeyName = "Title 1",
                 Gid = 0,
                 Title = "TestTitle",
                 SpreadsheetId = "0000000000",
@@ -87,7 +87,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Tests
         public void DoesNotContainsSomeHeaders_AllHeadersExists()
         {
             // arrage
-            string[] requiredHeaders = { "Head 1", "Head 2", "Head 3", "Head 4" };
+            string[] requiredHeaders = { "Title 1", "Title 2", "Title 3", "Title 4" };
 
             // assert
             Assert.ThrowsException<InvalidSheetHeadException>(() => sheet.CheckHead(requiredHeaders));
