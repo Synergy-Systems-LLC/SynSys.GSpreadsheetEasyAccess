@@ -80,7 +80,6 @@
     <Compile Include="Data\Exceptions\EmptySheetException.cs" />
     <Compile Include="Data\JsonSerialization.cs" />
     <Compile Include="Data\Row.cs" />
-    <Compile Include="Data\SheetModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -39,7 +39,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
         /// <summary>
         /// The sheet whose state caused the exception.
         /// </summary>
-        public SheetModel Sheet { get; set; }
+        public UserSheet Sheet { get; set; }
 
         /// <summary>
         /// Required column headers that were not found in the sheet.

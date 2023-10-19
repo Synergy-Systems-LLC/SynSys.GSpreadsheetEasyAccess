@@ -37,6 +37,6 @@ namespace SynSys.GSpreadsheetEasyAccess.Data.Exceptions
         /// <summary>
         /// The sheet whose state caused the exception
         /// </summary>
-        public SheetModel Sheet { get; set; }
+        public AbstractSheet Sheet { get; set; }
     }
 }
