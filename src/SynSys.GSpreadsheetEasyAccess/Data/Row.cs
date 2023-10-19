@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace SynSys.GSpreadsheetEasyAccess.Data
@@ -45,7 +46,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// <param name="rowData">Data to fill</param>
         /// <param name="maxLength">Assigns the maximum length of a row</param>
         /// <param name="headOfSheet"></param>
-        internal Row(IList<string> rowData, int maxLength, List<string> headOfSheet)
+        internal Row(IList<string> rowData, int maxLength, List<AbstractColumn> headOfSheet)
         {
             for (int cellIndex = 0; cellIndex < maxLength; cellIndex++)
             {
@@ -76,6 +77,18 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             }
 
             return data;
+        }
+
+        internal void RemoveCell(int cellIndex)
+        {
+            if (cellIndex < 0
+                || cellIndex >= Cells.Count)
+            {
+                throw new IndexOutOfRangeException("The cell index being deleted is out of range"); // дописать
+            }
+
+            Cells.RemoveAt(cellIndex);
+            Status = ChangeStatus.ToChange;
         }
     }
 }

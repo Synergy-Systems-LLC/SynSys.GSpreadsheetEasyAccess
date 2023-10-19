@@ -28,7 +28,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// The name of the column in which the cell is located.
         /// </summary>
         [JsonProperty]
-        public string Title { get; }
+        public AbstractColumn Column { get; internal set; }
 
         /// <summary>
         /// Link to the row in which this cell is located.
@@ -45,12 +45,12 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// and a link to the row in which it is located.
         /// </summary>
         /// <param name="value"></param>
-        /// <param name="title"></param>
+        /// <param name="column"></param>
         /// <param name="row"></param>
-        internal Cell(string value, string title, Row row)
+        internal Cell(string value, AbstractColumn column, Row row)
         {
             this.value = value;
-            Title = title;
+            Column = column;
             Host = row;
         }
 
@@ -71,7 +71,8 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
             // This check is needed in order not to change RowStatus.ToAppend.
             // Because no matter how many times the value in the added line changes,
             // it will still be added to the table and the RowStatus.ToChange status will not be correct.
-            if (Host.Status == ChangeStatus.Original)
+            // TODO добавить описание второго условия
+            if (Host.Status == ChangeStatus.Original && Column.Status == ChangeStatus.Original)
             {
                 Host.Status = ChangeStatus.ToChange;
             }
