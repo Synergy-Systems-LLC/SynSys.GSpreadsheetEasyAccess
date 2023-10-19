@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
@@ -29,6 +30,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// <summary>
         /// Is the column considered a key.
         /// </summary>
+        [JsonProperty]
         public bool IsKey { get; }
 
         /// <summary>

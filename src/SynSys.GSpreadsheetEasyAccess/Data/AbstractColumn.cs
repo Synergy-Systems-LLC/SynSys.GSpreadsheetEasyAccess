@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace SynSys.GSpreadsheetEasyAccess.Data
 {
@@ -13,16 +14,19 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// <summary>
         /// Column number, not index.
         /// </summary>
+        [JsonProperty]
         public int Number { get; protected set; }
 
         /// <summary>
         /// Title of column.
         /// </summary>
+        [JsonProperty]
         public string Title { get; protected set; }
 
         /// <summary>
         /// Current status.
         /// </summary>
+        [JsonProperty]
         public ChangeStatus Status { get; internal set; } = ChangeStatus.Original;
 
         /// <summary>
@@ -37,5 +41,7 @@ namespace SynSys.GSpreadsheetEasyAccess.Data
         /// <param name="other"></param>
         /// <returns></returns>
         public abstract bool Equals(AbstractColumn other);
+
+        internal AbstractColumn(){}
     }
 }
